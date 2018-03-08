@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@drawable/rounded_corner_border_gray"
+  android:padding="8dp">
+
+  <android.support.v7.widget.AppCompatImageButton
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_alignParentRight="true"
+    android:visibility="gone"/>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/book_image"
+      android:layout_width="80dp"
+      android:layout_height="120dp"
+      android:layout_gravity="center_horizontal"
+      android:adjustViewBounds="true"
+      android:background="@color/lightGray"/>
+
+    <android.support.v7.widget.AppCompatTextView
+      android:id="@+id/book_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:lines="2"/>
+
+    <android.support.v7.widget.AppCompatTextView
+      android:id="@+id/book_author"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:textColor="@color/midGray"
+      android:lines="1"/>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="horizontal">
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/book_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$100"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/or_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="@string/label_or"
+        android:textColor="@color/midGray"
+        android:textSize="10sp"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/for_trade_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_for_trade"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"/>
+
+    </LinearLayout>
+  </LinearLayout>
+
+</RelativeLayout>
