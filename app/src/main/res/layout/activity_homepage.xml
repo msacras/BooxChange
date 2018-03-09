@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.dima.booxchange.widget.SlidingNavigationLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/navigation_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:orientation="horizontal"
+      android:padding="20dp">
+
+      <android.support.v7.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/temporary_app"/>
+
+      <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+      <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:padding="10dp"
+        app:srcCompat="@drawable/temporary_search"
+        android:background="@drawable/round_gray"
+        android:tint="#bababa"/>
+
+      <Space
+        android:layout_width="10dp"
+        android:layout_height="0dp"/>
+
+      <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/drawer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/temporary_hamburger"
+        android:tint="#bababa"/>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/swipe_refresh_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <android.support.v7.widget.RecyclerView
+        android:id="@+id/offers_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+  </LinearLayout>
+</com.example.dima.booxchange.widget.SlidingNavigationLayout>
