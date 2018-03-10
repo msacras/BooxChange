@@ -1,16 +1,12 @@
-package com.example.dima.booxchange.screens.homepage
+package com.example.dima.booxchange.screens
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.example.dima.booxchange.R
-import com.example.dima.booxchange.R.id.swipe_refresh_layout
-import com.example.dima.booxchange.api.APIClient
 import com.example.dima.booxchange.extension.toGone
 import com.example.dima.booxchange.extension.toVisible
 import com.example.dima.booxchange.model.BookModel
-import com.example.dima.booxchange.model.OfferType
 import com.example.dima.booxchange.model.OfferType.*
 import com.example.dima.booxchange.utilities.BaseActivity
 import com.example.dima.booxchange.utilities.RecyclerViewAdapter
@@ -19,6 +15,7 @@ import com.example.dima.booxchange.utilities.Tools
 import kotlinx.android.synthetic.main.activity_homepage.*
 import kotlinx.android.synthetic.main.offer_list_book_item.view.*
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.startActivity
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
@@ -70,6 +67,10 @@ class HomepageActivity: BaseActivity() {
             view.for_trade_label.toGone()
           }
         }
+
+      view.setOnClickListener {
+        startActivity<BookInfoActivity>("book_model" to model)
+      }
     }
 
     offers_list_view.layoutManager = GridLayoutManager(this, 2)

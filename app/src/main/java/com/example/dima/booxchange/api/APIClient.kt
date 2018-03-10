@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference
  */
 object APIClient {
   init {
-    FuelManager.instance.basePath = /*"http://192.168.0.104:8000"*/"http://api.booxchange.website/web"
+    FuelManager.instance.basePath = "http://192.168.0.104:8000"//"http://api.booxchange.website/web"
   }
 
   private fun executeRequest(request: Request, callback: (String?) -> Unit) {
@@ -97,7 +97,7 @@ object APIClient {
   private const val ALL_AVAILABLE_BOOKS = "/books/available"
   private const val ALL_TRADE_BOOKS = "/books/available/exchange"
   private const val ALL_PURCHASE_BOOK = "/books/available/purchase"
-  private const val BOOKS_BY_USER_ID = "/books/library/{user_id}"
+  private const val BOOKS_BY_USER_ID = "/books/library/1"
   private const val BOOK_ADD = "/book/add"
   private const val BOOK_GET = "/book/{book_id}"
   private const val BOOK_UPDATE = "/book/{book_id}"
