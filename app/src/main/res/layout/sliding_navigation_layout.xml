@@ -9,6 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:duplicateParentState="true"
     card_view:cardBackgroundColor="@android:color/white"
     card_view:cardElevation="32dp"/>
 
@@ -19,6 +20,7 @@
     android:layout_gravity="right"
     android:layout_marginRight="-240dp"
     android:layout_toRightOf="@id/content"
-    android:orientation="vertical"/>
+    android:orientation="vertical"
+    android:duplicateParentState="true"/>
 
 </merge>
