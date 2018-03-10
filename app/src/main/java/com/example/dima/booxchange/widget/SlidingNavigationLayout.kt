@@ -6,6 +6,7 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.support.annotation.LayoutRes
 import android.support.design.widget.CoordinatorLayout
+import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -33,11 +34,11 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   private val transitionDuration = 250L //ms
   private var transitionAnimator: ValueAnimator? = null
   private var touchStartTime = 0L
-  private val swipeVelocity = 1500 //px/s
+  private val swipeVelocity = 1000 //px/s
   private val swipeDuration = 250 //ms
 
   private var toggle: View? = null
-  private lateinit var content: LinearLayout
+  private lateinit var content: CardView
   private lateinit var drawer: LinearLayout
   private var _isDrawerOpen: Boolean
   private var _setDrawerOpen: (Boolean) -> Unit
@@ -48,41 +49,22 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
     get() = _setDrawerOpen
 
   override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-    return if (!isDrawerOpen) {
-      super.onInterceptTouchEvent(ev)
-    } else {
-      val toggle = toggle ?: return true
-      val toggleBounds = Rect()
-      toggle.getHitRect(toggleBounds)
-      toggleBounds.offset(-currentTranslation.toInt(), 0)
-      if (toggleBounds.contains(ev?.rawX?.toInt() ?: 0, ev?.rawY?.toInt() ?: 0)) {
-        return super.onInterceptTouchEvent(ev)
-      } else true
-    }
+    processTouchEvent(ev ?: return false)
+    return super.onInterceptTouchEvent(ev)
   }
 
   init {
     View.inflate(context, R.layout.sliding_navigation_layout, this)
 
-    setOnTouchListener(object: View.OnTouchListener {
-      init {
-        _isDrawerOpen = false
-        _setDrawerOpen = { open ->
-          val (transitionStart, transitionEnd, transitionDuration) = if (open) {
-            Triple(currentTranslation, maxTranslation, (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong())
-          } else {
-            Triple(currentTranslation, 0f, (transitionDuration * (currentTranslation / maxTranslation)).toLong())
-          }
-          animateDrawer(transitionStart, transitionEnd, transitionDuration)
-        }
+    _isDrawerOpen = false
+    _setDrawerOpen = { open ->
+      val (transitionStart, transitionEnd, transitionDuration) = if (open) {
+        Triple(currentTranslation, maxTranslation, (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong())
+      } else {
+        Triple(currentTranslation, 0f, (transitionDuration * (currentTranslation / maxTranslation)).toLong())
       }
-
-      override fun onTouch(view: View?, motionEvent: MotionEvent?): Boolean {
-        view ?: return false
-        motionEvent ?: return false
-        return processTouchEvent(motionEvent)
-      }
-    })
+      animateDrawer(transitionStart, transitionEnd, transitionDuration)
+    }
   }
 
   private fun processTouchEvent(motionEvent: MotionEvent): Boolean {
@@ -212,7 +194,7 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
     when (child?.id) {
       R.id.content -> {
-        content = child as LinearLayout
+        content = child as CardView
       }
       R.id.drawer -> {
         drawer = child as LinearLayout

@@ -3,18 +3,28 @@ package com.example.dima.booxchange.screens.homepage
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.example.dima.booxchange.R
+import com.example.dima.booxchange.R.id.swipe_refresh_layout
+import com.example.dima.booxchange.api.APIClient
+import com.example.dima.booxchange.extension.toGone
+import com.example.dima.booxchange.extension.toVisible
 import com.example.dima.booxchange.model.BookModel
+import com.example.dima.booxchange.model.OfferType
+import com.example.dima.booxchange.model.OfferType.*
 import com.example.dima.booxchange.utilities.BaseActivity
+import com.example.dima.booxchange.utilities.RecyclerViewAdapter
 import com.example.dima.booxchange.utilities.RecyclerViewItemSpacer
+import com.example.dima.booxchange.utilities.Tools
 import kotlinx.android.synthetic.main.activity_homepage.*
+import kotlinx.android.synthetic.main.offer_list_book_item.view.*
 import org.jetbrains.anko.dip
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
 class HomepageActivity: BaseActivity() {
-  val booksListAdapter = BookListAdapter()
+  val booksListAdapter = RecyclerViewAdapter()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -25,24 +35,61 @@ class HomepageActivity: BaseActivity() {
   }
 
   private fun initializeLayout() {
+    booksListAdapter.addModelToViewBinding(R.layout.offer_list_book_item, BookModel::class.java) { view, model ->
+      Tools.initializeImage(view.book_image, model.image)
+      view.book_author.text = model.author
+      view.book_title.text = model.title
+      view.book_price.text = model.offer_price?.prependIndent("€") ?: ""
+        when (valueOf(model.offer_name ?: "NONE")) {
+          EXCHANGE -> {
+            view.icon_type_sell.toGone()
+            view.icon_type_trade.toVisible()
+            view.book_price.toGone()
+            view.or_label.toGone()
+            view.for_trade_label.toVisible()
+          }
+          SELL -> {
+            view.icon_type_sell.toVisible()
+            view.icon_type_trade.toGone()
+            view.book_price.toVisible()
+            view.or_label.toGone()
+            view.for_trade_label.toGone()
+          }
+          BOTH -> {
+            view.icon_type_sell.toVisible()
+            view.icon_type_trade.toVisible()
+            view.book_price.toVisible()
+            view.or_label.toVisible()
+            view.for_trade_label.toVisible()
+          }
+          NONE -> {
+            view.icon_type_sell.toGone()
+            view.icon_type_trade.toGone()
+            view.book_price.toGone()
+            view.or_label.toGone()
+            view.for_trade_label.toGone()
+          }
+        }
+    }
+
     offers_list_view.layoutManager = GridLayoutManager(this, 2)
     offers_list_view.adapter = booksListAdapter
     offers_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(12), dip(6)))
   }
 
   private fun fetchBookOffersList() {
-    //temporary, no backend yet
-
-    val booksList = (0..10).map { i ->
-      BookModel(i, "Random book long example title", "Some human", 2018, "249-411433512", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tristique ultricies laoreet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque ultrices, justo ac molestie laoreet, augue dui pharetra nunc, eu viverra enim odio non quam. Donec consectetur tortor vel libero imperdiet, nec porta dolor ullamcorper. Integer eu magna sit amet nunc consequat lobortis. Vivamus accumsan auctor sem et sollicitudin. Proin porta nisi ut mollis placerat. In lacinia rhoncus risus, in malesuada nunc pellentesque nec. Ut in aliquet libero. Mauris nec hendrerit velit, non suscipit massa. Nam nibh dui, pharetra a urna a, malesuada fermentum mauris. Suspendisse malesuada turpis tortor, in varius felis pulvinar in. Duis aliquet volutpat magna id mattis. Aenean lacinia imperdiet augue, accumsan faucibus ex fermentum eget.\n\nNulla aliquet ultrices tellus, at elementum dolor tincidunt id. Etiam aliquam, diam et maximus tempus, nunc lectus molestie ligula, at sollicitudin ex erat et risus. Sed rhoncus, ligula non tempor pellentesque, leo tellus aliquet neque, nec malesuada arcu neque et metus. Curabitur at posuere purus, sed cursus augue. Morbi lobortis facilisis lorem sed mollis. Nullam neque lorem, suscipit a leo sit amet, maximus interdum est. Nulla a faucibus erat. Vestibulum feugiat mollis lobortis. Sed varius nisl nec mollis luctus. Fusce posuere tincidunt nisl tempus dictum.", "29293482jvh3fwsgthw54gg4g3.jpeg")
+    requestManager.fetchAllAvailableBooks {
+      it?.result?.let { list ->
+        booksListAdapter.swapItems(list)
+      } ?: showErrorSnackbar(R.string.data_fetch_failed)
+      swipe_refresh_layout.isRefreshing = false
     }
-    booksListAdapter.swapItems(booksList)
   }
 
   private fun initializeSwipeRefreshLayout() {
     swipe_refresh_layout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary), ContextCompat.getColor(this, R.color.colorAccent))
     swipe_refresh_layout.setOnRefreshListener {
-      swipe_refresh_layout.isRefreshing = false
+      fetchBookOffersList()
     }
   }
 }

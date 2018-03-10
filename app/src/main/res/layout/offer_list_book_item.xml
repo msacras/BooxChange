@@ -3,14 +3,39 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:background="@drawable/rounded_corner_border_gray"
   android:padding="8dp">
 
-  <android.support.v7.widget.AppCompatImageButton
-    android:layout_width="40dp"
-    android:layout_height="40dp"
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
-    android:visibility="gone"/>
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/icon_type_sell"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      app:srcCompat="@drawable/temporary_euro"
+      android:tint="@color/lightGray"
+      android:padding="4dp"
+      android:background="@drawable/round_primary_dark"/>
+
+    <Space
+      android:layout_width="0dp"
+      android:layout_height="4dp"/>
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/icon_type_trade"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      app:srcCompat="@drawable/temporary_book"
+      android:tint="@color/lightGray"
+      android:padding="4dp"
+      android:background="@drawable/round_accent"/>
+
+  </LinearLayout>
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -37,8 +62,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
-      android:textColor="@color/midGray"
-      android:lines="1"/>
+      android:lines="1"
+      android:textColor="@color/midGray"/>
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -50,7 +75,6 @@
         android:id="@+id/book_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$100"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"/>
 
