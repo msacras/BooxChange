@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dima.booxchange">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -10,31 +11,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".BooxchangeApp"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".screens.homepage.HomepageActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MyProfileActivity"
             android:label="@string/title_activity_my_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".activity.MyLibraryActivity"
             android:label="@string/title_activity_my_library"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.EditBookActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".book.info.MainActivity" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name=".book.info.BookInfo"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
 </manifest>

@@ -4,7 +4,8 @@ buildscript {
     ext.fuel_version = '1.12.1'
     ext.support_version = '27.1.0'
     ext.gson_version = '2.8.2'
-    ext.anko_version='0.10.4'
+    ext.anko_version= '0.10.4'
+    ext.glide_version = '4.6.1'
 
     repositories {
         google()

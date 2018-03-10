@@ -17,6 +17,7 @@
     <string name="title_logout">Logout</string>
     <string name="label_for_trade">For trade</string>
     <string name="label_or">or</string>
+    <string name="data_fetch_failed">Failed to load requested data</string>
     <string name="trade">TRADE</string>
     <string name="sale">SALE</string>
 </resources>
