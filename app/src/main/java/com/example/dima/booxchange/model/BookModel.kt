@@ -7,10 +7,13 @@ import java.io.Serializable
  */
 data class BookModel (
   val id: Int,
-  var title: String,
-  var author: String,
-  var edition: Int,
-  var isbn: String,
-  var info: String,
-  var image: String
+  var title: String?,
+  var author: String?,
+  var edition: Int?,
+  var isbn: String?,
+  var info: String?,
+  var image: String?,
+  var user_id: Int?,
+  var offer_price: String?,
+  var offer_name: String?
 ): Serializable
