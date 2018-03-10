@@ -15,6 +15,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.dima.booxchange.R
+import com.example.dima.booxchange.R.id.content
+import com.example.dima.booxchange.R.id.drawer
 import org.jetbrains.anko.find
 import org.jetbrains.anko.px2dip
 import kotlin.properties.Delegates
@@ -34,7 +36,7 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   private var transitionAnimator: ValueAnimator? = null
   private var touchStartTime = 0L
   private val swipeVelocity = 100 //px/s
-  private val swipeDuration = 200 //ms
+  private val swipeDuration = 250 //ms
 
   private var toggle: View? = null
   private lateinit var content: CardView
@@ -48,11 +50,8 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
     get() = _setDrawerOpen
 
   override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-    return if (_isDrawerOpen) isDrawerOpen else processTouchEvent(ev)
-  }
-
-  override fun onTouchEvent(ev: MotionEvent): Boolean {
-    return processTouchEvent(ev)
+    val distanceFromScreenMargin = px2dip((measuredWidth - ev.x).toInt())
+    return if (_isDrawerOpen) ev.x < measuredWidth - maxTranslation else distanceFromScreenMargin < 20
   }
 
   init {
@@ -67,31 +66,25 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
       }
       animateDrawer(transitionEnd, transitionDuration)
     }
+    setOnTouchListener { view, motionEvent ->
+      processTouchEvent(motionEvent)
+    }
   }
 
   private fun processTouchEvent(motionEvent: MotionEvent): Boolean {
-    when (motionEvent.action) {
+    return when (motionEvent.action) {
       MotionEvent.ACTION_DOWN -> {
-        when (currentTranslation) {
-          0f -> {
-            val distanceFromScreenMargin = px2dip((measuredWidth - motionEvent.x).toInt())
-            if (distanceFromScreenMargin < 30) {
-              touchDown = true
-            }
-          }
-          else -> {
-            transitionAnimator?.cancel()
-            transitionAnimator = null
-            touchDown = true
-          }
-        }
-        if (touchDown) {
-          lastTouchPoint.set(motionEvent.x, motionEvent.y)
-          touchStartTime = System.currentTimeMillis()
-        }
+        transitionAnimator?.cancel()
+        transitionAnimator = null
+        touchDown = true
+        lastTouchPoint.set(motionEvent.x, motionEvent.y)
+        touchStartTime = System.currentTimeMillis()
         return touchDown
       }
       MotionEvent.ACTION_UP -> {
+        val touchEndTime = System.currentTimeMillis()
+        val endTouchPoint = PointF(motionEvent.x, motionEvent.y)
+
         toggle?.let { toggle ->
           val hitRect = Rect()
           toggle.getHitRect(hitRect)
@@ -100,41 +93,36 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
           }
         }
 
-        if (touchDown) {
-          val touchEndTime = System.currentTimeMillis()
-          val endTouchPoint = PointF(motionEvent.x, motionEvent.y)
-          val motionDistance = PointF(endTouchPoint.x - lastTouchPoint.x, endTouchPoint.y - lastTouchPoint.y)
-          val motionDuration = touchEndTime - touchStartTime
-          val motionVelocity = motionDistance.x / (motionDuration / 1000f)
-          val (transitionEnd, transitionDuration) = if (motionDuration <= swipeDuration) {
-            if (motionVelocity < -swipeVelocity) {
-              maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
-            } else if (motionVelocity > swipeVelocity) {
-              0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
-            } else {
-              if (currentTranslation >= maxTranslation / 2) {
-                maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
-              } else {
-                0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
-              }
-            }
+        val motionDistance = PointF(endTouchPoint.x - lastTouchPoint.x, endTouchPoint.y - lastTouchPoint.y)
+        val motionDuration = touchEndTime - touchStartTime
+        val motionVelocity = motionDistance.x / (motionDuration / 1000f)
+        val (transitionEnd, transitionDuration) = if (motionDuration <= swipeDuration) {
+          if (motionVelocity < -swipeVelocity) {
+            maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
+          } else if (motionVelocity > swipeVelocity) {
+            0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
           } else {
-            Toast.makeText(this.context, "$motionDuration $motionDistance $motionVelocity", Toast.LENGTH_SHORT)
             if (currentTranslation >= maxTranslation / 2) {
               maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
             } else {
               0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
             }
           }
-
-          animateDrawer(transitionEnd, transitionDuration)
-
-          touchDown = false
-          return true
+        } else {
+          if (currentTranslation >= maxTranslation / 2) {
+            maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
+          } else {
+            0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
+          }
         }
+
+        animateDrawer(transitionEnd, transitionDuration)
+
+        touchDown = false
+        return true
       }
       MotionEvent.ACTION_MOVE -> {
-        if (touchDown) {
+        if (true) {
           val currentTouchPoint = PointF(motionEvent.x, motionEvent.y)
           val motionDelta = PointF(lastTouchPoint.x - currentTouchPoint.x, lastTouchPoint.y - currentTouchPoint.y)
           currentTranslation = (currentTranslation + motionDelta.x).coerceIn(0f, maxTranslation)
@@ -142,11 +130,10 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
           lastTouchPoint.set(currentTouchPoint)
         }
 
-        return touchDown
+        return true
       }
+      else -> false
     }
-
-    return false
   }
 
   private fun updateState() {

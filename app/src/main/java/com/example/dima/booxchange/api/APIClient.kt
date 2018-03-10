@@ -41,19 +41,19 @@ object APIClient {
       if (activity.get()?.isDestroyed == false) callback()
     }
 
-    fun fetchAllAvailableBooks(callback: (BookListResponseModel?) -> Unit): RequestModel {
+    fun fetchAllAvailableBooks(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
       val request = ALL_AVAILABLE_BOOKS.httpGet()
       executeRequest(request) { safeCallback { callback(it?.asObject()) }}
       return RequestModel(request)
     }
 
-    fun fetchAllTradeBooks(callback: (BookListResponseModel?) -> Unit): RequestModel {
+    fun fetchAllTradeBooks(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
       val request = ALL_TRADE_BOOKS.httpGet()
       executeRequest(request) { safeCallback { callback(it?.asObject()) }}
       return RequestModel(request)
     }
 
-    fun fetchAllPurchaseBook(callback: (BookListResponseModel?) -> Unit): RequestModel {
+    fun fetchAllPurchaseBook(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
       val request = ALL_PURCHASE_BOOK.httpGet()
       executeRequest(request) { safeCallback { callback(it?.asObject()) }}
       return RequestModel(request)
@@ -90,8 +90,8 @@ object APIClient {
     }
   }
 
-  fun bindClass() {
-
+  private fun String.setParameters(parametersMap: Map<String, String>) {
+    this.split('/').reduce { result, parameter -> result + "/" + (parametersMap.get(parameter.drop(1).dropLast(1)) ?: parameter) }
   }
 
   private const val ALL_AVAILABLE_BOOKS = "/books/available"

@@ -21,7 +21,7 @@ import org.jetbrains.anko.startActivity
  * Created by Cristian Velinciuc on 3/9/18.
  */
 class HomepageActivity: BaseActivity() {
-  val booksListAdapter = RecyclerViewAdapter()
+  private val booksListAdapter = RecyclerViewAdapter()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -79,7 +79,8 @@ class HomepageActivity: BaseActivity() {
   }
 
   private fun fetchBookOffersList() {
-    requestManager.fetchAllAvailableBooks {
+    val currentBookCount =
+    requestManager.fetchAllAvailableBooks(booksListAdapter.itemCount) {
       it?.result?.let { list ->
         booksListAdapter.swapItems(list)
       } ?: showErrorSnackbar(R.string.data_fetch_failed)
