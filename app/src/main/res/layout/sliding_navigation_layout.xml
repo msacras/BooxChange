@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/coordinator">
+  xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
   <android.support.v7.widget.CardView
     android:id="@+id/content"
@@ -11,7 +10,14 @@
     android:orientation="vertical"
     android:duplicateParentState="true"
     card_view:cardBackgroundColor="@android:color/white"
-    card_view:cardElevation="32dp"/>
+    card_view:cardElevation="32dp">
+
+    <android.support.design.widget.CoordinatorLayout
+      android:id="@+id/coordinator"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+  </android.support.v7.widget.CardView>
 
   <LinearLayout
     android:id="@+id/drawer"

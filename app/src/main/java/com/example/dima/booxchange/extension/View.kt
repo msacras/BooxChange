@@ -16,3 +16,12 @@ fun View.toInvisible() {
 fun View.toGone() {
   this.visibility = View.GONE
 }
+
+val View.isVisible
+  get() = this.visibility == View.VISIBLE
+
+val View.isInvisible
+  get() = this.visibility == View.INVISIBLE
+
+val View.isGone
+  get() = this.visibility == View.GONE

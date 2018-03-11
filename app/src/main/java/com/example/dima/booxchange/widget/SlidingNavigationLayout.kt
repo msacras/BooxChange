@@ -5,7 +5,9 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
 import android.support.annotation.LayoutRes
+import android.support.annotation.StringRes
 import android.support.design.widget.CoordinatorLayout
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -41,6 +43,7 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   private var toggle: View? = null
   private lateinit var content: CardView
   private lateinit var drawer: LinearLayout
+  private lateinit var coordinator: CoordinatorLayout
   private var _isDrawerOpen: Boolean
   private var _setDrawerOpen: (Boolean) -> Unit
 
@@ -163,16 +166,21 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
     toggle?.setOnClickListener { setDrawerOpen(!isDrawerOpen) }
   }
 
+  fun showSnackbar(@StringRes message: Int) {
+    Snackbar.make(coordinator, message, Snackbar.LENGTH_SHORT).show()
+  }
+
   override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
     when (child?.id) {
       R.id.content -> {
         content = child as CardView
+        coordinator = content.find(R.id.coordinator)
       }
       R.id.drawer -> {
         drawer = child as LinearLayout
       }
       else -> {
-        content.addView(child, params)
+        coordinator.addView(child, params)
         return
       }
     }

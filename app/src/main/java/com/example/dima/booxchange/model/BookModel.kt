@@ -6,7 +6,7 @@ import java.io.Serializable
  * Created by Cristian Velinciuc on 3/8/18.
  */
 data class BookModel (
-  val id: Int,
+  override val id: Int,
   var title: String?,
   var author: String?,
   var edition: Int?,
@@ -16,4 +16,4 @@ data class BookModel (
   var user_id: Int?,
   var offer_price: String?,
   var offer_name: String?
-): Serializable
+): Distinctive(), Serializable

@@ -20,7 +20,7 @@ import org.jetbrains.anko.startActivity
  * Created by Cristian Velinciuc on 3/9/18.
  */
 open class BaseActivity: AppCompatActivity() {
-  private val drawer: SlidingNavigationLayout? by lazy { find<SlidingNavigationLayout>(R.id.navigation_layout) }
+  private val rootLayout: SlidingNavigationLayout? by lazy { find<SlidingNavigationLayout>(R.id.root_layout) }
   protected val requestManager = RequestManager(this)
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,7 @@ open class BaseActivity: AppCompatActivity() {
   }
 
   private fun initializeDrawerLayout() {
-    drawer?.setDrawerView(R.layout.drawer_layout)
+    rootLayout?.setDrawerView(R.layout.drawer_layout)
     go_to_profile_button.setOnClickListener {
       startActivity<ProfileActivity>()
     }
@@ -50,13 +50,13 @@ open class BaseActivity: AppCompatActivity() {
     }
   }
 
-  protected fun showErrorSnackbar(@StringRes message: Int) {
-    Snackbar.make(drawer as CoordinatorLayout, message, Snackbar.LENGTH_SHORT).show()
+  protected fun showSnackbar(@StringRes message: Int) {
+    rootLayout?.showSnackbar(message)
   }
 
   override fun onBackPressed() {
-    if (drawer?.isDrawerOpen == true) {
-      drawer?.setDrawerOpen?.invoke(false)
+    if (rootLayout?.isDrawerOpen == true) {
+      rootLayout?.setDrawerOpen?.invoke(false)
     } else {
       super.onBackPressed()
     }

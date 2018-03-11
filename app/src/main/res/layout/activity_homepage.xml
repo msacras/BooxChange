@@ -1,80 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.dima.booxchange.widget.SlidingNavigationLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<com.example.dima.booxchange.widget.SlidingNavigationLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/root_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
 
-    <LinearLayout
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      card_view:cardElevation="4dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:animateLayoutChanges="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/logo"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_alignParentLeft="true"
+          android:adjustViewBounds="true"
+          android:tint="@color/colorPrimary"
+          app:srcCompat="@drawable/temporary_app"/>
+
+        <LinearLayout
+          android:id="@+id/search_wrapper"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="15dp"
+          android:layout_marginRight="15dp"
+          android:layout_toLeftOf="@+id/drawer_button"
+          android:animateLayoutChanges="true"
+          android:background="@drawable/rounded_corner_border_gray_30dp"
+          android:gravity="right"
+          android:orientation="horizontal">
+
+          <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/search_query_input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:hint="@string/label_search"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:visibility="gone"/>
+
+          <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/search_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_gray"
+            android:padding="10dp"
+            android:tint="#bababa"
+            app:srcCompat="@drawable/temporary_search"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/drawer_button"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_alignParentRight="true"
+          android:adjustViewBounds="true"
+          android:tint="#bababa"
+          app:srcCompat="@drawable/temporary_hamburger"/>
+
+      </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/swipe_refresh_layout"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp"
+      android:paddingTop="8dp">
+
+      <android.support.v7.widget.RecyclerView
+        android:id="@+id/offers_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"/>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardElevation="4dp">
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:orientation="horizontal"
-                android:padding="20dp">
+    <ProgressBar
+      android:id="@+id/data_fetch_progress"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="-4dp"
+      android:indeterminate="true"
+      android:minHeight="0dp"/>
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/temporary_app" />
+  </LinearLayout>
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_anchor="@id/offers_list_view"
+    app:layout_anchorGravity="bottom|right">
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/search_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/round_gray"
-                    android:padding="10dp"
-                    android:tint="#bababa"
-                    app:srcCompat="@drawable/temporary_search" />
+    <android.support.design.widget.FloatingActionButton
+      android:id="@+id/action_filter_purchase"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="20dp"
+      android:tint="@color/colorPrimaryDark"
+      app:backgroundTint="@color/colorPrimary"
+      app:elevation="4dp"
+      app:fabSize="mini"
+      app:rippleColor="@color/colorPrimaryDark"
+      app:srcCompat="@drawable/temporary_money"/>
 
-                <Space
-                    android:layout_width="15dp"
-                    android:layout_height="0dp" />
+    <android.support.design.widget.FloatingActionButton
+      android:id="@+id/action_filter_exchange"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="false"
+      android:layout_alignParentRight="false"
+      android:layout_centerHorizontal="true"
+      android:layout_below="@id/action_filter_purchase"
+      android:tint="@color/colorAccentDark"
+      app:backgroundTint="@color/colorAccent"
+      app:elevation="4dp"
+      app:fabSize="mini"
+      app:rippleColor="@color/colorAccentDark"
+      app:srcCompat="@drawable/temporary_exchange"/>
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/drawer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:tint="#bababa"
-                    app:srcCompat="@drawable/temporary_hamburger" />
+    <android.support.design.widget.FloatingActionButton
+      android:id="@+id/action_filter_menu"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/action_filter_exchange"
+      android:layout_margin="20dp"
+      android:tint="@color/colorPrimaryDark"
+      app:backgroundTint="@color/colorPrimary"
+      app:elevation="4dp"
+      app:fabSize="normal"
+      app:rippleColor="@color/colorPrimaryDark"
+      app:srcCompat="@drawable/temporary_filter"/>
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="8dp"
-            android:clipToPadding="false"
-            android:clipChildren="false">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/offers_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:clipChildren="false"
-                android:overScrollMode="never"/>
-
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
+  </RelativeLayout>
 </com.example.dima.booxchange.widget.SlidingNavigationLayout>
