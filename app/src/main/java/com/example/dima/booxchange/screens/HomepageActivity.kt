@@ -45,6 +45,7 @@ class HomepageActivity: BaseActivity() {
   private lateinit var actionButtons: MutableMap<FloatingActionButton, Boolean>
 
   private var isFilterMenuOpen = false
+  private var isFilterMenuAnimating = false
   private var isPurchaseFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(isExchangeFilterEnabled, state) }
   private var isExchangeFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(state, isPurchaseFilterEnabled) }
 
@@ -71,6 +72,8 @@ class HomepageActivity: BaseActivity() {
     action_filter_purchase.postDelayed({
       showActionButton(action_filter_purchase)
     }, 200)
+    action_filter_menu.setImageResource(R.drawable.temporary_cross)
+    disableActionButton(action_filter_menu)
     isFilterMenuOpen = true
   }
 
@@ -79,6 +82,8 @@ class HomepageActivity: BaseActivity() {
     action_filter_exchange.postDelayed({
       hideActionButton(action_filter_exchange)
     }, 50)
+    action_filter_menu.setImageResource(R.drawable.temporary_filter)
+    enableActionButton(action_filter_menu)
     isFilterMenuOpen = false
   }
 
@@ -187,8 +192,10 @@ class HomepageActivity: BaseActivity() {
         super.onScrolled(recyclerView, dx, dy)
         if (dy > 10) {
           if (isFilterMenuOpen) {
+            actionButtons[action_filter_menu] = true
             closeFilterMenu()
             offers_list_view.postDelayed({
+              actionButtons[action_filter_menu] = false
               hideActionButton(action_filter_menu)
             }, 400)
           } else {
@@ -228,7 +235,6 @@ class HomepageActivity: BaseActivity() {
     ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
       addUpdateListener {
         view.setColorFilter(it.animatedValue as Int)
-        view.rippleColor = it.animatedValue as Int
       }
       duration = 100
       start()
@@ -252,7 +258,6 @@ class HomepageActivity: BaseActivity() {
     ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
       addUpdateListener {
         view.setColorFilter(it.animatedValue as Int)
-        view.rippleColor = it.animatedValue as Int
       }
       duration = 100
       start()
