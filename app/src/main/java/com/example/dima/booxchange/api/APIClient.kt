@@ -1,6 +1,7 @@
 package com.example.dima.booxchange.api
 
 import android.util.Log
+import com.example.dima.booxchange.extension.asJson
 import com.example.dima.booxchange.extension.asObject
 import com.example.dima.booxchange.model.*
 import com.example.dima.booxchange.utilities.BaseActivity
@@ -20,6 +21,7 @@ import java.lang.ref.WeakReference
 object APIClient {
   init {
     FuelManager.instance.basePath = "http://192.168.0.104:8000"//"http://api.booxchange.website/web"
+    FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
   }
 
   private fun executeRequest(request: Request, callback: (String?) -> Unit) {
@@ -36,70 +38,77 @@ object APIClient {
 
   class RequestManager(activity: BaseActivity) {
     private val activity = WeakReference(activity)
+    private val requests = mutableMapOf<String, Request>()
 
-    private fun safeCallback(callback: () -> Unit) {
-      if (activity.get()?.isDestroyed == false) callback()
-    }
-
-    fun fetchAllAvailableBooks(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
-      val request = ALL_AVAILABLE_BOOKS.httpGet()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
-      return RequestModel(request)
-    }
-
-    fun fetchAllTradeBooks(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
-      val request = ALL_TRADE_BOOKS.httpGet()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
-      return RequestModel(request)
-    }
-
-    fun fetchAllPurchaseBook(fromIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
-      val request = ALL_PURCHASE_BOOK.httpGet()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+    fun fetchAvailableBooks(queryKeyword: String, offerType: OfferType, startIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
+      val parameters = mapOf("query_keyword" to queryKeyword, "offer_type" to offerType, "start_index" to startIndex)
+      val request = ALL_AVAILABLE_BOOKS.setParameters(parameters).httpGet().name { ALL_AVAILABLE_BOOKS }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
     fun fetchBooksByUserId(userId: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
-      val request = BOOKS_BY_USER_ID.httpGet()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      val parameters = mapOf("userId" to userId)
+      val request = BOOKS_BY_USER_ID.setParameters(parameters).httpGet().name { BOOKS_BY_USER_ID }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
     fun bookAdd(bookModel: BookModel, callback: (ResponseModel?) -> Unit): RequestModel {
-      val request = BOOK_ADD.httpPost()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      val request = BOOK_ADD.httpPost().body(bookModel.asJson()).name { BOOK_ADD }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
     fun bookGet(bookId: Int, callback: (BookResponseModel?) -> Unit): RequestModel {
-      val request = BOOK_GET.httpGet()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      val parameters = mapOf("book_id" to bookId)
+      val request = BOOK_GET.setParameters(parameters).httpGet().name { BOOK_GET }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
     fun bookUpdate(bookModel: BookModel, callback: (ResponseModel?) -> Unit): RequestModel {
-      val request = BOOK_UPDATE.httpPut()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      val request = BOOK_UPDATE.httpPut().body(bookModel.asJson()).name { BOOK_UPDATE }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
     fun bookDelete(bookId: Int, callback: (ResponseModel?) -> Unit): RequestModel {
-      val request = BOOK_DELETE.httpDelete()
-      executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      val parameters = mapOf("book_id" to bookId)
+      val request = BOOK_DELETE.setParameters(parameters).httpDelete().name { BOOK_DELETE }
+      //executeRequest(request) { safeCallback { callback(it?.asObject()) }}
+      executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
+    }
+
+    private fun executeSafely(request: Request, completion: (String?) -> Unit) {
+      requests.remove(request.name)?.cancel()
+      requests.put(request.name, request)
+      executeRequest(request) {
+        requests.remove(request.name)
+        try { completion(it) } catch (e: Exception) {}
+      }
     }
   }
 
-  private fun String.setParameters(parametersMap: Map<String, String>) {
-    this.split('/').reduce { result, parameter -> result + "/" + (parametersMap.get(parameter.drop(1).dropLast(1)) ?: parameter) }
+  private fun String.setParameters(parametersMap: Map<String, Any>): String {
+    return this.split('/').reduce { result, parameter -> result + "/" + (parametersMap[parameter.drop(1).dropLast(1)] ?: parameter) }.trim('/')
   }
 
-  private const val ALL_AVAILABLE_BOOKS = "/books/available"
-  private const val ALL_TRADE_BOOKS = "/books/available/exchange"
-  private const val ALL_PURCHASE_BOOK = "/books/available/purchase"
-  private const val BOOKS_BY_USER_ID = "/books/library/1"
+  private const val ALL_AVAILABLE_BOOKS = "/books/available/{start_index}/{offer_type}/{query_keyword}"
+  private const val BOOKS_BY_USER_ID = "/books/library/{user_id}"
+
   private const val BOOK_ADD = "/book/add"
   private const val BOOK_GET = "/book/{book_id}"
-  private const val BOOK_UPDATE = "/book/{book_id}"
+  private const val BOOK_UPDATE = "/book/update"
   private const val BOOK_DELETE = "/book/{book_id}"
+
+  private const val USER_ADD = "/user/add"
+  private const val USER_GET = "/user/{user_id}"
+  private const val USER_UPDATE = "/user/update"
 }

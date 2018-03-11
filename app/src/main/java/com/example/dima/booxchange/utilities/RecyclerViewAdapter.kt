@@ -5,34 +5,67 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.dima.booxchange.model.Distinctive
+import java.lang.ref.WeakReference
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
 open class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   inner class RecyclerViewViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-  inner class ViewModelPair<T: Any>(@LayoutRes val layoutId: Int, val dataModelClass: Class<T>, val bindingFunction: (view: View, model: Any) -> Unit, val viewTypeCondition: (position: Int, model: Any) -> Boolean)
+  inner class ViewModelPair<T: Distinctive>(@LayoutRes val layoutId: Int, val dataModelClass: Class<T>, val bindingFunction: (view: View, model: T) -> Unit, val viewTypeCondition: (position: Int, model: T) -> Boolean)
 
-  private val viewModelPairsList = ArrayList<ViewModelPair<Any>>()
-  private val items = mutableListOf<Any>()
+  private val viewModelPairsList = ArrayList<ViewModelPair<Distinctive>>()
+  private val items = mutableListOf<Distinctive>()
+  private var recyclerView: WeakReference<RecyclerView>? = null
 
-  fun <T: Any> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, bindingFunction: (view: View, model: T) -> Unit) {
+  fun <T: Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, bindingFunction: (view: View, model: T) -> Unit) {
     addModelToViewBinding(layoutId, dataModelClass, { _, _ -> true }, bindingFunction)
   }
 
-  fun <T: Any> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, viewTypeCondition: (position: Int, model: T) -> Boolean, bindingFunction: (view: View, model: T) -> Unit) {
-    viewModelPairsList.add(ViewModelPair(layoutId, dataModelClass, bindingFunction as (View, Any) -> Unit, viewTypeCondition as (Int, Any) -> Boolean) as ViewModelPair<Any>)
+  fun <T: Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, viewTypeCondition: (position: Int, model: T) -> Boolean, bindingFunction: (view: View, model: T) -> Unit) {
+    viewModelPairsList.add(ViewModelPair(layoutId, dataModelClass, bindingFunction, viewTypeCondition) as ViewModelPair<Distinctive>)
   }
 
-  fun addItems(newItems: List<Any>) {
-    items.addAll(newItems)
-    notifyDataSetChanged()
-  }
-
-  fun swapItems(newItems: List<Any>) {
+  fun swapItems(newItems: List<Distinctive>) {
     items.clear()
     items.addAll(newItems)
     notifyDataSetChanged()
+  }
+
+  fun appendItems(newItems: List<Distinctive>) {
+    val insertPosition = items.size
+    val newList = newItems.filter { !items.contains(it) }
+    val insertedCount = newList.size
+    items.addAll(newList)
+    if (insertPosition == 0) {
+      notifyDataSetChanged()
+    } else {
+      notifyItemRangeInserted(insertPosition, insertedCount)
+    }
+  }
+
+  fun prependItems(newItems: List<Distinctive>) {
+    val newList = newItems.filter { !items.contains(it) }
+    items.addAll(0, newList)
+    notifyItemRangeInserted(0, newList.size)
+    recyclerView?.get()?.scrollToPosition(0)
+  }
+
+  fun clearItems() {
+    val itemsCount = items.size
+    items.clear()
+    notifyItemRangeRemoved(0, itemsCount)
+  }
+
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    super.onAttachedToRecyclerView(recyclerView)
+    this.recyclerView = WeakReference(recyclerView)
+  }
+
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView)
+    this.recyclerView = null
   }
 
   override fun getItemCount(): Int {
