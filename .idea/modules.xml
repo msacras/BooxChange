@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BooxChange.iml" filepath="$PROJECT_DIR$/BooxChange.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Booxchange.iml" filepath="$PROJECT_DIR$/Booxchange.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

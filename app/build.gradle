@@ -23,6 +23,9 @@ android {
             storeFile file('booxchange.debug.keystore')
         }
     }
+    sourceSets {
+        main.java.srcDirs = ['src/main/kotlin']
+    }
 }
 
 dependencies {
