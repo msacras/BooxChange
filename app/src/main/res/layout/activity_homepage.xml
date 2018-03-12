@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.dima.booxchange.widget.SlidingNavigationLayout
+<nl.booxchange.widget.SlidingNavigationLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -15,6 +15,8 @@
     <android.support.v7.widget.CardView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      app:cardBackgroundColor="@color/white"
+      app:cardCornerRadius="0dp"
       card_view:cardElevation="4dp">
 
       <RelativeLayout
@@ -43,7 +45,7 @@
           android:layout_marginRight="15dp"
           android:layout_toLeftOf="@+id/drawer_button"
           android:animateLayoutChanges="true"
-          android:background="@drawable/rounded_corner_border_gray_30dp"
+          android:background="@drawable/rounded_corner_solid_gray_30dp"
           android:gravity="right"
           android:orientation="horizontal">
 
@@ -163,4 +165,4 @@
       app:srcCompat="@drawable/temporary_filter"/>
 
   </RelativeLayout>
-</com.example.dima.booxchange.widget.SlidingNavigationLayout>
+</nl.booxchange.widget.SlidingNavigationLayout>

@@ -21,4 +21,6 @@
     <string name="trade">TRADE</string>
     <string name="sale">SALE</string>
     <string name="label_search">Search</string>
+    <string name="facebook_app_id">541516282914515</string>
+    <string name="fb_login_protocol_scheme">fb541516282914515</string>
 </resources>
