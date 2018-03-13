@@ -1,9 +1,15 @@
 package nl.booxchange.screens
 
+import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_book_info.*
+import nl.booxchange.R
 import nl.booxchange.utilities.BaseActivity
 
-/**
- * Created by Dima on 3/10/2018.
- */
 class ProfileActivity: BaseActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_profile)
+        back_button.setOnClickListener { onBackPressed() }
+    }
 }

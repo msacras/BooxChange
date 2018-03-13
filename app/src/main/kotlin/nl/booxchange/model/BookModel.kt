@@ -15,5 +15,11 @@ data class BookModel (
   var image: String?,
   var user_id: Int?,
   var offer_price: String?,
-  var offer_name: String?
+  var offer_name: String?,
+  var f_name: String?,
+  var l_name: String?,
+  var email: String?,
+  var university: String?,
+  var study_programme: String?,
+  var study_year: String?
 ): Distinctive(), Serializable
