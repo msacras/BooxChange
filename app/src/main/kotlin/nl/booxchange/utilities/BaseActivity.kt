@@ -5,16 +5,17 @@ import android.support.annotation.StringRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.SignInAccount
 import nl.booxchange.R
 import nl.booxchange.api.APIClient.RequestManager
-import nl.booxchange.screens.LibraryActivity
-import nl.booxchange.screens.MessagesActivity
-import nl.booxchange.screens.OffersActivity
-import nl.booxchange.screens.ProfileActivity
 import nl.booxchange.widget.SlidingNavigationLayout
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.drawer_layout.view.*
+import nl.booxchange.screens.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.findOptional
 import org.jetbrains.anko.startActivity
@@ -50,6 +51,10 @@ open class BaseActivity: AppCompatActivity() {
       }
       view.go_to_logout_button.setOnClickListener {
         FirebaseAuth.getInstance().signOut()
+        LoginManager.getInstance().logOut()
+        GoogleSignIn.getLastSignedInAccount(this)
+        startActivity<LaunchActivity>()
+        finish()
       }
     }
   }
