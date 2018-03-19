@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/sign_in_activity_background">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/app_logo"
@@ -49,7 +49,7 @@
         android:layout_height="60dp"
         android:layout_margin="30dp"
         android:background="@drawable/rounded_corner_border_gray_30dp"
-        android:hint="Enter phone number"
+        android:hint="@string/enter_phone"
         android:inputType="phone|textNoSuggestions"
         android:maxWidth="300dp"
         android:paddingLeft="100dp"
@@ -87,7 +87,7 @@
         android:layout_margin="30dp"
         android:background="@drawable/rounded_corner_solid_gray_30dp"
         android:maxWidth="300dp"
-        android:text="SIGN IN WITH PHONE NUMBER"
+        android:text="@string/sign_in_phone"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,34 +101,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
-        android:text="Or sign in with:"
+        android:text="@string/sign_in_alternative"
         android:textColor="@color/lightGray"
         app:layout_constraintLeft_toLeftOf="@+id/phone_sign_in_button"
         app:layout_constraintRight_toRightOf="@+id/phone_sign_in_button"
         app:layout_constraintTop_toBottomOf="@+id/phone_sign_in_button" />
 
-    <android.support.v7.widget.AppCompatButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/google_sign_in_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="30dp"
-        android:background="@drawable/rounded_corner_solid_gray_30dp"
-        android:text="G"
-        android:textColor="@color/colorPrimaryDark"
+        android:background="@drawable/rounded_corner_transparent"
+        android:src="@drawable/ic_google_logo"
         android:textSize="24sp"
         app:layout_constraintRight_toRightOf="@+id/phone_sign_in_button"
         app:layout_constraintTop_toBottomOf="@+id/or_sign_in_with_label" />
 
-    <android.support.v7.widget.AppCompatButton
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/google"
+        android:textColor="@color/lightGray"
+        app:layout_constraintLeft_toLeftOf="@+id/google_sign_in_button"
+        app:layout_constraintRight_toRightOf="@+id/google_sign_in_button"
+        app:layout_constraintTop_toBottomOf="@+id/google_sign_in_button" />
+
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/facebook_sign_in_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="30dp"
-        android:background="@drawable/rounded_corner_solid_gray_30dp"
-        android:text="F"
-        android:textColor="@color/colorPrimaryDark"
+        android:background="@drawable/rounded_corner_transparent"
+        android:src="@drawable/ic_facebook_logo"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="@+id/phone_sign_in_button"
         app:layout_constraintTop_toBottomOf="@+id/or_sign_in_with_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/facebook"
+        android:textColor="@color/lightGray"
+        app:layout_constraintLeft_toLeftOf="@+id/facebook_sign_in_button"
+        app:layout_constraintRight_toRightOf="@+id/facebook_sign_in_button"
+        app:layout_constraintTop_toBottomOf="@+id/facebook_sign_in_button" />
 
 </android.support.constraint.ConstraintLayout>

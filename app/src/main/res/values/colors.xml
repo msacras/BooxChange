@@ -7,4 +7,8 @@
     <color name="white">#FFFFFF</color>
     <color name="lightGray">#F2F2F2</color>
     <color name="midGray">#BABABA</color>
+    <color name="springGreen">#27f67e</color>
+    <color name="mountainMeadow">#11a761</color>
+    <color name="shamrock">#43cea2</color>
+    <color name="pelorous">#4BC0C8</color>
 </resources>
