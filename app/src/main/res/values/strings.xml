@@ -24,4 +24,6 @@
     <string name="facebook_app_id">541516282914515</string>
     <string name="fb_login_protocol_scheme">fb541516282914515</string>
     <string name="google_web_client_id">1025961224603-amrs43d2vaurq6ilhutq9c8g7a9sm8hp.apps.googleusercontent.com</string>
+
+    <string name="netherlands_country_code" translatable="false">+31</string>
 </resources>
