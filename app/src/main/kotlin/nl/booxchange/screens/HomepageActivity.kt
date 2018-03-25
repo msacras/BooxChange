@@ -45,7 +45,7 @@ class HomepageActivity: BaseActivity() {
 
   private var bottomReached = false
   private var isSearchOpen = false
-  private var selectedOfferType by Delegates.observable(OfferType.BOTH) { _, _, type -> fetchBookOffersList(true, true) }
+  private var selectedOfferType by Delegates.observable(OfferType.BOTH) { _, _, _ -> fetchBookOffersList(true, true) }
   private val queryKeyword
     get() = search_query_input.text.toString()
 
@@ -59,9 +59,7 @@ class HomepageActivity: BaseActivity() {
 
   private fun openFilterMenu() {
     showActionButton(action_filter_exchange)
-    action_filter_purchase.postDelayed({
-      showActionButton(action_filter_purchase)
-    }, 200)
+    action_filter_purchase.postDelayed({ showActionButton(action_filter_purchase) }, 200)
     action_filter_menu.setImageResource(R.drawable.temporary_cross)
     disableActionButton(action_filter_menu)
     isFilterMenuOpen = true
@@ -69,9 +67,7 @@ class HomepageActivity: BaseActivity() {
 
   private fun closeFilterMenu() {
     hideActionButton(action_filter_purchase)
-    action_filter_exchange.postDelayed({
-      hideActionButton(action_filter_exchange)
-    }, 50)
+    action_filter_exchange.postDelayed({ hideActionButton(action_filter_exchange) }, 50)
     action_filter_menu.setImageResource(R.drawable.temporary_filter)
     enableActionButton(action_filter_menu)
     isFilterMenuOpen = false
@@ -84,8 +80,10 @@ class HomepageActivity: BaseActivity() {
       action_filter_exchange to false
     )
 
-    hideActionButton(action_filter_purchase, true)
-    hideActionButton(action_filter_exchange, true)
+    action_filter_menu.post {
+      hideActionButton(action_filter_purchase, true)
+      hideActionButton(action_filter_exchange, true)
+    }
 
     action_filter_purchase.setOnClickListener {
       if (isPurchaseFilterEnabled) disableActionButton(action_filter_purchase) else enableActionButton(action_filter_purchase)
@@ -161,11 +159,11 @@ class HomepageActivity: BaseActivity() {
             }
           }
           query.length > 0 -> {
-            offers_list_view.adapter = searchListAdapter
+            books_list_view.adapter = searchListAdapter
             swipe_refresh_layout.isEnabled = false
           }
           query.length == 0 -> {
-            offers_list_view.adapter = booksListAdapter
+            books_list_view.adapter = booksListAdapter
             swipe_refresh_layout.isEnabled = true
           }
         }
@@ -174,17 +172,17 @@ class HomepageActivity: BaseActivity() {
 
     booksListAdapter.addModelToViewBinding(R.layout.offer_list_book_item, BookModel::class.java, this::bindItem)
     searchListAdapter.addModelToViewBinding(R.layout.offer_list_book_item, BookModel::class.java, this::bindItem)
-    offers_list_view.layoutManager = GridLayoutManager(this, 2)
-    offers_list_view.adapter = booksListAdapter
-    offers_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(8)))
-    offers_list_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+    books_list_view.layoutManager = GridLayoutManager(this, 2)
+    books_list_view.adapter = booksListAdapter
+    books_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(8)))
+    books_list_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
       override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (dy > 10) {
           if (isFilterMenuOpen) {
             actionButtons[action_filter_menu] = true
             closeFilterMenu()
-            offers_list_view.postDelayed({
+            books_list_view.postDelayed({
               actionButtons[action_filter_menu] = false
               hideActionButton(action_filter_menu)
             }, 400)
@@ -286,6 +284,7 @@ class HomepageActivity: BaseActivity() {
     }
     val listPosition = if (isRefresh || clear) 0 else targetAdapter.itemCount
     data_fetch_progress.toVisible()
+
     requestManager.fetchAvailableBooks(queryKeyword, selectedOfferType, listPosition) {
       it?.result?.let { list ->
         if (list.isEmpty()) {
@@ -294,7 +293,7 @@ class HomepageActivity: BaseActivity() {
           targetAction.invoke(targetAdapter, list)
         }
       } ?: showSnackbar(R.string.data_fetch_failed)
-      offers_list_view.postDelayed({
+      books_list_view.postDelayed({
         data_fetch_progress.toGone()
       }, 500)
     }
@@ -304,8 +303,8 @@ class HomepageActivity: BaseActivity() {
     Tools.initializeImage(view.book_image, model.image)
     view.book_author.text = model.author
     view.book_title.text = model.title
-    view.book_price.text = model.offer_price?.prependIndent("€") ?: ""
-    when (valueOf(model.offer_name ?: "NONE")) {
+    view.book_price.text = model.offerPrice?.prependIndent("€") ?: ""
+    when (valueOf(model.offerType ?: "NONE")) {
       EXCHANGE -> {
         view.icon_type_sell.toGone()
         view.icon_type_trade.toVisible()

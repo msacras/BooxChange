@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nl.booxchange.widget.SlidingNavigationLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/root_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+      android:layout_width="0dp"
+      android:layout_height="100dp"
+      android:alpha="0.05"
+      android:background="@drawable/gradient_down"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+    <android.support.constraint.ConstraintLayout
+      android:id="@+id/no_books_view"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+      <android.support.v7.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginRight="5dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@+id/my_library_label"
+        app:layout_constraintRight_toLeftOf="@+id/my_library_label"
+        app:layout_constraintTop_toTopOf="@+id/my_library_label"
+        app:srcCompat="@drawable/ic_open_book"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/my_library_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="My Library"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+      <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/library_icon"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_library_label"
+        app:srcCompat="@drawable/ic_library"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/no_books_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:text="You have no books\nin your library"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/library_icon"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.AppCompatButton
+      android:id="@+id/add_book_button"
+      android:layout_width="wrap_content"
+      android:layout_height="60dp"
+      android:layout_marginTop="20dp"
+      android:background="@drawable/rounded_corner_solid_gradient_blue_green_right_30dp"
+      android:paddingLeft="40dp"
+      android:paddingRight="40dp"
+      android:text="Add books"
+      android:textColor="@color/whiteGray"
+      android:textSize="18sp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/no_books_view"/>
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/user_books_list"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginTop="20dp"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:paddingLeft="8dp"
+      android:paddingRight="8dp"
+      android:paddingTop="8dp"
+      android:overScrollMode="never"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/add_book_button"/>
+
+    <RelativeLayout
+      android:id="@+id/toolbar"
+      android:layout_width="0dp"
+      android:layout_height="80dp"
+      android:animateLayoutChanges="true"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:orientation="horizontal"
+      android:padding="20dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        android:tint="@color/colorPrimary"
+        app:srcCompat="@drawable/temporary_app"/>
+
+      <LinearLayout
+        android:id="@+id/search_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@+id/drawer_button"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/rounded_corner_solid_gray_30dp"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatEditText
+          android:id="@+id/search_query_input"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="15dp"
+          android:layout_weight="1"
+          android:hint="@string/label_search"
+          android:maxLines="1"
+          android:scrollHorizontally="true"
+          android:visibility="gone"/>
+
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/search_cancel_button"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:adjustViewBounds="true"
+          android:background="@drawable/round_gray"
+          android:padding="10dp"
+          android:tint="#bababa"
+          app:srcCompat="@drawable/temporary_search"/>
+
+      </LinearLayout>
+
+      <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/drawer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:adjustViewBounds="true"
+        android:tint="#bababa"
+        app:srcCompat="@drawable/temporary_hamburger"/>
+
+    </RelativeLayout>
+
+    <nl.booxchange.widget.LoadingView
+      android:id="@+id/loading_view"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:elevation="100dp"/>
+
+  </android.support.constraint.ConstraintLayout>
+</nl.booxchange.widget.SlidingNavigationLayout>

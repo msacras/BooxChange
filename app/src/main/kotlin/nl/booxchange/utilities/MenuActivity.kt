@@ -1,7 +1,6 @@
 package nl.booxchange.utilities
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import com.facebook.login.LoginManager
@@ -18,9 +17,8 @@ import org.jetbrains.anko.startActivity
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
-open class BaseActivity: AppCompatActivity() {
+open class MenuActivity: BaseActivity() {
   private val rootLayout: SlidingNavigationLayout? by lazy { findOptional<SlidingNavigationLayout>(R.id.root_layout) }
-  protected val requestManager = RequestManager(this)
 
   override fun onPostCreate(savedInstanceState: Bundle?) {
     super.onPostCreate(savedInstanceState)
@@ -50,10 +48,6 @@ open class BaseActivity: AppCompatActivity() {
         finish()
       }
     }
-  }
-
-  protected fun showSnackbar(@StringRes message: Int) {
-    rootLayout?.showSnackbar(message)
   }
 
   override fun onBackPressed() {

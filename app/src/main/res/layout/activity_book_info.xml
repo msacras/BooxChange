@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nl.booxchange.widget.SlidingNavigationLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<nl.booxchange.widget.SlidingNavigationLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
@@ -162,7 +163,7 @@
                 </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/userBooksList"
+                    android:id="@+id/user_books_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" />

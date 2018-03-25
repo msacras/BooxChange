@@ -6,29 +6,25 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.support.annotation.LayoutRes
 import android.support.annotation.StringRes
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import kotlinx.android.synthetic.main.sliding_navigation_layout.view.*
 import nl.booxchange.R
-import nl.booxchange.R.id.content
-import nl.booxchange.R.id.drawer
 import org.jetbrains.anko.find
+import org.jetbrains.anko.findOptional
 import org.jetbrains.anko.px2dip
 import kotlin.properties.Delegates
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
-class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleAttr: Int): CoordinatorLayout(context, attrs, defStyleAttr) {
-  constructor(context: Context?, attrs: AttributeSet?): this(context, attrs, 0)
-  constructor(context: Context?): this(context, null, 0)
+class SlidingNavigationLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): RelativeLayout(context, attrs, defStyleAttr) {
 
   private var touchDown = false
   private val lastTouchPoint = PointF()
@@ -41,69 +37,70 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   private val swipeDuration = 250 //ms
 
   private var toggle: View? = null
-  private lateinit var content: CardView
-  private lateinit var drawer: LinearLayout
-  private lateinit var coordinator: CoordinatorLayout
-  private var _isDrawerOpen: Boolean
-  private var _setDrawerOpen: (Boolean) -> Unit
+  private lateinit var drawer: ViewGroup
+  private lateinit var content: ViewGroup
+  private var _isDrawerOpen = false
+  private var _setDrawerOpen = { open: Boolean ->
+    val (transitionEnd, transitionDuration) = if (open) {
+      maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
+    } else {
+      0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
+    }
+    animateDrawer(transitionEnd, transitionDuration)
+  }
 
   val isDrawerOpen: Boolean
     get() = _isDrawerOpen
   val setDrawerOpen: (Boolean) -> Unit
     get() = _setDrawerOpen
 
-  override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-    val distanceFromScreenMargin = px2dip((measuredWidth - ev.x).toInt())
-    return if (_isDrawerOpen) ev.x < measuredWidth - maxTranslation else distanceFromScreenMargin < 20
-  }
-
   init {
     View.inflate(context, R.layout.sliding_navigation_layout, this)
+  }
 
-    _isDrawerOpen = false
-    _setDrawerOpen = { open ->
-      val (transitionEnd, transitionDuration) = if (open) {
-        maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
-      } else {
-        0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
-      }
-      animateDrawer(transitionEnd, transitionDuration)
-    }
-    setOnTouchListener { view, motionEvent ->
-      processTouchEvent(motionEvent)
-    }
+  override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+    val distanceFromScreenMargin = px2dip((measuredWidth - ev.x).toInt())
+    return if (_isDrawerOpen) ev.x < measuredWidth - maxTranslation else distanceFromScreenMargin < 8
   }
 
   private fun processTouchEvent(motionEvent: MotionEvent): Boolean {
-    return when (motionEvent.action) {
+    return when (motionEvent.action.and(MotionEvent.ACTION_MASK)) {
       MotionEvent.ACTION_DOWN -> {
         transitionAnimator?.cancel()
         transitionAnimator = null
-        touchDown = true
-        lastTouchPoint.set(motionEvent.x, motionEvent.y)
+        touchDown = _isDrawerOpen || px2dip((measuredWidth - motionEvent.x).toInt()) < 8
+        lastTouchPoint.set(motionEvent.rawX, motionEvent.rawY)
         touchStartTime = System.currentTimeMillis()
         return touchDown
       }
       MotionEvent.ACTION_UP -> {
-        val touchEndTime = System.currentTimeMillis()
-        val endTouchPoint = PointF(motionEvent.x, motionEvent.y)
+        if (touchDown) {
+          val touchEndTime = System.currentTimeMillis()
+          val endTouchPoint = PointF(motionEvent.rawX, motionEvent.rawY)
 
-        toggle?.let { toggle ->
-          val hitRect = Rect()
-          toggle.getHitRect(hitRect)
-          if (hitRect.contains((motionEvent.x + currentTranslation).toInt(), motionEvent.y.toInt())) {
-            toggle.performClick()
+          toggle?.let { toggle ->
+            val hitRect = Rect()
+            toggle.getHitRect(hitRect)
+            if (hitRect.contains((motionEvent.x + currentTranslation).toInt(), motionEvent.y.toInt())) {
+              toggle.performClick()
+            }
           }
-        }
 
-        val motionDistance = PointF(endTouchPoint.x - lastTouchPoint.x, endTouchPoint.y - lastTouchPoint.y)
-        val motionDuration = touchEndTime - touchStartTime
-        val motionVelocity = motionDistance.x / (motionDuration / 1000f)
-        val (transitionEnd, transitionDuration) = if (motionDuration <= swipeDuration) {
-          if (motionVelocity < -swipeVelocity) {
-            maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
-          } else if (motionVelocity > swipeVelocity) {
-            0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
+          val motionDistance = PointF(endTouchPoint.x - lastTouchPoint.x, endTouchPoint.y - lastTouchPoint.y)
+          val motionDuration = touchEndTime - touchStartTime
+          val motionVelocity = motionDistance.x / (motionDuration / 1000f)
+          val (transitionEnd, transitionDuration) = if (motionDuration <= swipeDuration) {
+            if (motionVelocity < -swipeVelocity) {
+              maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
+            } else if (motionVelocity > swipeVelocity) {
+              0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
+            } else {
+              if (currentTranslation >= maxTranslation / 2) {
+                maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
+              } else {
+                0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
+              }
+            }
           } else {
             if (currentTranslation >= maxTranslation / 2) {
               maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
@@ -111,29 +108,21 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
               0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
             }
           }
-        } else {
-          if (currentTranslation >= maxTranslation / 2) {
-            maxTranslation to (transitionDuration * (1f - (currentTranslation / maxTranslation))).toLong()
-          } else {
-            0f to (transitionDuration * (currentTranslation / maxTranslation)).toLong()
-          }
+
+          animateDrawer(transitionEnd, transitionDuration)
+
+          touchDown = false
         }
-
-        animateDrawer(transitionEnd, transitionDuration)
-
-        touchDown = false
-        return true
+        return touchDown
       }
       MotionEvent.ACTION_MOVE -> {
-        if (true) {
-          val currentTouchPoint = PointF(motionEvent.x, motionEvent.y)
-          val motionDelta = PointF(lastTouchPoint.x - currentTouchPoint.x, lastTouchPoint.y - currentTouchPoint.y)
-          currentTranslation = (currentTranslation + motionDelta.x).coerceIn(0f, maxTranslation)
-          updateState()
-          lastTouchPoint.set(currentTouchPoint)
-        }
+        val currentTouchPoint = PointF(motionEvent.rawX, motionEvent.rawY)
+        val motionDelta = PointF(lastTouchPoint.x - currentTouchPoint.x, lastTouchPoint.y - currentTouchPoint.y)
+        currentTranslation = (currentTranslation + motionDelta.x).coerceIn(0f, maxTranslation)
+        updateState()
+        lastTouchPoint.set(currentTouchPoint)
 
-        return true
+        return touchDown
       }
       else -> false
     }
@@ -142,6 +131,7 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   private fun updateState() {
     content.translationX = -currentTranslation
     drawer.translationX = -currentTranslation
+    shadow.translationX = -currentTranslation
     if (currentTranslation == 0f) {
       _isDrawerOpen = false
     } else if (currentTranslation == maxTranslation) {
@@ -161,28 +151,31 @@ class SlidingNavigationLayout(context: Context?, attrs: AttributeSet?, defStyleA
   }
 
   fun setDrawerView(@LayoutRes layout: Int): View {
-    val drawerView = LayoutInflater.from(context).inflate(layout, this, false)
+    val drawerView = LayoutInflater.from(context).inflate(layout, drawer, false)
     drawer.addView(drawerView)
-    toggle = content.find(R.id.drawer_button)
+    toggle = content.findOptional(R.id.drawer_button)
     toggle?.setOnClickListener { setDrawerOpen(!isDrawerOpen) }
     return drawerView
   }
 
   fun showSnackbar(@StringRes message: Int) {
-    Snackbar.make(coordinator, message, Snackbar.LENGTH_SHORT).show()
+    Snackbar.make(content, message, Snackbar.LENGTH_SHORT).show()
   }
 
   override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
     when (child?.id) {
+      R.id.shadow -> {}
       R.id.content -> {
-        content = child as CardView
-        coordinator = content.find(R.id.coordinator)
+        content = child as ViewGroup
       }
       R.id.drawer -> {
-        drawer = child as LinearLayout
+        drawer = child as ViewGroup
+        setOnTouchListener { _, motionEvent ->
+          processTouchEvent(motionEvent)
+        }
       }
       else -> {
-        coordinator.addView(child, params)
+        content.addView(child, params)
         return
       }
     }

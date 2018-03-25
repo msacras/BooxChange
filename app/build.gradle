@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
@@ -47,6 +48,13 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$firebase_version"
     implementation "com.google.firebase:firebase-core:$firebase_version"
     implementation "com.google.firebase:firebase-auth:$firebase_version"
+    implementation "com.google.firebase:firebase-database:$firebase_version"
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version@aar") {
+        transitive = true
+    }
+
+//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+//    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
@@ -58,4 +66,3 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
-

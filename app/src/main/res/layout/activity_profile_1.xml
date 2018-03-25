@@ -97,8 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@drawable/top_line">
+            android:gravity="center">
+            <!--android:background="@drawable/top_line"-->
 
             <LinearLayout
                 android:layout_width="45dp"
@@ -165,16 +165,16 @@
             android:layout_height="140dp"
             app:civ_border_width="2dp"
             android:layout_marginTop="-135dp"
-            android:src="@drawable/i3"
             app:civ_border_color="#fff"/>
+        <!--android:src="@drawable/i3"-->
 
         <LinearLayout
             android:id="@+id/resize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/top_line"
             android:animateLayoutChanges="true">
+            <!--android:background="@drawable/top_line"-->
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -9,7 +9,7 @@ class ProfileActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        back_button.setOnClickListener { onBackPressed() }
+        setContentView(R.layout.activity_profile_1)
+//        back_button.setOnClickListener { onBackPressed() }
     }
 }

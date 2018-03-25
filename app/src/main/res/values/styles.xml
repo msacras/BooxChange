@@ -6,6 +6,14 @@
     <item name="colorAccent">@color/colorAccent</item>
     <item name="colorControlActivated">@color/colorPrimaryDark</item>
     <item name="android:windowBackground">@color/white</item>
+    <item name="android:screenOrientation">portrait</item>
+    <item name="android:actionBarSize">80dp</item>
+    <item name="android:textColorHint">@color/lightGray</item>
+    <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+  </style>
+
+  <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
+    <item name="android:background">@color/white</item>
   </style>
 
   <style name="SplashTheme" parent="AppTheme">

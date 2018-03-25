@@ -1,10 +1,6 @@
 package nl.booxchange.api
 
 import android.util.Log
-import nl.booxchange.extension.asJson
-import nl.booxchange.extension.asObject
-import nl.booxchange.model.*
-import nl.booxchange.utilities.BaseActivity
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
@@ -13,35 +9,76 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.fuel.httpPut
 import com.github.kittinunf.result.Result
+import com.google.firebase.auth.FirebaseAuth
+import nl.booxchange.extension.asJson
+import nl.booxchange.extension.asObject
 import nl.booxchange.model.*
+import nl.booxchange.utilities.BaseActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.lang.ref.WeakReference
+import java.util.*
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
 object APIClient {
+  private var isRequestingToken = false
+  private var userToken: String? = null
+
   init {
-    FuelManager.instance.basePath = "https://api.booxchange.website/web"
+    FuelManager.instance.basePath = "http://test.api.booxchange.website"
     FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
   }
 
-  private fun executeRequest(request: Request, callback: (Request, Response, Result<*, *>) -> Unit) {
-    doAsync {
-      Log.d("APIClient", "${request.method} ${request.path}")
-      Log.d("APIClient", request.toString())
-      val (_, response, result) = request.responseString()
-      Log.d("APIClient", response.toString())
-      uiThread {
-        callback(request, response, result)
+  private fun requestToken() {
+    FirebaseAuth.getInstance().currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+      if (task.isSuccessful) {
+        userToken = task.result.token
+        isRequestingToken = false
+
+        while (pendingRequests.isNotEmpty()) {
+          val pendingRequest = pendingRequests.pop()
+          executeRequest(pendingRequest.first, pendingRequest.second)
+        }
+      } else {
+        while (pendingRequests.isNotEmpty()) {
+          val pendingRequest = pendingRequests.pop()
+          pendingRequest.second(pendingRequest.first, Response.error(), Result.of {{ "" }})
+        }
       }
     }
   }
 
-  class RequestManager(activity: BaseActivity) {
-    private val activity = WeakReference(activity)
-    private val requests = mutableMapOf<String, Request>()
+  private val pendingRequests = Stack<Pair<Request, (Request, Response, Result<*, *>) -> Unit>>()
+
+  private fun executeRequest(request: Request, callback: (Request, Response, Result<*, *>) -> Unit) {
+    userToken?.let {
+      doAsync {
+        val request = request.header("User-Token" to (userToken ?: ""))
+
+        Log.d("APIClient", "${request.method} ${request.path}")
+        Log.d("APIClient", request.toString())
+
+        val (_, response, result) = request.responseString()
+
+        uiThread {
+          Log.d("APIClient", response.toString())
+          callback(request, response, result)
+        }
+      }
+    } ?: run {
+      pendingRequests.push(request to callback)
+      if (!isRequestingToken) {
+        isRequestingToken = true
+        requestToken()
+      }
+    }
+  }
+
+  class RequestManager(activity: BaseActivity?) {
+    private val activityReference: WeakReference<BaseActivity>? = activity?.let { WeakReference(activity) }
+    private val requests: MutableMap<String, Request> = mutableMapOf()
 
     fun fetchAvailableBooks(queryKeyword: String, offerType: OfferType, startIndex: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
       val parameters = mapOf("query_keyword" to queryKeyword, "offer_type" to offerType, "start_index" to startIndex)
@@ -50,49 +87,79 @@ object APIClient {
       return RequestModel(request)
     }
 
-    fun fetchBooksByUserId(userId: Int, callback: (BookListResponseModel?) -> Unit): RequestModel {
+    fun fetchBooksByUserId(userId: String, callback: (BookListResponseModel?) -> Unit): RequestModel {
       val parameters = mapOf("user_id" to userId)
       val request = BOOKS_BY_USER_ID.setParameters(parameters).httpGet().name { BOOKS_BY_USER_ID }
       executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
-    fun bookAdd(bookModel: BookModel, callback: (ResponseModel?) -> Unit): RequestModel {
+    fun bookAdd(bookModel: BookModel, callback: (BookResponseModel?) -> Unit): RequestModel {
       val request = BOOK_ADD.httpPost().body(bookModel.asJson()).name { BOOK_ADD }
       executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
-    fun bookGet(bookId: Int, callback: (BookResponseModel?) -> Unit): RequestModel {
+    fun bookGet(bookId: String, callback: (BookResponseModel?) -> Unit): RequestModel {
       val parameters = mapOf("book_id" to bookId)
       val request = BOOK_GET.setParameters(parameters).httpGet().name { BOOK_GET }
       executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
-    fun bookUpdate(bookModel: BookModel, callback: (ResponseModel?) -> Unit): RequestModel {
+    fun bookUpdate(bookModel: BookModel, callback: (BookResponseModel?) -> Unit): RequestModel {
       val request = BOOK_UPDATE.httpPut().body(bookModel.asJson()).name { BOOK_UPDATE }
       executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
-    fun bookDelete(bookId: Int, callback: (ResponseModel?) -> Unit): RequestModel {
+    fun bookDelete(bookId: String, callback: (ResponseModel?) -> Unit): RequestModel {
       val parameters = mapOf("book_id" to bookId)
       val request = BOOK_DELETE.setParameters(parameters).httpDelete().name { BOOK_DELETE }
       executeSafely(request) { callback(it?.asObject()) }
       return RequestModel(request)
     }
 
+    fun userAdd(userModel: UserModel, callback: (UserResponseModel?) -> Unit): RequestModel {
+      val request = USER_ADD.httpPost().body(userModel.asJson()).name { USER_ADD }
+      executeSafely(request) { callback(it?.asObject()) }
+      return RequestModel(request)
+    }
+
+    fun userGet(userId: String, callback: (UserResponseModel?) -> Unit): RequestModel {
+      val parameters = mapOf("user_id" to userId)
+      val request = USER_GET.setParameters(parameters).httpGet().name { USER_GET }
+      executeSafely(request) { callback(it?.asObject()) }
+      return RequestModel(request)
+    }
+
+    fun userUpdate(userModel: UserModel, callback: (UserResponseModel?) -> Unit): RequestModel {
+      val request = USER_UPDATE.httpPut().body(userModel.asJson()).name { USER_UPDATE }
+      executeSafely(request) { callback(it?.asObject()) }
+      return RequestModel(request)
+    }
+
+    fun userDelete(userId: String, callback: (ResponseModel?) -> Unit): RequestModel {
+      val parameters = mapOf("user_id" to userId)
+      val request = USER_DELETE.setParameters(parameters).httpDelete().name { USER_DELETE }
+      executeSafely(request) { callback(it?.asObject()) }
+      return RequestModel(request)
+    }
+
     private fun executeSafely(request: Request, completion: (String?) -> Unit) {
       requests.put(request.name, request)?.cancel()
-      executeRequest(request) { request1, response, result ->
+      executeRequest(request) { request1, _, result ->
         if (requests.get(request.name) == request1) {
           requests.remove(request.name)
-          if (activity.get()?.isDestroyed == false) {
+          if (activityReference == null || activityReference.get()?.isDestroyed != true) {
             completion(result.component1() as? String)
           }
         }
       }
+    }
+
+    companion object {
+      val instance = RequestManager(null)
     }
   }
 
@@ -111,4 +178,5 @@ object APIClient {
   private const val USER_ADD = "/user/add"
   private const val USER_GET = "/user/{user_id}"
   private const val USER_UPDATE = "/user/update"
+  private const val USER_DELETE = "/user/{user_id}"
 }

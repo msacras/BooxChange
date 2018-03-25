@@ -1,6 +1,6 @@
 buildscript {
     ext.gradle_version = '3.0.1'
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
     ext.fuel_version = '1.12.1'
     ext.support_version = '27.1.0'
     ext.gson_version = '2.8.2'
@@ -8,15 +8,21 @@ buildscript {
     ext.glide_version = '4.6.1'
     ext.services_version = '3.2.0'
     ext.firebase_version = '11.8.0'
+    ext.fabric_version = '1.25.1'
+    ext.crashlytics_version = '2.9.1'
+//    ext.leakcanary_version = '1.5.4'
 
     repositories {
         google()
         jcenter()
+        maven { url "https://maven.google.com" }
+        maven { url "https://maven.fabric.io/public" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$services_version"
+        classpath "io.fabric.tools:gradle:$fabric_version"
     }
 }
 
@@ -25,6 +31,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://maven.google.com" }
+        maven { url "https://maven.fabric.io/public" }
     }
 }
 
