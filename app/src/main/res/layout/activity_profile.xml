@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nl.booxchange.widget.SlidingNavigationLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:tint="#bababa"
+                app:srcCompat="@drawable/temporary_back" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/back_button"
+                android:layout_toStartOf="@id/drawer_button"
+                android:gravity="center"
+                android:text="Profile"
+                android:textColor="#bababa"
+                android:textSize="25dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/drawer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:adjustViewBounds="true"
+                android:tint="#bababa"
+                app:srcCompat="@drawable/temporary_hamburger" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/butful"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:background="@drawable/sign_in_activity_background"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            app:layout_constraintLeft_toLeftOf="@id/butful"
+            app:layout_constraintRight_toRightOf="@id/butful"
+            app:layout_constraintTop_toBottomOf="@id/butful"
+            app:layout_constraintBottom_toBottomOf="@id/butful"
+            android:layout_margin="17dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/edit_save"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignEnd="@+id/profile_image"
+            android:layout_alignTop="@+id/profile_image"
+            android:src="@drawable/ic_pencil_black_24dp"
+            app:backgroundTint="@color/whiteGray"
+            app:elevation="2dp"
+            app:fabSize="mini"
+            app:layout_constraintEnd_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/gallery"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/ic_gallery"
+            android:visibility="invisible" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/f_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:hint="Name"
+            android:textColor="#000"
+            android:textColorHint="#c7c7c7"
+            android:enabled="false"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/l_name"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/l_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="SurName"
+            android:textColor="#000"
+            android:enabled="false"
+            android:textColorHint="#c7c7c7"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintLeft_toRightOf="@id/f_name"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_image" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/see_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/l_name">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:fontFamily="sans-serif-light"
+                android:hint="Email"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textColorHint="#c7c7c7"
+                android:textSize="15dp" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/university"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:fontFamily="sans-serif-light"
+                android:hint="University"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textColorHint="#c7c7c7"
+                android:textSize="15dp"
+                app:layout_constraintTop_toBottomOf="@id/email"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/study_programme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:fontFamily="sans-serif-light"
+                android:hint="Study Programme"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textColorHint="#c7c7c7"
+                android:textSize="15dp"
+                app:layout_constraintTop_toBottomOf="@+id/university"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/study_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="true"
+                android:fontFamily="sans-serif-light"
+                android:hint="Study Year"
+                android:lines="1"
+                android:maxLines="1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textColorHint="#c7c7c7"
+                android:textSize="15dp"
+                app:layout_constraintTop_toBottomOf="@id/study_programme"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/chevron"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/see_more"
+            app:srcCompat="@drawable/ic_chevron_down_black_24dp" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/facebook_connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Facebook"
+            android:textColor="#8f8f8f"
+            android:textSize="18dp"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chevron" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/google_connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="10dp"
+            android:text="Google"
+            android:textColor="#8f8f8f"
+            android:textSize="18dp"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/facebook_connect" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/phone_connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="10dp"
+            android:text="Phone"
+            android:textColor="#8f8f8f"
+            android:textSize="18dp"
+            app:layout_constraintWidth_max="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/google_connect" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <nl.booxchange.widget.LoadingView
+        android:id="@+id/loading_v"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</nl.booxchange.widget.SlidingNavigationLayout>

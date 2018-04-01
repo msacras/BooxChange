@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/root_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:focusable="true">
+
+  <View
+    android:layout_width="0dp"
+    android:layout_height="100dp"
+    android:alpha="0.05"
+    android:background="@drawable/gradient_down"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+  <ScrollView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:overScrollMode="never"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+    <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/step_one_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Step 1: Add photo of the book"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+      <LinearLayout
+        android:id="@+id/image_buttons_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/step_one_label"
+        app:layout_constraintWidth_max="300dp">
+
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/take_photo_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="40dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="-60dp"
+          android:adjustViewBounds="true"
+          android:tint="@color/colorPrimaryDark"
+          app:srcCompat="@drawable/temporary_money"/>
+
+        <android.support.v7.widget.AppCompatButton
+          android:id="@+id/take_photo_button"
+          android:layout_width="0dp"
+          android:layout_height="60dp"
+          android:layout_weight="1"
+          android:background="@drawable/rounded_corner_border_green_semi_left_30dp"
+          android:paddingLeft="60dp"
+          android:text="Take Photo"
+          android:textColor="@color/black"/>
+
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/upload_photo_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="40dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="20dp"
+          android:layout_marginRight="-62dp"
+          android:adjustViewBounds="true"
+          android:tint="@color/colorAccent"
+          app:srcCompat="@drawable/temporary_money"/>
+
+        <android.support.v7.widget.AppCompatButton
+          android:id="@+id/upload_photo_button"
+          android:layout_width="0dp"
+          android:layout_height="60dp"
+          android:layout_weight="1"
+          android:background="@drawable/rounded_corner_border_blue_semi_right_30dp"
+          android:paddingLeft="60dp"
+          android:text="Take Photo"
+          android:textColor="@color/black"/>
+
+      </LinearLayout>
+
+      <View
+        android:id="@+id/divider_one"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/lightGray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_buttons_wrapper"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/step_two_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Step 2: Add book details"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_one"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title_of_the_book_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Title of the book"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/step_two_label"/>
+
+      <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/title_of_the_book_field"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="Enter book title"
+        android:maxWidth="300dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_of_the_book_label"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/authors_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Author/s"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_of_the_book_field"/>
+
+      <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/authors_field"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="Enter author name/s"
+        android:maxWidth="300dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/authors_label"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/edition_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Edition"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/authors_field"/>
+
+      <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/edition_field"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="Enter edition"
+        android:maxWidth="300dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edition_label"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/isbn_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="ISBN"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edition_field"/>
+
+      <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/isbn_field"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="Enter ISBN"
+        android:maxWidth="300dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isbn_label"/>
+
+      <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/additional_info_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center_horizontal"
+        android:text="Additional Info"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isbn_field"/>
+
+      <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/additional_info_field"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="Enter info"
+        android:maxWidth="300dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/additional_info_label"/>
+
+    </android.support.constraint.ConstraintLayout>
+  </ScrollView>
+
+  <RelativeLayout
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="20dp"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/back"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:adjustViewBounds="true"
+      android:tint="@color/midGray"
+      app:srcCompat="@drawable/temporary_back"/>
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/logo"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
+      android:adjustViewBounds="true"
+      android:tint="@color/colorPrimaryDark"
+      app:srcCompat="@mipmap/ic_logo_48dp"/>
+
+    <android.support.v7.widget.AppCompatImageView
+      android:id="@+id/done"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentRight="true"
+      android:adjustViewBounds="true"
+      android:tint="@color/midGray"
+      app:srcCompat="@drawable/temporary_check"/>
+
+  </RelativeLayout>
+
+  <nl.booxchange.widget.LoadingView
+    android:id="@+id/loading_view"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

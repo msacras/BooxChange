@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1025961224603",
+    "firebase_url": "https://booxchange-nl.firebaseio.com",
+    "project_id": "booxchange-nl",
+    "storage_bucket": "booxchange-nl.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025961224603:android:dc66d35df48daf9a",
+        "android_client_info": {
+          "package_name": "nl.booxchange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1025961224603-amrs43d2vaurq6ilhutq9c8g7a9sm8hp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6P6dcxj0sHrPtrjQkcjGOHZ5CkKQtC4s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

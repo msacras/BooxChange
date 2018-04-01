@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nl.booxchange.widget.SlidingNavigationLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:tint="#bababa"
+                app:srcCompat="@drawable/temporary_back" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="0dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:tint="@color/colorPrimary"
+                app:srcCompat="@drawable/temporary_app" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/drawer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:tint="#bababa"
+                app:srcCompat="@drawable/temporary_hamburger" />
+
+        </LinearLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/book_image"
+                        android:layout_width="120dp"
+                        android:layout_height="170dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/rounded_corner_border_gray_4dp"
+                        android:padding="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/book_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:lines="4" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/book_author"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:lines="2"
+                            android:textColor="@color/midGray" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/book_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="Available for :" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="5dp">
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/for_sale_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sale"
+                                android:textColor="@color/colorAccent"
+                                android:textStyle="bold" />
+
+                            <Space
+                                android:layout_width="10dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/for_trade_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/trade"
+                                android:textColor="@color/colorAccent"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Book Condition : " />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/book_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:lines="10" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/user_books_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+</nl.booxchange.widget.SlidingNavigationLayout>
