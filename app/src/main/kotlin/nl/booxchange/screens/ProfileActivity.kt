@@ -2,7 +2,14 @@ package nl.booxchange.screens
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.GREEN
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.method.TextKeyListener.clear
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
@@ -12,6 +19,8 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieEntry
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -21,12 +30,14 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import nl.booxchange.R
+import nl.booxchange.R.id.*
 import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
 import nl.booxchange.model.UserModel
 import nl.booxchange.utilities.BaseActivity
 import nl.booxchange.utilities.UserData
+import nl.booxchange.utilities.UserData.Session.userModel
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
@@ -39,23 +50,85 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     val height = LinearLayout.LayoutParams.WRAP_CONTENT
     val width = LinearLayout.LayoutParams.MATCH_PARENT
 
+    val color = Color.parseColor("#939393")
+
+//    var rainfall = floatArrayOf(11.1f, 22.3f, 22.1f, 99.2f, 22f, 11f, 44.1f)
+//    var monthNames = arrayOf<String>("ff", "wed", "gg", "ty", "fck", "hz", "kk")
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         writeFields()
         initializeLayout()
-/*
-        edit_save.setOnClickListener {
-            if (gallery.visibility == INVISIBLE) {
-                gallery.visibility = VISIBLE
-            } else {
-                gallery.visibility = INVISIBLE
+
+        chevron.setColorFilter(color)
+        fb_icon.setColorFilter(color)
+        not_icon.setColorFilter(color)
+        google_icon.setColorFilter(color)
+        phone_icon.setColorFilter(color)
+        del_l_name.setColorFilter(color)
+        del_f_name.setColorFilter(color)
+        del_email.setColorFilter(color)
+
+        f_name.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
             }
-        }
-*/
-//        val multi = MultiTransformation(
-//                BlurTransformation(5),
-//                RoundedCornersTransformation(360, 0, ))
+
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (s.toString().trim().isEmpty()){
+                    del_f_name.toGone()
+                    del_f_name.setOnClickListener {
+                        f_name.text.clear()
+                    }
+                } else {
+                    del_f_name.toVisible()
+                }
+            }
+        })
+
+        l_name.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (s.toString().trim().isEmpty()){
+                    del_l_name.toGone()
+                    del_l_name.setOnClickListener {
+                        l_name.text.clear()
+                    }
+                } else {
+                    del_l_name.toVisible()
+                }
+            }
+        })
+
+        email.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (s.toString().trim().isEmpty()){
+                    del_email.toGone()
+                    del_email.setOnClickListener {
+                        email.text.clear()
+                    }
+                } else {
+                    del_email.toVisible()
+                }
+            }
+        })
+
+
         Glide.with(getApplicationContext())
                 .load("http://i.imgur.com/DvpvklR.png")
                 //.apply(RequestOptions.bitmapTransform(BlurTransformation(10)))
@@ -63,15 +136,72 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
                 .into(profile_image)
         back_button.setOnClickListener { onBackPressed() }
 
-
     }
 
     private fun initializeLayout() {
-        edit_save.setOnClickListener {
+
+/*        save.setOnClickListener {
+            save.toGone()
+            see_more.toGone()
+            chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
+            f_name.isEnabled = false
+            l_name.isEnabled = false
+            email.isEnabled = false
+            university.isEnabled = false
+            study_programme.isEnabled = false
+            study_year.isEnabled = false
             readFields()
             uploadUser()
-        }
+        }*/
 
+        edit_exit.setOnClickListener {
+        if (email.isEnabled == false) {
+            see_more.toVisible()
+            chevron.animate().scaleY(-1f).setDuration(350L).start()
+            f_name.isEnabled = true
+            l_name.isEnabled = true
+            email.isEnabled = true
+            university.isEnabled = true
+            study_programme.isEnabled = true
+            study_year.isEnabled = true
+            del_f_name.toVisible()
+            del_l_name.toVisible()
+            del_email.toVisible()
+            save.toVisible()
+            edit_exit.setImageResource(R.drawable.ic_cancel)
+            save.setOnClickListener {
+                save.toGone()
+                see_more.toGone()
+                chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
+                del_f_name.toGone()
+                del_l_name.toGone()
+                del_email.toGone()
+                f_name.isEnabled = false
+                l_name.isEnabled = false
+                email.isEnabled = false
+                university.isEnabled = false
+                study_programme.isEnabled = false
+                study_year.isEnabled = false
+                edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+                readFields()
+                uploadUser()
+            }
+            } else {
+            see_more.toGone()
+            chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
+            f_name.isEnabled = false
+            l_name.isEnabled = false
+            email.isEnabled = false
+            university.isEnabled = false
+            study_programme.isEnabled = false
+            study_year.isEnabled = false
+            del_f_name.toGone()
+            del_l_name.toGone()
+            del_email.toGone()
+            save.toGone()
+            edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+            }
+        }
         val providers = FirebaseAuth.getInstance().currentUser?.providerData
         phone_connect.isChecked = providers?.any { it.providerId == "phone" } ?: false
         facebook_connect.isChecked = providers?.any { it.providerId == "facebook.com" } ?: false

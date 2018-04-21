@@ -82,8 +82,11 @@
     <meta-data
       android:name="io.fabric.ApiKey"
       android:value="de91f4f658bf5e1bffca81b1c64bda5981d7193a" />
+    <meta-data
+        android:name="preloaded_fonts"
+        android:resource="@array/preloaded_fonts" />
 
-    <provider
+      <provider
       android:name="android.support.v4.content.FileProvider"
       android:authorities="${applicationId}.file_provider"
       android:exported="false"

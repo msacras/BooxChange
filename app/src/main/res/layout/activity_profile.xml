@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nl.booxchange.widget.SlidingNavigationLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<nl.booxchange.widget.SlidingNavigationLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_layout"
@@ -67,14 +66,14 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_centerHorizontal="true"
+            android:layout_margin="17dp"
+            app:layout_constraintBottom_toBottomOf="@id/butful"
             app:layout_constraintLeft_toLeftOf="@id/butful"
             app:layout_constraintRight_toRightOf="@id/butful"
-            app:layout_constraintTop_toBottomOf="@id/butful"
-            app:layout_constraintBottom_toBottomOf="@id/butful"
-            android:layout_margin="17dp" />
+            app:layout_constraintTop_toBottomOf="@id/butful" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/edit_save"
+            android:id="@+id/edit_exit"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignEnd="@+id/profile_image"
@@ -84,6 +83,20 @@
             app:elevation="2dp"
             app:fabSize="mini"
             app:layout_constraintEnd_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/save"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:layout_alignEnd="@+id/profile_image"
+            android:layout_alignTop="@+id/profile_image"
+            android:src="@drawable/ic_check"
+            app:backgroundTint="@color/whiteGray"
+            app:elevation="2dp"
+            app:fabSize="mini"
+            app:layout_constraintStart_toStartOf="@+id/profile_image"
             app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
         <android.support.v7.widget.AppCompatImageButton
@@ -98,34 +111,73 @@
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/f_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:hint="Name"
-            android:textColor="#000"
-            android:textColorHint="#c7c7c7"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/semi_round_border_right"
             android:enabled="false"
+            android:gravity="end|center"
+            android:inputType="text"
+            android:hint="Name"
+            android:maxLines="3"
+            android:maxWidth="50dp"
+            android:paddingLeft="27dp"
+            android:paddingRight="5dp"
+            android:textColor="#808080"
+            android:textColorHint="#c7c7c7"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/l_name"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/del_f_name"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_unchecked"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/f_name"
+            app:layout_constraintStart_toStartOf="@+id/f_name"
+            app:layout_constraintTop_toTopOf="@+id/f_name" />
+
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/l_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="SurName"
-            android:textColor="#000"
+            android:layout_height="40dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:paddingRight="27dp"
+            android:background="@drawable/semi_round_border_left"
             android:enabled="false"
+            android:inputType="text"
+            android:hint="Surname"
+            android:paddingLeft="5dp"
+            android:lines="1"
+            android:maxLines="1"
+            android:textColor="#808080"
             android:textColorHint="#c7c7c7"
             app:layout_constraintHorizontal_weight="0.5"
             app:layout_constraintLeft_toRightOf="@id/f_name"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_image" />
 
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/del_l_name"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_unchecked"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/l_name"
+            app:layout_constraintEnd_toEndOf="@+id/l_name"
+            app:layout_constraintTop_toTopOf="@id/l_name"/>
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/see_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/l_name">
@@ -133,61 +185,93 @@
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="true"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/square_border"
+                android:enabled="false"
                 android:fontFamily="sans-serif-light"
                 android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:lines="1"
                 android:maxLines="1"
+                android:paddingLeft="27dp"
+                android:paddingRight="27dp"
                 android:textAlignment="center"
-                android:textColor="#000"
+                android:textColor="#808080"
                 android:textColorHint="#c7c7c7"
-                android:textSize="15dp" />
+                android:textSize="16dp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/del_email"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_unchecked"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/email"
+                app:layout_constraintStart_toStartOf="@id/email"
+                app:layout_constraintTop_toTopOf="@+id/email" />
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/university"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="true"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/square_border"
+                android:enabled="false"
                 android:fontFamily="sans-serif-light"
                 android:hint="University"
+                android:inputType="textEmailAddress"
                 android:lines="1"
                 android:maxLines="1"
                 android:textAlignment="center"
-                android:textColor="#000"
+                android:textColor="#808080"
                 android:textColorHint="#c7c7c7"
-                android:textSize="15dp"
-                app:layout_constraintTop_toBottomOf="@id/email"/>
+                android:textSize="16dp"
+                app:layout_constraintTop_toBottomOf="@id/email" />
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/study_programme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="true"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/semi_round_border_right"
+                android:enabled="false"
                 android:fontFamily="sans-serif-light"
+                android:gravity="center"
                 android:hint="Study Programme"
                 android:lines="1"
                 android:maxLines="1"
-                android:textAlignment="center"
-                android:textColor="#000"
+                android:paddingLeft="50dp"
+                android:textColor="#808080"
                 android:textColorHint="#c7c7c7"
                 android:textSize="15dp"
-                app:layout_constraintTop_toBottomOf="@+id/university"/>
+                app:layout_constraintEnd_toStartOf="@+id/study_year"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/university" />
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/study_year"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="true"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/semi_round_border_left"
+                android:enabled="false"
                 android:fontFamily="sans-serif-light"
-                android:hint="Study Year"
+                android:hint="Year"
                 android:lines="1"
                 android:maxLines="1"
                 android:textAlignment="center"
-                android:textColor="#000"
+                android:textColor="#808080"
                 android:textColorHint="#c7c7c7"
                 android:textSize="15dp"
-                app:layout_constraintTop_toBottomOf="@id/study_programme"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/university" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -198,46 +282,164 @@
             app:layout_constraintTop_toBottomOf="@id/see_more"
             app:srcCompat="@drawable/ic_chevron_down_black_24dp" />
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/line_border"
+            app:layout_constraintTop_toBottomOf="@id/chevron" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/not_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_notification"
+            app:layout_constraintBottom_toTopOf="@+id/conn_text"
+            app:layout_constraintEnd_toStartOf="@+id/notifications"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/notifications"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="1dp"
+            android:text="Push Notifications"
+            android:textColor="#8f8f8f"
+            android:textSize="18dp"
+            android:thumb="@drawable/switch_thumb"
+            app:layout_constraintEnd_toEndOf="@+id/view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chevron"
+            app:layout_constraintWidth_max="300dp"
+            app:track="@drawable/switch_track" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/line_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/notifications"
+            app:layout_constraintTop_toBottomOf="@id/notifications" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/conn_text"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="bottom"
+            android:text="Connected Accounts"
+            android:textColor="#c7c7c7"
+            android:textSize="13dp"
+            app:layout_constraintStart_toStartOf="@id/not_icon"
+            app:layout_constraintTop_toBottomOf="@id/view2" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/fb_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/ic_facebook"
+            app:layout_constraintBottom_toTopOf="@+id/google_connect"
+            app:layout_constraintEnd_toStartOf="@+id/facebook_connect"
+            app:layout_constraintTop_toBottomOf="@+id/conn_text" />
+
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/facebook_connect"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
             android:text="Facebook"
-            android:textColor="#8f8f8f"
+            android:textColor="#939393"
             android:textSize="18dp"
-            app:layout_constraintWidth_max="300dp"
+            android:thumb="@drawable/switch_thumb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chevron" />
+            app:layout_constraintTop_toBottomOf="@id/conn_text"
+            app:layout_constraintWidth_max="300dp"
+            app:track="@drawable/switch_track" />
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/line_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/facebook_connect"
+            app:layout_constraintTop_toBottomOf="@id/facebook_connect" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/google_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_google_black_24dp"
+            app:layout_constraintBottom_toTopOf="@+id/phone_connect"
+            app:layout_constraintEnd_toStartOf="@+id/view4"
+            app:layout_constraintTop_toTopOf="@+id/google_connect" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/google_connect"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginTop="10dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
             android:text="Google"
             android:textColor="#8f8f8f"
             android:textSize="18dp"
-            app:layout_constraintWidth_max="300dp"
+            android:thumb="@drawable/switch_thumb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/facebook_connect" />
+            app:layout_constraintTop_toBottomOf="@id/facebook_connect"
+            app:layout_constraintWidth_max="300dp"
+            app:track="@drawable/switch_track" />
+
+        <View
+            android:id="@+id/view5"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/line_border"
+            app:layout_constraintBottom_toTopOf="@id/phone_connect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/google_connect" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/phone_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_cellphone_black_18dp"
+            app:layout_constraintBottom_toTopOf="@+id/view6"
+            app:layout_constraintEnd_toStartOf="@+id/view5"
+            app:layout_constraintTop_toTopOf="@+id/phone_connect" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/phone_connect"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginTop="10dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
             android:text="Phone"
             android:textColor="#8f8f8f"
             android:textSize="18dp"
-            app:layout_constraintWidth_max="300dp"
+            android:thumb="@drawable/switch_thumb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/google_connect" />
+            app:layout_constraintTop_toBottomOf="@id/google_connect"
+            app:layout_constraintWidth_max="300dp"
+            app:track="@drawable/switch_track" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@drawable/line_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/phone_connect" />
+
 
     </android.support.constraint.ConstraintLayout>
 
@@ -249,6 +451,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </nl.booxchange.widget.SlidingNavigationLayout>
