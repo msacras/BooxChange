@@ -1,11 +1,10 @@
 package nl.booxchange.screens
 
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_book_info.*
 import nl.booxchange.R
-import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.utilities.NavigationActivity
 
-class ProfileActivity: BaseActivity() {
+class ProfileActivity : NavigationActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

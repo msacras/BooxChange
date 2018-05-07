@@ -1,242 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nl.booxchange.widget.SlidingNavigationLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:toggle="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_profile"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/lightGray"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="0dp"
+        card_view:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:animateLayoutChanges="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/logo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_logo_48dp"
+                android:tint="@color/colorPrimary"/>
+
+            <LinearLayout
+                android:id="@+id/search_wrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/drawer_button"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/rounded_corner_solid_gray_30dp"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/search_query_input"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:hint="@string/label_search"
+                    android:maxLines="1"
+                    android:scrollHorizontally="true"
+                    android:visibility="gone"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/search_cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/round_gray"
+                    android:padding="10dp"
+                    android:src="@drawable/magnify"
+                    android:tint="@color/midGray"/>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/drawer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:adjustViewBounds="true"
+                android:src="@drawable/menu"
+                android:tint="@color/midGray"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/lightGray">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="0dp"
-            card_view:cardElevation="4dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:animateLayoutChanges="true"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:padding="20dp">
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:adjustViewBounds="true"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/temporary_app"/>
-
-                <LinearLayout
-                    android:id="@+id/search_wrapper"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_toLeftOf="@+id/drawer_button"
-                    android:animateLayoutChanges="true"
-                    android:background="@drawable/rounded_corner_solid_gray_30dp"
-                    android:gravity="right"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/search_query_input"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:hint="@string/label_search"
-                        android:maxLines="1"
-                        android:scrollHorizontally="true"
-                        android:visibility="gone"/>
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/search_cancel_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:background="@drawable/round_gray"
-                        android:padding="10dp"
-                        android:tint="#bababa"
-                        app:srcCompat="@drawable/temporary_search"/>
-
-                </LinearLayout>
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/drawer_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:adjustViewBounds="true"
-                    android:tint="#bababa"
-                    app:srcCompat="@drawable/temporary_hamburger"/>
-
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:background="@color/colorPrimary">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <!--android:background="@drawable/top_line"-->
-
-            <LinearLayout
-                android:layout_width="45dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="0.5">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="30"
-                    android:textSize="18dp"
-                    android:layout_gravity="center"
-                    app:fontFamily="sans-serif-medium"
-                    android:textColor="#807c77"/>
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="Selling"
-                    android:textColor="#807c77"
-                    android:layout_gravity="center"
-                    app:fontFamily="sans-serif-light"/>
-
-            </LinearLayout>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"/>
-
-            <LinearLayout
-                android:layout_width="45dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="0.5">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="30"
-                    android:textSize="18dp"
-                    android:layout_gravity="center"
-                    app:fontFamily="sans-serif-medium"
-                    android:textColor="#807c77"/>
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="Sold"
-                    android:textColor="#807c77"
-                    android:layout_gravity="center"
-                    app:fontFamily="sans-serif-light"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_image"
-            android:layout_gravity="center"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            app:civ_border_width="2dp"
-            android:layout_marginTop="-135dp"
-            app:civ_border_color="#fff"/>
-        <!--android:src="@drawable/i3"-->
-
-        <LinearLayout
-            android:id="@+id/resize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:animateLayoutChanges="true">
-            <!--android:background="@drawable/top_line"-->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-
-                    <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/f_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:fontFamily="sans-serif"
-                        android:gravity="right"
-                        android:hint="Name"
-                        android:paddingRight="4dp"
-                        android:cursorVisible="false"
-                        android:textColor="#000"
-                        android:textColorHint="#c7c7c7"
-                        android:textSize="18dp" />
-
-                    <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/l_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:textAlignment="textStart"
-                        android:hint="Name"
-                        android:paddingLeft="4dp"
-                        android:textColor="#000"
-                        android:textSize="18dp"
-                        android:textColorHint="#c7c7c7"
-                        android:fontFamily="sans-serif"/>
-                </LinearLayout>
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/university"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="#000"
-                    android:layout_marginTop="-10dp"
-                    android:hint="University"
-                    android:textColorHint="#c7c7c7"
-                    android:textSize="15dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/butt"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:onClick="clickMe"/>
+        android:layout_height="110dp"
+        android:background="@color/colorPrimary">
 
     </LinearLayout>
 
-</nl.booxchange.widget.SlidingNavigationLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <!--android:background="@drawable/top_line"-->
+
+        <LinearLayout
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="30"
+                android:textColor="#807c77"
+                android:textSize="18dp"
+                app:fontFamily="sans-serif-medium"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:text="Selling"
+                android:textColor="#807c77"
+                app:fontFamily="sans-serif-light"/>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"/>
+
+        <LinearLayout
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="30"
+                android:textColor="#807c77"
+                android:textSize="18dp"
+                app:fontFamily="sans-serif-medium"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:text="Sold"
+                android:textColor="#807c77"
+                app:fontFamily="sans-serif-light"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-135dp"
+        app:civ_border_color="#fff"
+        app:civ_border_width="2dp"/>
+    <!--android:src="@drawable/i3"-->
+
+    <LinearLayout
+        android:id="@+id/resize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+        <!--android:background="@drawable/top_line"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/f_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:cursorVisible="false"
+                    android:fontFamily="sans-serif"
+                    android:gravity="right"
+                    android:hint="Name"
+                    android:paddingRight="4dp"
+                    android:textColor="#000"
+                    android:textColorHint="#c7c7c7"
+                    android:textSize="18dp"/>
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/l_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:fontFamily="sans-serif"
+                    android:hint="Name"
+                    android:paddingLeft="4dp"
+                    android:textAlignment="textStart"
+                    android:textColor="#000"
+                    android:textColorHint="#c7c7c7"
+                    android:textSize="18dp"/>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/university"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-10dp"
+                android:fontFamily="sans-serif-light"
+                android:hint="University"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textColorHint="#c7c7c7"
+                android:textSize="15dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/butt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="clickMe"/>
+
+</LinearLayout>

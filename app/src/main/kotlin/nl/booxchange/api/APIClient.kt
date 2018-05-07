@@ -12,10 +12,13 @@ import com.github.kittinunf.result.Result
 import com.google.firebase.auth.FirebaseAuth
 import nl.booxchange.extension.asJson
 import nl.booxchange.extension.asObject
+import nl.booxchange.extension.string
 import nl.booxchange.model.*
 import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.utilities.UserData
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONObject
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -24,17 +27,18 @@ import java.util.*
  */
 object APIClient {
   private var isRequestingToken = false
-  private var userToken: String? = null
+    private var idToken: String? = null
 
   init {
-    FuelManager.instance.basePath = "http://test.api.booxchange.website"
+      FuelManager.instance.basePath = /*"http://test.api.booxchange.website"*/"http://192.168.88.128:8000"/*"http://192.168.0.104:8000"*/
     FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
+      FirebaseAuth.getInstance().addIdTokenListener { requestToken() }
   }
 
   private fun requestToken() {
     FirebaseAuth.getInstance().currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
       if (task.isSuccessful) {
-        userToken = task.result.token
+          idToken = task.result.token
         isRequestingToken = false
 
         while (pendingRequests.isNotEmpty()) {
@@ -53,9 +57,9 @@ object APIClient {
   private val pendingRequests = Stack<Pair<Request, (Request, Response, Result<*, *>) -> Unit>>()
 
   private fun executeRequest(request: Request, callback: (Request, Response, Result<*, *>) -> Unit) {
-    userToken?.let {
+      idToken?.let {
       doAsync {
-        val request = request.header("User-Token" to (userToken ?: ""))
+          val request = request.header("User-Token" to (idToken ?: ""))
 
         Log.d("APIClient", "${request.method} ${request.path}")
         Log.d("APIClient", request.toString())
@@ -100,10 +104,10 @@ object APIClient {
       return RequestModel(request)
     }
 
-    fun bookGet(bookId: String, callback: (BookResponseModel?) -> Unit): RequestModel {
+      fun bookGet(bookId: String, callback: (BookModel?) -> Unit): RequestModel {
       val parameters = mapOf("book_id" to bookId)
       val request = BOOK_GET.setParameters(parameters).httpGet().name { BOOK_GET }
-      executeSafely(request) { callback(it?.asObject()) }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<BookModel>() }) }
       return RequestModel(request)
     }
 
@@ -146,6 +150,62 @@ object APIClient {
       return RequestModel(request)
     }
 
+      fun updateInstanceId(callback: (ResponseModel?) -> Unit): RequestModel {
+          val parameters = mapOf(
+              "user_id" to UserData.Session.userId,
+              "instance_id" to UserData.Session.instanceId
+          )
+          val request = USER_UPDATE_INSTANCE.setParameters(parameters).httpPut().name { USER_UPDATE_INSTANCE }
+          executeSafely(request) { callback(it?.asObject()) }
+          return RequestModel(request)
+      }
+
+      fun fetchChatRooms(callback: (List<ChatModel>?) -> Unit): RequestModel {
+          val parameters = mapOf("user_id" to UserData.Session.userId)
+          val request = CHAT_USER_ROOMS.setParameters(parameters).httpGet().name { CHAT_USER_ROOMS }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<List<ChatModel>>() }) }
+          return RequestModel(request)
+      }
+
+      fun findChatRoom(userIds: List<String>, chatTopic: String, callback: (ChatModel?) -> Unit): RequestModel {
+          val body = mapOf(
+              "chat_topic" to chatTopic,
+              "users_list" to userIds
+          )
+          val request = CHAT_ROOM_FIND.httpPost().body(body.asJson()).name { CHAT_ROOM_FIND }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<ChatModel>() }) }
+          return RequestModel(request)
+      }
+
+      fun fetchChatRoom(chatId: String, callback: (ChatModel?) -> Unit): RequestModel {
+          val parameters = mapOf("chat_id" to chatId)
+          val request = CHAT_ROOM_JOIN.setParameters(parameters).httpGet().name { CHAT_ROOM_JOIN }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<ChatModel>() }) }
+          return RequestModel(request)
+      }
+
+      fun fetchMessages(chatId: String, fromIndex: Int, callback: (List<MessageModel>?) -> Unit): RequestModel {
+          val parameters = mapOf(
+              "chat_id" to chatId,
+              "offset" to fromIndex
+          )
+          val request = MESSAGE_CHAT_LIST.setParameters(parameters).httpGet().name { MESSAGE_CHAT_LIST }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<List<MessageModel>>() }) }
+          return RequestModel(request)
+      }
+
+      fun postMessage(message: MessageModel, callback: (MessageModel?) -> Unit): RequestModel {
+          val request = MESSAGE_POST.httpPost().body(message.asJson()).name { MESSAGE_POST }
+          executeSafely(request) { callback(it?.let { JSONObject(it).opt("result")?.string?.asObject<MessageModel>() }) }
+          return RequestModel(request)
+      }
+
+      fun markAsRead(chatId: String, callback: (ResponseModel?) -> Unit): RequestModel {
+          val request = CHAT_MARK_READ.httpGet().name { CHAT_MARK_READ }
+          executeSafely(request) { callback(it?.asObject()) }
+          return RequestModel(request)
+      }
+
     private fun executeSafely(request: Request, completion: (String?) -> Unit) {
       requests.put(request.name, request)?.cancel()
       executeRequest(request) { request1, _, result ->
@@ -179,4 +239,13 @@ object APIClient {
   private const val USER_GET = "/user/{user_id}"
   private const val USER_UPDATE = "/user/update"
   private const val USER_DELETE = "/user/{user_id}"
+    private const val USER_UPDATE_INSTANCE = "/user/{user_id}/instances/{instance_id}"
+
+    private const val CHAT_USER_ROOMS = "/chats/{user_id}"
+    private const val CHAT_ROOM_FIND = "/chats/join/by_users"
+    private const val CHAT_ROOM_JOIN = "/chats/join/by_chat/{chat_id}"
+    private const val CHAT_MARK_READ = "/chats/read/{chat_id}/{user_id}"
+
+    private const val MESSAGE_CHAT_LIST = "/messages/{chat_id}/{offset}"
+    private const val MESSAGE_POST = "/messages/post"
 }

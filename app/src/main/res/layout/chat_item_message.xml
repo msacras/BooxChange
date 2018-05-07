@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="50dp"
+    android:background="@drawable/rounded_corner_solid_gray_30dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/author_photo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/account_circle"
+        android:tint="@color/jetGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/jetGray"
+        app:layout_constraintLeft_toRightOf="@+id/author_photo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="John Doe"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_content_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/pitchGray"
+        app:layout_constraintLeft_toRightOf="@+id/author_photo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message_author"
+        app:layout_goneMarginLeft="12dp"
+        app:layout_goneMarginTop="8dp"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ipsum orci, fringilla ut quam id, dignissim laoreet est. Curabitur lectus felis, elementum id tincidunt at, eleifend non ipsum. Nulla a ante quis metus imperdiet feugiat. Fusce iaculis neque vel condimentum viverra. Nullam vel velit accumsan, luctus enim a, dictum dolor. Phasellus non est dui. Vestibulum vitae eleifend metus, a dictum nisi. Duis at porttitor nulla. Cras mattis nec quam eu vestibulum."/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="4dp"
+        android:gravity="right"
+        android:textColor="@color/darkGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/author_photo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message_content_text"
+        tools:text="10:11:12 3 Mar. '18"/>
+
+</android.support.constraint.ConstraintLayout>

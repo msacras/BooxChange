@@ -1,9 +1,8 @@
 package nl.booxchange.screens
 
-import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.utilities.NavigationActivity
 
 /**
  * Created by Dima on 3/10/2018.
  */
-class OffersActivity: BaseActivity() {
-}
+class OffersActivity : NavigationActivity()

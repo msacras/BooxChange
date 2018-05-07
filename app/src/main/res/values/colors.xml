@@ -3,15 +3,20 @@
     <color name="colorPrimary">#26F47D</color>
     <color name="colorPrimaryDark">#2BAE6A</color>
     <color name="colorAccent">#5A85FF</color>
-    <color name="colorAccentDark">#516cb8</color>
+    <color name="colorAccentDark">#516CB8</color>
+    <color name="colorWarning">#FF5A62</color>
+    <color name="colorWarningDark">#B85451</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="whiteGray">#FCFCFC</color>
     <color name="lightGray">#F2F2F2</color>
     <color name="midGray">#BABABA</color>
-    <color name="springGreen">#27f67e</color>
-    <color name="mountainMeadow">#11a761</color>
-    <color name="shamrock">#43cea2</color>
+    <color name="darkGray">#888888</color>
+    <color name="jetGray">#464646</color>
+    <color name="pitchGray">#252525</color>
+    <color name="springGreen">#27F67E</color>
+    <color name="mountainMeadow">#11A761</color>
+    <color name="shamrock">#43CEA2</color>
     <color name="pelorous">#4BC0C8</color>
 </resources>

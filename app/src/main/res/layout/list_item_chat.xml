@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_corner_solid_gray_30dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/chat_topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/jetGray"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="red"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/last_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/darkGray"
+        android:textSize="12sp"
+        tools:text="lorem ipsum"/>
+
+</LinearLayout>

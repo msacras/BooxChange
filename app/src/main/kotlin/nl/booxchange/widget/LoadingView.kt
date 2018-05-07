@@ -12,50 +12,52 @@ import nl.booxchange.R
 import nl.booxchange.extension.getColorById
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
-import org.jetbrains.anko.withAlpha
+import org.jetbrains.anko.dip
 import kotlin.properties.Delegates
 
 
 /**
  * Created by Cristian Velinciuc on 3/24/18.
  */
-class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
+class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
-  var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
+    private val progressDrawable = LAnimationDrawable(thickness = dip(2).toFloat(), primaryColor = context.getColorById(R.color.colorPrimary), secondaryColor = context.getColorById(R.color.whiteGray))
+    var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
 
-  init {
-    View.inflate(context, R.layout.loading_view_layout, this)
-    setBackgroundColor(Color.WHITE)
-    (ContextCompat.getDrawable(context, R.mipmap.ic_logo_48dp) as? BitmapDrawable)?.bitmap?.let { bitmap ->
-      val width = bitmap.width
-      val height = bitmap.height
-      val tintedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-      val canvas = Canvas(tintedBitmap)
-      val paint = Paint().apply {
-        shader = LinearGradient(0f, width.toFloat(), 0f, height.toFloat(), context.getColorById(R.color.colorPrimary), context.getColorById(R.color.colorPrimaryDark), Shader.TileMode.CLAMP)
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-      }
+    init {
+        View.inflate(context, R.layout.loading_view_layout, this)
+        setBackgroundColor(Color.WHITE)
+        (ContextCompat.getDrawable(context, R.mipmap.ic_logo_48dp) as? BitmapDrawable)?.bitmap?.let { bitmap ->
+            val width = bitmap.width
+            val height = bitmap.height
+            val tintedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(tintedBitmap)
+            val paint = Paint().apply {
+                shader = LinearGradient(0f, width.toFloat(), 0f, height.toFloat(), context.getColorById(R.color.colorPrimary), context.getColorById(R.color.colorPrimaryDark), Shader.TileMode.CLAMP)
+                xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+            }
 
-      canvas.drawBitmap(bitmap, 0f, 0f, null)
-      canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
+            canvas.drawBitmap(bitmap, 0f, 0f, null)
+            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
-      logo_image.setImageBitmap(tintedBitmap)
+            logo_image.setImageBitmap(tintedBitmap)
+        }
+        id = R.id.loading_view
+        progress_view.background = progressDrawable
+        toGone()
     }
-    progress_bar.indeterminateDrawable.setColorFilter(context.getColorById(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-  }
 
-  fun show(smooth: Boolean = true) {
-    toVisible()
-    if (smooth) {
-      animate().alpha(1f).setDuration(100).start()
+    fun show(smooth: Boolean = true) {
+        toVisible()
+        progressDrawable.start()
+        if (smooth) {
+            animate().alpha(1f).setDuration(100).start()
+        }
     }
-  }
 
-  fun hide(smooth: Boolean = true, delayed: Boolean = true) {
-    val delay = if (delayed) 500L else 1L
-    val animation = if (smooth) 200L else 1L
-    postDelayed({
-      animate().alpha(0f).setDuration(animation).withEndAction { toGone() }.start()
-    }, delay)
-  }
+    fun hide(smooth: Boolean = true, delayed: Boolean = true) {
+        val delay = if (delayed) 500L else 1L
+        val animation = if (smooth) 200L else 1L
+        postDelayed({ animate().alpha(0f).setDuration(animation).withEndAction { progressDrawable.stop(); toGone() }.start() }, delay)
+    }
 }

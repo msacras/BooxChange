@@ -3,27 +3,22 @@ package nl.booxchange.screens
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.RelativeLayout
+import kotlinx.android.synthetic.main.activity_homepage.*
+import kotlinx.android.synthetic.main.list_item_book_offer.view.*
 import nl.booxchange.R
 import nl.booxchange.extension.*
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.OfferType
 import nl.booxchange.model.OfferType.*
-import nl.booxchange.utilities.BaseActivity
-import nl.booxchange.utilities.RecyclerViewAdapter
-import nl.booxchange.utilities.RecyclerViewItemSpacer
-import nl.booxchange.utilities.Tools
-import kotlinx.android.synthetic.main.activity_homepage.*
-import kotlinx.android.synthetic.main.offer_list_book_item.view.*
+import nl.booxchange.utilities.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.startActivity
 import java.util.*
@@ -33,7 +28,7 @@ import kotlin.properties.Delegates
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
-class HomepageActivity: BaseActivity() {
+class HomepageActivity : NavigationActivity() {
   private val booksListAdapter = RecyclerViewAdapter()
   private val searchListAdapter = RecyclerViewAdapter()
 
@@ -60,7 +55,7 @@ class HomepageActivity: BaseActivity() {
   private fun openFilterMenu() {
     showActionButton(action_filter_exchange)
     action_filter_purchase.postDelayed({ showActionButton(action_filter_purchase) }, 200)
-    action_filter_menu.setImageResource(R.drawable.temporary_cross)
+      action_filter_menu.setImageResource(R.drawable.filter)
     disableActionButton(action_filter_menu)
     isFilterMenuOpen = true
   }
@@ -68,7 +63,7 @@ class HomepageActivity: BaseActivity() {
   private fun closeFilterMenu() {
     hideActionButton(action_filter_purchase)
     action_filter_exchange.postDelayed({ hideActionButton(action_filter_exchange) }, 50)
-    action_filter_menu.setImageResource(R.drawable.temporary_filter)
+      action_filter_menu.setImageResource(R.drawable.filter)
     enableActionButton(action_filter_menu)
     isFilterMenuOpen = false
   }
@@ -110,31 +105,13 @@ class HomepageActivity: BaseActivity() {
         } else {
           search_query_input.toGone()
           (search_wrapper.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.RIGHT_OF)
-          search_cancel_button.setImageResource(R.drawable.temporary_search)
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ValueAnimator.ofFloat(search_wrapper.elevation, 0f).apply {
-              addUpdateListener {
-                search_wrapper.elevation = (it.animatedValue as Float)
-              }
-              duration = 100
-              start()
-            }
-          }
+            search_cancel_button.setImageResource(R.drawable.magnify)
         }
       } else {
         (search_wrapper.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.RIGHT_OF, R.id.logo)
         search_query_input.toVisible()
         search_query_input.requestFocus()
-        search_cancel_button.setImageResource(R.drawable.temporary_cross)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          ValueAnimator.ofFloat(search_wrapper.elevation, dip(2f).toFloat()).apply {
-            addUpdateListener {
-              search_wrapper.elevation = (it.animatedValue as Float)
-            }
-            duration = 100
-            start()
-          }
-        }
+          search_cancel_button.setImageResource(R.drawable.close)
       }
       isSearchOpen = !isSearchOpen
     }
@@ -170,8 +147,8 @@ class HomepageActivity: BaseActivity() {
       }
     })
 
-    booksListAdapter.addModelToViewBinding(R.layout.offer_list_book_item, BookModel::class.java, this::bindItem)
-    searchListAdapter.addModelToViewBinding(R.layout.offer_list_book_item, BookModel::class.java, this::bindItem)
+      booksListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, this::bindItem)
+      searchListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, this::bindItem)
     books_list_view.layoutManager = GridLayoutManager(this, 2)
     books_list_view.adapter = booksListAdapter
     books_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(8)))
@@ -272,7 +249,10 @@ class HomepageActivity: BaseActivity() {
   }
 
   private fun fetchBookOffersList(isRefresh: Boolean, clear: Boolean) {
-    if (!isRefresh && bottomReached) return
+      if (!isRefresh && bottomReached) {
+          swipe_refresh_layout.isRefreshing = false
+          return
+      }
     val (targetAdapter, targetAction) = if (isSearchOpen) {
       searchListAdapter to if (isRefresh) RecyclerViewAdapter::swapItems else RecyclerViewAdapter::appendItems
     } else {
@@ -283,19 +263,13 @@ class HomepageActivity: BaseActivity() {
       bottomReached = false
     }
     val listPosition = if (isRefresh || clear) 0 else targetAdapter.itemCount
-    data_fetch_progress.toVisible()
 
     requestManager.fetchAvailableBooks(queryKeyword, selectedOfferType, listPosition) {
       it?.result?.let { list ->
-        if (list.isEmpty()) {
-          bottomReached = true
-        } else {
+          bottomReached = list.isEmpty()
           targetAction.invoke(targetAdapter, list)
-        }
       } ?: showSnackbar(R.string.data_fetch_failed)
-      books_list_view.postDelayed({
-        data_fetch_progress.toGone()
-      }, 500)
+        if (isRefresh) swipe_refresh_layout.isRefreshing = false
     }
   }
 
@@ -336,14 +310,16 @@ class HomepageActivity: BaseActivity() {
     }
 
     view.setOnClickListener {
-      startActivity<BookInfoActivity>("book_model" to model)
+        startActivity<BookInfoActivity>(Constants.EXTRA_PARAM_BOOK_MODEL to model)
     }
   }
 
   private fun initializeSwipeRefreshLayout() {
-    swipe_refresh_layout.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorPrimary), ContextCompat.getColor(this, R.color.colorAccent))
-    swipe_refresh_layout.setOnRefreshListener {
-      swipe_refresh_layout.isRefreshing = false
+      swipe_refresh_layout.canRefreshUp = true
+      swipe_refresh_layout.setOnUpRefreshListener {
+          fetchBookOffersList(false, false)
+      }
+      swipe_refresh_layout.setOnDownRefreshListener {
       fetchBookOffersList(true, false)
     }
   }

@@ -9,3 +9,6 @@ val String.withExitSymbol
 
 val String.digitsOnly
   get() = replace("[^\\d]".toRegex(), "")
+
+val String.takeNotBlank
+    get() = this.takeIf { it.isNotBlank() }

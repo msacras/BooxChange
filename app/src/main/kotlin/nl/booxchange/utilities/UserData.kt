@@ -1,32 +1,28 @@
 package nl.booxchange.utilities
 
-import android.support.v4.content.ContextCompat.startActivity
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import nl.booxchange.BooxchangeApp
-import nl.booxchange.api.APIClient
 import nl.booxchange.api.APIClient.RequestManager
 import nl.booxchange.extension.asJson
 import nl.booxchange.extension.asObject
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.UserModel
-import nl.booxchange.screens.HomepageActivity
-import nl.booxchange.utilities.UserData.Session.userModel
 import org.jetbrains.anko.defaultSharedPreferences
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import kotlin.reflect.KClass
 
 /**
  * Created by Cristian Velinciuc on 3/22/18.
  */
 object UserData {
   object Authentication {
-    fun register(userId: String, onCompleted: (isLoggedIn: Boolean, isNewUser: Boolean) -> Unit) {
-      findUser(userId) {
+      fun register(onCompleted: (isLoggedIn: Boolean, isNewUser: Boolean) -> Unit) {
+          findUser {
         it?.let {
           UserData.Session.userModel = it
           onCompleted(true, false)
-        } ?: registerUser(userId) {
+        } ?: registerUser {
           it?.let {
             UserData.Session.userModel = it
             onCompleted(true, true)
@@ -35,8 +31,8 @@ object UserData {
       }
     }
 
-    fun login(userId: String, onCompleted: (isLoggedIn: Boolean) -> Unit) {
-      findUser(userId) {
+      fun login(onCompleted: (isLoggedIn: Boolean) -> Unit) {
+          findUser {
         it?.let {
           UserData.Session.userModel = it
           onCompleted(true)
@@ -50,14 +46,14 @@ object UserData {
       UserData.purge()
     }
 
-    private fun findUser(userId: String, onResult: (UserModel?) -> Unit) {
-      RequestManager.instance.userGet(userId) {
+      private fun findUser(onResult: (UserModel?) -> Unit) {
+          RequestManager.instance.userGet(Session.userId) {
         onResult(it?.result)
       }
     }
 
-    private fun registerUser(userId: String, onResult: (UserModel?) -> Unit) {
-      val userModel = UserModel(userId)
+      private fun registerUser(onResult: (UserModel?) -> Unit) {
+          val userModel = UserModel(Session.userId)
       RequestManager.instance.userAdd(userModel) {
         onResult(it?.result)
       }
@@ -65,8 +61,21 @@ object UserData {
   }
 
   object Session {
+      val userId
+          get() = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("User not found")
+      val instanceId
+          get() = FirebaseInstanceId.getInstance().token ?: throw Exception("No id at this moment")
+
     var userModel: UserModel? = null
     var userBooks: List<BookModel> = emptyList()
+
+      init {
+          FirebaseAuth.getInstance().addAuthStateListener {
+              FirebaseAuth.getInstance().currentUser?.let {
+                  RequestManager.instance.updateInstanceId {}
+              }
+          }
+      }
 
     fun fetchUserBooksList(onCompleted: (success: Boolean) -> Unit) {
       RequestManager.instance.fetchBooksByUserId(userModel?.id ?: return) {
@@ -98,17 +107,17 @@ object UserData {
       preferences.apply()
     }
 
-    fun <T: Any> read(key: String, type: Class<T>): T? {
+      fun <T : Any> read(key: String, type: KClass<T>): T? {
       val preferences = BooxchangeApp.delegate.applicationContext.defaultSharedPreferences
 
       return takeIf { !preferences.contains(key) }?.let {
         when (type) {
-          Int::class.java -> preferences.getInt(key, 0)
-          Long::class.java -> preferences.getLong(key, 0L)
-          Float::class.java -> preferences.getFloat(key, 0f)
-          Double::class.java -> preferences.getFloat(key, 0f)
-          String::class.java -> preferences.getString(key, null)
-          Boolean::class.java -> preferences.getBoolean(key, false)
+            Int::class -> preferences.getInt(key, 0)
+            Long::class -> preferences.getLong(key, 0L)
+            Float::class -> preferences.getFloat(key, 0f)
+            Double::class -> preferences.getFloat(key, 0f)
+            String::class -> preferences.getString(key, null)
+            Boolean::class -> preferences.getBoolean(key, false)
           else -> preferences.getString(key, null).asObject()
         } as? T?
       }

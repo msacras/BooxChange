@@ -7,23 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import nl.booxchange.model.Distinctive
 import java.lang.ref.WeakReference
+import kotlin.reflect.KClass
 
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
 open class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
   inner class RecyclerViewViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-  inner class ViewModelPair<T: Distinctive>(@LayoutRes val layoutId: Int, val dataModelClass: Class<T>, val bindingFunction: (view: View, model: T) -> Unit, val viewTypeCondition: (position: Int, model: T) -> Boolean)
+    inner class ViewModelPair<T : Distinctive>(@LayoutRes val layoutId: Int, val dataModelClass: KClass<T>, val bindingFunction: (view: View, model: T) -> Unit, val viewTypeCondition: (position: Int, model: T) -> Boolean)
 
   private val viewModelPairsList = ArrayList<ViewModelPair<Distinctive>>()
   private val items = mutableListOf<Distinctive>()
   private var recyclerView: WeakReference<RecyclerView>? = null
 
-  fun <T: Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, bindingFunction: (view: View, model: T) -> Unit) {
+    fun <T : Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: KClass<T>, bindingFunction: (view: View, model: T) -> Unit) {
     addModelToViewBinding(layoutId, dataModelClass, { _, _ -> true }, bindingFunction)
   }
 
-  fun <T: Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: Class<T>, viewTypeCondition: (position: Int, model: T) -> Boolean, bindingFunction: (view: View, model: T) -> Unit) {
+    fun <T : Distinctive> addModelToViewBinding(@LayoutRes layoutId: Int, dataModelClass: KClass<T>, viewTypeCondition: (position: Int, model: T) -> Boolean, bindingFunction: (view: View, model: T) -> Unit) {
     viewModelPairsList.add(ViewModelPair(layoutId, dataModelClass, bindingFunction, viewTypeCondition) as ViewModelPair<Distinctive>)
   }
 
@@ -44,6 +45,18 @@ open class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() 
       notifyItemRangeInserted(insertPosition, insertedCount)
     }
   }
+
+    fun appendItem(newItem: Distinctive) {
+        val insertPosition = items.size
+        if (!items.contains(newItem)) {
+            items.add(newItem)
+            if (insertPosition == 0) {
+                notifyDataSetChanged()
+            } else {
+                notifyItemInserted(insertPosition)
+            }
+        }
+    }
 
   fun prependItems(newItems: List<Distinctive>) {
     val newList = newItems.filter { !items.contains(it) }
@@ -73,7 +86,7 @@ open class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() 
   }
 
   override fun getItemViewType(position: Int): Int {
-    return viewModelPairsList.indexOfFirst { it.viewTypeCondition(position, items[position % items.size]) && items[position % items.size]::class.java == it.dataModelClass }
+      return viewModelPairsList.indexOfFirst { it.viewTypeCondition(position, items[position % items.size]) && items[position % items.size]::class == it.dataModelClass }
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewViewHolder {

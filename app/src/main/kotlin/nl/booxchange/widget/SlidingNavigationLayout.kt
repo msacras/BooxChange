@@ -12,11 +12,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.sliding_navigation_layout.view.*
 import nl.booxchange.R
-import org.jetbrains.anko.find
 import org.jetbrains.anko.findOptional
 import org.jetbrains.anko.px2dip
 import kotlin.properties.Delegates
@@ -150,13 +148,21 @@ class SlidingNavigationLayout @JvmOverloads constructor(context: Context, attrs:
     transitionAnimator?.start()
   }
 
-  fun setDrawerView(@LayoutRes layout: Int): View {
-    val drawerView = LayoutInflater.from(context).inflate(layout, drawer, false)
-    drawer.addView(drawerView)
+    fun setContentView(@LayoutRes layoutResID: Int): View {
+        val contentView = LayoutInflater.from(context).inflate(layoutResID, drawer, false)
+        content.removeAllViews()
+        content.addView(contentView)
     toggle = content.findOptional(R.id.drawer_button)
     toggle?.setOnClickListener { setDrawerOpen(!isDrawerOpen) }
-    return drawerView
-  }
+        return contentView
+    }
+
+    fun setDrawerView(@LayoutRes layoutResID: Int): View {
+        val drawerView = LayoutInflater.from(context).inflate(layoutResID, drawer, false)
+        drawer.removeAllViews()
+        drawer.addView(drawerView)
+        return drawerView
+    }
 
   fun showSnackbar(@StringRes message: Int) {
     Snackbar.make(content, message, Snackbar.LENGTH_SHORT).show()
