@@ -17,6 +17,10 @@ fun View.toGone() {
   this.visibility = View.GONE
 }
 
+fun View.setVisible(isVisible: Boolean) {
+  if (isVisible) toVisible() else toGone()
+}
+
 val View.isVisible
   get() = this.visibility == View.VISIBLE
 

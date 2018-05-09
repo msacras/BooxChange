@@ -180,6 +180,7 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical"
             android:visibility="gone"
+            android:animateLayoutChanges="true"
             app:layout_constraintTop_toBottomOf="@+id/l_name">
 
             <android.support.v7.widget.AppCompatEditText

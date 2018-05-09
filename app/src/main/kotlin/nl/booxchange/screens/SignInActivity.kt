@@ -131,7 +131,7 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
           if (isNewUser) {
             startActivity<ProfileActivity>()
           } else {
-            startActivity<HomepageActivity>()
+            startActivity<MainFragmentActivity>()
           }
           finish()
         } else {
@@ -200,6 +200,17 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
       setAlpha(R.id.phone_sign_in_button, 0.0f)
       setAlpha(R.id.phone_number_field, 0.0f)
       setAlpha(R.id.phone_icon, 0.0f)
+      setAlpha(R.id.google_txt, 0.0f)
+      setAlpha(R.id.fb_txt, 0.0f)
+      setAlpha(R.id.line_bottom, 0.0f)
+      setAlpha(R.id.line_left, 0.0f)
+      setAlpha(R.id.line_right, 0.0f)
+      setAlpha(R.id.line_top1, 0.0f)
+      setAlpha(R.id.line_top2, 0.0f)
+      setAlpha(R.id.little_line1, 0.0f)
+      setAlpha(R.id.little_line2, 0.0f)
+      setAlpha(R.id.little_line3, 0.0f)
+      setAlpha(R.id.little_line4, 0.0f)
     }
     val animationStepThree = ConstraintSet().apply {
       clone(animationStepTwo)

@@ -2,9 +2,9 @@
 
   <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorPrimaryDark">@color/caramel</item>
     <item name="colorAccent">@color/colorAccent</item>
-    <item name="colorControlActivated">@color/colorPrimaryDark</item>
+    <item name="colorControlActivated">@color/caramel</item>
     <item name="android:windowBackground">@color/white</item>
     <item name="android:screenOrientation">portrait</item>
     <item name="android:actionBarSize">80dp</item>

@@ -18,7 +18,7 @@ class LaunchActivity: AppCompatActivity() {
       setContentView(LoadingView(this).apply { message = "Synchronizing"; toGone(); show()})
       UserData.Authentication.login(firebaseUser.uid) { isLoggedIn ->
         if (isLoggedIn) {
-          startActivity<HomepageActivity>()
+          startActivity<MainFragmentActivity>()
         } else {
           UserData.Authentication.logout()
           startActivity<SignInActivity>()
