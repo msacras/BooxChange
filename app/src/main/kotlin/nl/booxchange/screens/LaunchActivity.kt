@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import nl.booxchange.extension.toGone
+import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.UserData
 import nl.booxchange.widget.LoadingView
 import org.jetbrains.anko.startActivity

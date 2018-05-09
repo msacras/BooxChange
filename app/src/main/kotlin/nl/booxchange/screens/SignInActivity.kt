@@ -129,9 +129,9 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
           toast("Database auth task succeeded")
           UserData.Session.fetchUserBooksList {}
           if (isNewUser) {
-            startActivity<ProfileActivity>()
+            startActivity<ProfileActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
           } else {
-            startActivity<MainFragmentActivity>()
+            startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
           }
           finish()
         } else {
