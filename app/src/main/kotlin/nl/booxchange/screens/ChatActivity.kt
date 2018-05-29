@@ -25,7 +25,7 @@ import org.joda.time.DateTime
 /**
  * Created by Dima on 3/10/2018.
  */
-class ChatActivity : BaseActivity() {
+class ChatActivity: BaseActivity() {
     lateinit var chatModel: ChatModel
     private val messagesAdapter = RecyclerViewAdapter()
 
@@ -82,7 +82,7 @@ class ChatActivity : BaseActivity() {
         message_input.setOnFocusChangeListener { _, hasFocus ->
             listOf(send_appointment, send_book, send_image).forEach { if (hasFocus) it.toGone() else it.toVisible() }
         }
-        message_input.addTextChangedListener(object : TextWatcher {
+        message_input.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {

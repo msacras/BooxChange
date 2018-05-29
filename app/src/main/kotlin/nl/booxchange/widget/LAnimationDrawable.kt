@@ -18,7 +18,7 @@ class LAnimationDrawable(
     width: Float? = null,
     @ColorInt primaryColor: Int? = null,
     @ColorInt secondaryColor: Int? = null
-) : AnimationDrawable() {
+): AnimationDrawable() {
     private var _thicknessAnimator: ValueAnimator? = null
     var thickness = thickness
         set(value) {
@@ -27,7 +27,7 @@ class LAnimationDrawable(
                 addUpdateListener { anim ->
                     (0 until numberOfFrames).forEach { frameAt(it).thickness = anim.animatedValue as Float }
                 }
-                duration = ((field ?: 0-value).absoluteValue * 2).toLong()
+                duration = (((field ?: 0f) - value).absoluteValue * 2).toLong()
                 start()
             }
             field = value
@@ -42,7 +42,7 @@ class LAnimationDrawable(
                 addUpdateListener { anim ->
                     (0 until numberOfFrames).forEach { frameAt(it).width = anim.animatedValue as Float }
                 }
-                duration = ((field ?: 0-targetWidth).absoluteValue * 2).coerceAtMost(200f).toLong()
+                duration = (((field ?: 0f) - targetWidth).absoluteValue * 2).coerceAtMost(200f).toLong()
                 start()
             }
             field = value

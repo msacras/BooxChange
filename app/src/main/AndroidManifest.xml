@@ -32,7 +32,6 @@
             android:theme="@style/AppThemeMain"/>
         <activity android:name=".screens.ProfileActivity"/>
         <activity android:name=".screens.LibraryActivity"/>
-        <activity android:name=".screens.OffersActivity"/>
         <activity android:name=".screens.MessagesActivity"/>
         <activity android:name=".screens.ChatActivity"/>
         <activity android:name=".screens.BookInfoActivity"/>
@@ -54,8 +53,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme"/>
             </intent-filter>
         </activity>
-        <activity android:name=".screens.messages.MessagingActivity"/>
-        <activity android:name=".screens.messages.MessagingActivity"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

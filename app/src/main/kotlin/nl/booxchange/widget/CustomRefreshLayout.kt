@@ -19,7 +19,7 @@ import org.jetbrains.anko.dip
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs), NestedScrollingParent, NestedScrollingChild {
+class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null): FrameLayout(context, attrs), NestedScrollingParent, NestedScrollingChild {
 
     var canRefreshUp = false
     var canRefreshDown = true

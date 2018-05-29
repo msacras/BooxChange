@@ -3,35 +3,22 @@ package nl.booxchange.widget
 import android.content.Context
 import android.support.v4.view.*
 import android.support.v4.widget.ListViewCompat
+import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.animation.DecelerateInterpolator
 import android.widget.AbsListView
-import android.widget.FrameLayout
 import android.widget.ListView
-import nl.booxchange.R
-import nl.booxchange.extension.getColorById
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
-import kotlin.math.absoluteValue
 import kotlin.math.sign
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty2
 
-class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs), NestedScrollingParent, NestedScrollingChild {
+class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null): CardView(context, attrs), NestedScrollingParent, NestedScrollingChild {
 
-    var canRefreshUp = false
-    var canRefreshDown = true
-
-    private var mLoadingView = View(context).apply {
-        layoutParams = FrameLayout.LayoutParams(dip(75), dip(30), Gravity.CENTER_HORIZONTAL)
-        background = LAnimationDrawable(loopsPerSecond = 1.5f, thickness = dip(2).toFloat(), width = dip(18).toFloat(), primaryColor = context.getColorById(R.color.colorPrimary), secondaryColor = context.getColorById(R.color.colorPrimaryDark))
-        alpha = 0f
-        translationY = (-dip(30)).toFloat()
-    }
-
-    private var mRefreshing = false
     private val mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var mTotalDragDistance = -1f
 
@@ -59,33 +46,18 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
     private var mNotify: Boolean = false
     private var mUsingCustomStart = false
 
-    private var onUpRefreshAction: (() -> Unit)? = null
-    fun setOnUpRefreshListener(refreshAction: (() -> Unit)? = null) {
-        onUpRefreshAction = refreshAction
-    }
-
-    private var onDownRefreshAction: (() -> Unit)? = null
-    fun setOnDownRefreshListener(refreshAction: (() -> Unit)? = null) {
-        onDownRefreshAction = refreshAction
+    private var onDismissAction: (() -> Unit)? = null
+    fun setOnDismissAction(dismissAction: (() -> Unit)? = null) {
+        onDismissAction = dismissAction
     }
 
     private var mTargetView: View? = null
-        get() = field ?: childrenSequence().find { it != mLoadingView }?.also { field = it }
-
-    var isRefreshing: Boolean
-        get() = mRefreshing
-        set(refreshing) = if (refreshing && mRefreshing != refreshing) {
-            mRefreshing = refreshing
-            mNotify = false
-        } else {
-            setRefreshing(refreshing, false)
-        }
+        get() = field ?: childrenSequence().first()
 
     init {
         setWillNotDraw(false)
         mDecelerateInterpolator = DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR)
 
-        createProgressView()
         isChildrenDrawingOrderEnabled = true
 
         mProgressViewEndOffset = dip(50)
@@ -107,29 +79,6 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    private fun createProgressView() {
-        addView(mLoadingView)
-        (mLoadingView.background as LAnimationDrawable).start()
-    }
-
-    private fun setRefreshing(refreshing: Boolean, notify: Boolean) {
-        if (mRefreshing != refreshing) {
-            mNotify = notify
-            mRefreshing = refreshing
-            if (mRefreshing) {
-                val callback = if ((mTargetView?.translationY) ?: 0f > 0f) ::onDownRefreshAction else ::onUpRefreshAction
-                callback.get()?.let { action ->
-                    animateOffsetToCorrectPosition()
-                    action()
-                } ?: animateOffsetToStartPosition()
-            } else {
-                if (!mReturningToStart) {
-                    animateOffsetToStartPosition()
-                }
-            }
-        }
-    }
-
     private val canChildScrollUp
         get() = (mTargetView as? ListView)?.let { ListViewCompat.canScrollList(it, -1) } ?: mTargetView?.canScrollVertically(-1) ?: false
 
@@ -139,7 +88,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         val action = ev.actionMasked
 
-        if (!isEnabled || mReturningToStart || (canChildScrollDown && canChildScrollUp) || mRefreshing || mNestedScrollInProgress) return false
+        if (!isEnabled || mReturningToStart || (canChildScrollDown && canChildScrollUp) || mNestedScrollInProgress) return false
 
         when (action) {
             MotionEvent.ACTION_DOWN -> {
@@ -156,10 +105,10 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
                 val pointerIndex = ev.findPointerIndex(mActivePointerId)
                 if (pointerIndex < 0) return false
                 val y = ev.getY(pointerIndex)
-                if (!canChildScrollUp && canRefreshDown) {
+                if (!canChildScrollUp) {
                     startNegativeDragging(y)
                 }
-                if (!canChildScrollDown && canRefreshUp) {
+                if (!canChildScrollDown) {
                     startPositiveDragging(y)
                 }
             }
@@ -182,7 +131,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
-        return (isEnabled && !mReturningToStart && !mRefreshing && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0)
+        return (isEnabled && !mReturningToStart && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0)
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int) {
@@ -229,10 +178,10 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, mParentOffsetInWindow)
 
         val dy = dyUnconsumed + mParentOffsetInWindow[1]
-        if (dy < 0 && !canChildScrollUp && canRefreshDown) {
+        if (dy < 0 && !canChildScrollUp) {
             mTotalUnconsumed += Math.abs(dy).toFloat()
             processDragMotionDown(mTotalUnconsumed)
-        } else if (dy > 0 && !canChildScrollDown && canRefreshUp) {
+        } else if (dy > 0 && !canChildScrollDown) {
             mTotalUnconsumed -= Math.abs(dy).toFloat()
             processDragMotionUp(mTotalUnconsumed)
         }
@@ -291,12 +240,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         val tensionPercent = (tensionSlingshotPercent / 4 - Math.pow((tensionSlingshotPercent / 4).toDouble(), 2.0)).toFloat() * 2f
         val extraMove = slingshotDist * tensionPercent * 2f
         val targetY = mProgressViewStartOffset + slingshotDist * dragPercent + extraMove
-        val loadingViewY = (targetY - mLoadingView.measuredHeight) / 2f
-        val loadingViewAlpha = (loadingViewY / mLoadingView.measuredHeight).coerceIn(0f, 1f)
-        mTargetView?.translationY = targetY
-        mLoadingView.translationY = loadingViewY
-        mLoadingView.alpha = loadingViewAlpha
-        mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL }
+        translationY = overscrollTop
     }
 
     private fun processDragMotionUp(overscrollTop: Float) {
@@ -308,19 +252,13 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         val tensionPercent = (tensionSlingshotPercent / 4 - Math.pow((tensionSlingshotPercent / 4).toDouble(), 2.0)).toFloat() * 2f
         val extraMove = slingshotDist * tensionPercent * 2f
         val targetY = mProgressViewStartOffset + slingshotDist * dragPercent + extraMove
-        val loadingViewY = (targetY/* - mLoadingView.measuredHeight*/) / 2f
-        val loadingViewAlpha = (loadingViewY / mLoadingView.measuredHeight).coerceIn(0f, 1f)
-        mTargetView?.translationY = -targetY
-        mLoadingView.translationY = -loadingViewY
-        mLoadingView.alpha = loadingViewAlpha
-        mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL }
+        translationY = overscrollTop
     }
 
     private fun finishSpinner(overscrollTop: Float) {
-        if ((overscrollTop > mTotalDragDistance && mLoadingView.translationY > 0) || (-overscrollTop > mTotalDragDistance && mLoadingView.translationY < 0)) {
-            setRefreshing(true, true)
+        if ((overscrollTop > mTotalDragDistance && translationY > 0) || (-overscrollTop > mTotalDragDistance && translationY < 0)) {
+            animateOffsetToEndPosition()
         } else {
-            mRefreshing = false
             animateOffsetToStartPosition()
         }
     }
@@ -328,7 +266,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         val action = ev.actionMasked
 
-        if (!isEnabled || mReturningToStart || (canChildScrollDown && canChildScrollUp) || mRefreshing || mNestedScrollInProgress) return false
+        if (!isEnabled || mReturningToStart || (canChildScrollDown && canChildScrollUp) || mNestedScrollInProgress) return false
 
         when (action) {
             MotionEvent.ACTION_DOWN -> {
@@ -341,24 +279,18 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
                 if (pointerIndex < 0) return false
 
                 val y = ev.getY(pointerIndex)
-                if (!canChildScrollUp && canRefreshDown) {
+                if (!canChildScrollUp) {
                     startNegativeDragging(y)
                 }
-                if (!canChildScrollDown && canRefreshUp) {
+                if (!canChildScrollDown) {
                     startPositiveDragging(y)
                 }
 
                 if (mIsBeingDragged) {
                     val overscrollTop = (y - mInitialMotionY) * DRAG_RATE
                     when {
-                        overscrollTop > 0 && canRefreshDown -> {
-                            mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL }
-                            processDragMotionDown(overscrollTop)
-                        }
-                        overscrollTop < 0 && canRefreshUp -> {
-                            mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL }
-                            processDragMotionUp(overscrollTop)
-                        }
+                        overscrollTop > 0 -> processDragMotionDown(overscrollTop)
+                        overscrollTop < 0 -> processDragMotionUp(overscrollTop)
                         else -> return false
                     }
                 }
@@ -397,7 +329,6 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         if (yDiff > mTouchSlop && !mIsBeingDragged) {
             mInitialMotionY = mInitialDownY + mTouchSlop
             mIsBeingDragged = true
-            mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL }
         }
     }
 
@@ -406,25 +337,17 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         if (yDiff > mTouchSlop && !mIsBeingDragged) {
             mInitialMotionY = mInitialDownY + mTouchSlop
             mIsBeingDragged = true
-            mLoadingView.layoutParams = (mLoadingView.layoutParams as FrameLayout.LayoutParams).apply { gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL }
         }
     }
 
-    private fun animateOffsetToCorrectPosition() {
-        val targetY = dip(50).toFloat() * mLoadingView.translationY.sign
-        val loadingViewY = (targetY - mLoadingView.measuredHeight) / 2f
-        val duration = ((mTargetView?.translationY ?: 0f) / targetY % (targetY + 1) * 350).toLong().absoluteValue
+    private fun animateOffsetToEndPosition() {
         mReturningToStart = true
-        mTargetView?.animate()?.translationY(targetY)?.setDuration(duration)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false; if (!mRefreshing) animateOffsetToStartPosition() }?.start()
-        mLoadingView.animate()?.translationY(loadingViewY/* + (mLoadingView.measuredHeight.takeIf { mLoadingView.translationY < 0 } ?: 0)*/)?.alpha(1f)?.setDuration(duration)?.setInterpolator(mDecelerateInterpolator)?.start()
+        animate()?.translationY(height * translationY.sign)?.setDuration(350L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false; onDismissAction?.invoke() }?.start()
     }
 
     private fun animateOffsetToStartPosition() {
-        val maxY = dip(50).toFloat()
-        val duration = ((mTargetView?.translationY ?: 0f) / maxY % (maxY + 1) * 250).toLong().absoluteValue
         mReturningToStart = true
-        mTargetView?.animate()?.translationY(0f)?.setDuration(duration)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false }?.start()
-        mLoadingView.animate().translationY(-mLoadingView.measuredHeight * mLoadingView.translationY.sign).alpha(0f).setDuration(duration).setInterpolator(mDecelerateInterpolator).start()
+        animate()?.translationY(0f)?.setDuration(250L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false }?.start()
     }
 
     private fun onSecondaryPointerUp(ev: MotionEvent) {
@@ -436,13 +359,31 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
         }
     }
 
-    enum class SwipeDirection {
+    fun appear(direction: PopupDirection = PopupDirection.UP) {
+        translationY = when (direction) {
+            PopupDirection.UP -> height
+            PopupDirection.DOWN -> -height
+        }.toFloat()
+
+        animateOffsetToStartPosition()
+    }
+
+    fun dismiss(direction: PopupDirection = PopupDirection.DOWN) {
+        translationY = when (direction) {
+            PopupDirection.UP -> -1f
+            PopupDirection.DOWN -> 1f
+        }.toFloat()
+
+        animateOffsetToEndPosition()
+    }
+
+    enum class PopupDirection {
         UP, DOWN
     }
 
     companion object {
-        private val DECELERATE_INTERPOLATION_FACTOR = 2f
-        private val INVALID_POINTER = -1
-        private val DRAG_RATE = .5f
+        private const val DECELERATE_INTERPOLATION_FACTOR = 2f
+        private const val INVALID_POINTER = -1
+        private const val DRAG_RATE = .5f
     }
 }

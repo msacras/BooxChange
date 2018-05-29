@@ -13,7 +13,7 @@ class LDrawable(
     var width: Float? = null,
     @ColorInt var primaryColor: Int = Color.BLACK,
     @ColorInt var secondaryColor: Int = Color.WHITE
-) : Drawable() {
+): Drawable() {
     override fun draw(canvas: Canvas) {
         val radius = Math.min(bounds.width(), bounds.height()).toFloat()
         val paint = Paint()

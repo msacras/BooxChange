@@ -1,21 +1,21 @@
 package nl.booxchange.screens
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.list_item_chat.view.*
 import nl.booxchange.R
+import nl.booxchange.R.id.chats_list
+import nl.booxchange.R.id.swipe_refresh_layout
 import nl.booxchange.model.ChatModel
-import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.MessageUtilities
-import nl.booxchange.utilities.NavigationActivity
-import nl.booxchange.utilities.RecyclerViewAdapter
+import nl.booxchange.utilities.*
 import org.jetbrains.anko.startActivity
 
 /**
  * Created by Dima on 3/10/2018.
  */
-class MessagesActivity : NavigationActivity() {
+class MessagesActivity: BaseActivity() {
   private val chatRoomsAdapter = RecyclerViewAdapter()
 
   override fun onCreate(savedInstanceState: Bundle?) {

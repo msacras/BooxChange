@@ -7,7 +7,6 @@ import android.text.style.*
 import android.view.View
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.extension.formattedName
 import nl.booxchange.extension.getColorById
 import nl.booxchange.extension.string
 import nl.booxchange.model.MessageModel

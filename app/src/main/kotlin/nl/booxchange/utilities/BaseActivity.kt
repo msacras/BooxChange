@@ -23,14 +23,17 @@ import org.jetbrains.anko.findOptional
 
 open class BaseActivity: AppCompatActivity() {
     protected val requestManager = APIClient.RequestManager(this)
+/*
     private var rootView: ConstraintLayout? = null
         set(value) {
             field = value
-            field?.addView(tintView, ConstraintLayout.LayoutParams(-1, -1))
+//            field?.addView(tintView, ConstraintLayout.LayoutParams(-1, -1))
             field?.addView(loadingView, ConstraintLayout.LayoutParams(-1, -1))
             field?.addView(retryView, ConstraintLayout.LayoutParams(-1, -1))
             attachKeyboardListeners()
         }
+*/
+/*
     private val tintView: View by lazy {
         View(this).apply {
             setBackgroundColor(Color.BLACK)
@@ -38,17 +41,21 @@ open class BaseActivity: AppCompatActivity() {
             id = R.id.tint_view
         }
     }
+*/
     val loadingView by lazy { LoadingView(this) }
     val retryView by lazy { RetryView(this) }
 
+/*
     private val previousActivity
         get() = with(BooxchangeApp.delegate.activityStack) {
             getOrNull(indexOf(this@BaseActivity) - 1)
         }
+*/
 
-    private val isDismissableActivity by lazy { this is NavigationActivity || this is SignInActivity }
-    private var isDragging = false
+//    private val isDismissableActivity by lazy { this is NavigationActivity || this is SignInActivity }
+//    private var isDragging = false
 
+/*
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (!(isDismissableActivity)) {
             when (event.action) {
@@ -98,6 +105,7 @@ open class BaseActivity: AppCompatActivity() {
         }
         return if (!isDragging) super.dispatchTouchEvent(event) else true
     }
+*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +115,8 @@ open class BaseActivity: AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         findOptional<View>(R.id.back_button)?.setOnClickListener { onBackPressed() }
-        overridePendingTransition(R.anim.activity_slide_in, 0)
+//        overridePendingTransition(R.anim.activity_slide_in, 0)
+/*
         if (!(isDismissableActivity)) {
             ValueAnimator.ofFloat(previousActivity?.window?.decorView?.rootView?.measuredWidth?.toFloat() ?: 0f, 0f).apply {
                 addUpdateListener {
@@ -123,8 +132,10 @@ open class BaseActivity: AppCompatActivity() {
                 start()
             }
         }
+*/
     }
 
+/*
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
         rootView = (contentView as? ConstraintLayout) ?: return
@@ -138,15 +149,19 @@ open class BaseActivity: AppCompatActivity() {
     fun setRootView(view: View?) {
         rootView = (view as? ConstraintLayout) ?: return
     }
+*/
 
     override fun onDestroy() {
         super.onDestroy()
         BooxchangeApp.delegate.activityStack.remove(this)
+/*
         if (keyboardListenersAttached) {
             rootView?.viewTreeObserver?.removeOnGlobalLayoutListener(keyboardLayoutListener)
         }
+*/
     }
 
+/*
     private var currentViewHeight = 0
     private val keyboardLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
         val newHeight = Rect().apply { window.decorView.getWindowVisibleDisplayFrame(this) }.height()
@@ -167,7 +182,9 @@ open class BaseActivity: AppCompatActivity() {
     protected fun onHideKeyboard() {
         window.currentFocus?.clearFocus()
     }
+*/
 
+/*
     protected fun attachKeyboardListeners() {
         if (keyboardListenersAttached) {
             return
@@ -178,7 +195,9 @@ open class BaseActivity: AppCompatActivity() {
 
         keyboardListenersAttached = true
     }
+*/
 
+/*
     override fun onBackPressed() {
         if (isDismissableActivity) {
             super.onBackPressed()
@@ -199,4 +218,5 @@ open class BaseActivity: AppCompatActivity() {
             }
         }
     }
+*/
 }

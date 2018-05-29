@@ -168,7 +168,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
             del_l_name.toVisible()
             del_email.toVisible()
             save.toVisible()
-            edit_exit.setImageResource(R.drawable.ic_cancel)
+//            edit_exit.setImageResource(R.drawable.ic_cancel)
             save.setOnClickListener {
                 save.toGone()
                 see_more.toGone()
@@ -182,7 +182,6 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
                 university.isEnabled = false
                 study_programme.isEnabled = false
                 study_year.isEnabled = false
-                edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
                 readFields()
                 uploadUser()
             }
@@ -199,7 +198,6 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
             del_l_name.toGone()
             del_email.toGone()
             save.toGone()
-            edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
             }
         }
         val providers = FirebaseAuth.getInstance().currentUser?.providerData
@@ -256,25 +254,27 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     }
 
     private fun uploadUser() {
+/*
         loading_v.show()
         loading_v.message = "Uploading"
+*/
         requestManager.userUpdate(userModel) { response ->
             response?.let {
                 toast("Upload finished")
                 if (response.success) {
                     UserData.Session.userModel = userModel
-                    loading_v.message = "Success"
+//                    loading_v.message = "Success"
                     toast("Request success")
                     //TODO: Show success view
 //                    intent.putExtra(Constants.EXTRA_PARAM_USER_EDIT_RESULT, true)
 //                    logo.postDelayed({ onBackPressed() }, 1000)
                 } else {
-                    loading_v.hide()
+//                    loading_v.hide()
                     toast("Request failure")
                     //TODO: Show failure view; hide loading view
                 }
             } ?: run {
-                loading_v.hide()
+//                loading_v.hide()
                 toast("Upload failed")
                 //TODO: Show connection failure message
             }
@@ -351,7 +351,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
             val providers = FirebaseAuth.getInstance().currentUser?.providerData
-            userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
+            userModel.phoneId = providers?.find { it.providerId == "phone" }?.phoneNumber
             userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
             userModel.googleId = providers?.find { it.providerId == "google.com" }?.uid
             uploadUser()

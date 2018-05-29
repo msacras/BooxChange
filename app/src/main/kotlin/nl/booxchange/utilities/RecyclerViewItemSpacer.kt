@@ -7,7 +7,7 @@ import android.view.View
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
-class RecyclerViewItemSpacer(val spaceHorizontal: Int, val spaceVertical: Int = spaceHorizontal): RecyclerView.ItemDecoration() {
+class RecyclerViewItemSpacer(private val spaceHorizontal: Int, private val spaceVertical: Int = spaceHorizontal): RecyclerView.ItemDecoration() {
   override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
     outRect?.let {
       outRect.left = spaceHorizontal

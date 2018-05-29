@@ -20,7 +20,7 @@ import org.jetbrains.anko.firstChildOrNull
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
 
-class BookInfoActivity : BaseActivity() {
+class BookInfoActivity: BaseActivity() {
     private val booksListAdapter = RecyclerViewAdapter()
     private var isEditModeEnabled = false
     private lateinit var bookModel: BookModel
@@ -131,7 +131,7 @@ class BookInfoActivity : BaseActivity() {
     }
 
     private fun writeBookModelToView() {
-        bookModel.image?.let { Tools.initializeImage(book_image, it) }
+//        bookModel.image?.let { Tools.initializeImage(book_image, it) }
 
         book_price.toVisible()
         currency_label.toVisible()
@@ -148,7 +148,7 @@ class BookInfoActivity : BaseActivity() {
         book_isbn.setText(bookModel.isbn)
         book_info.setText(bookModel.info)
         bookModel.offerPrice?.let(book_price::setText) ?: run { book_price.toGone(); currency_label.toGone() }
-        bookModel.state?.let { (book_condition_radio_group.getChildAt(it - 1) as? AppCompatRadioButton)?.isChecked = true } ?: run { book_condition_radio_group.toGone(); book_condition_unknown.toVisible() }
+        bookModel.condition?.let { (book_condition_radio_group.getChildAt(it - 1) as? AppCompatRadioButton)?.isChecked = true } ?: run { book_condition_radio_group.toGone(); book_condition_unknown.toVisible() }
 
         when (OfferType.valueOf(bookModel.offerType ?: "NONE")) {
             OfferType.NONE -> {
@@ -185,7 +185,7 @@ class BookInfoActivity : BaseActivity() {
         bookModel.isbn = book_isbn.text.string.takeNotBlank
         bookModel.offerPrice = book_price.text.string.takeNotBlank
         bookModel.info = book_info.text.string.takeNotBlank
-        bookModel.state = book_condition_radio_group.let { it.indexOfChild(it.firstChildOrNull { (it as? AppCompatRadioButton)?.isChecked == true }) }.takeIf { it > -1 }
+        bookModel.condition = book_condition_radio_group.let { it.indexOfChild(it.firstChildOrNull { (it as? AppCompatRadioButton)?.isChecked == true }) }.takeIf { it > -1 }
         bookModel.offerType = OfferType.getByFilters(for_trade_label.isChecked, for_sale_label.isChecked).name
     }
 

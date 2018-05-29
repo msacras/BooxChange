@@ -18,7 +18,7 @@ import org.jetbrains.anko.startActivity
 /**
  * Created by Dima on 3/10/2018.
  */
-class LibraryActivity : NavigationActivity() {
+class LibraryActivity: BaseActivity() {
 
   private val userBooksAdapter = RecyclerViewAdapter()
 
@@ -35,7 +35,7 @@ class LibraryActivity : NavigationActivity() {
       userBooksAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class) { view, model ->
       listOf<View>(view.icon_type_sell, view.icon_type_trade, view.book_price, view.or_label, view.for_trade_label).forEach { it.toGone() }
 
-      Tools.initializeImage(view.book_image, model.image)
+//      Tools.initializeImage(view.book_image, model.image)
       view.book_author.text = model.author
       view.book_title.text = model.title
           view.book_price.text = model.offerPrice?.prependIndent("€")

@@ -18,9 +18,12 @@ import nl.booxchange.extension.*
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.OfferType
 import nl.booxchange.model.OfferType.*
-import nl.booxchange.utilities.*
+import nl.booxchange.screens.book_info_fragment.BookInfoView
+import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.utilities.RecyclerViewAdapter
+import nl.booxchange.utilities.RecyclerViewItemSpacer
+import nl.booxchange.utilities.Tools
 import org.jetbrains.anko.dip
-import org.jetbrains.anko.startActivity
 import java.util.*
 import kotlin.concurrent.timer
 import kotlin.properties.Delegates
@@ -28,299 +31,326 @@ import kotlin.properties.Delegates
 /**
  * Created by Cristian Velinciuc on 3/9/18.
  */
-class HomepageActivity : NavigationActivity() {
-  private val booksListAdapter = RecyclerViewAdapter()
-  private val searchListAdapter = RecyclerViewAdapter()
+class HomepageActivity: BaseActivity() {
+    private val booksListAdapter = RecyclerViewAdapter()
+    private val searchListAdapter = RecyclerViewAdapter()
 
-  private lateinit var actionButtons: MutableMap<FloatingActionButton, Boolean>
+    private lateinit var bookInfoFragment: BookInfoView
 
-  private var isFilterMenuOpen = false
-  private var isPurchaseFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(isExchangeFilterEnabled, state) }
-  private var isExchangeFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(state, isPurchaseFilterEnabled) }
+    private lateinit var actionButtons: MutableMap<FloatingActionButton, Boolean>
 
-  private var bottomReached = false
-  private var isSearchOpen = false
-  private var selectedOfferType by Delegates.observable(OfferType.BOTH) { _, _, _ -> fetchBookOffersList(true, true) }
-  private val queryKeyword
-    get() = search_query_input.text.toString()
+    private var isFilterMenuOpen = false
+    private var isPurchaseFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(isExchangeFilterEnabled, state) }
+    private var isExchangeFilterEnabled: Boolean by Delegates.observable(true) { _, _, state -> selectedOfferType = OfferType.getByFilters(state, isPurchaseFilterEnabled) }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_homepage)
-    initializeSwipeRefreshLayout()
-    initializeLayout()
-    fetchBookOffersList(true, true)
-  }
+    private var bottomReached = false
+    private var isSearchOpen = false
+    private var selectedOfferType by Delegates.observable(OfferType.BOTH) { _, _, _ -> fetchBookOffersList(true, true) }
+    private val queryKeyword
+        get() = search_query_input.text.toString()
 
-  private fun openFilterMenu() {
-    showActionButton(action_filter_exchange)
-    action_filter_purchase.postDelayed({ showActionButton(action_filter_purchase) }, 200)
-      action_filter_menu.setImageResource(R.drawable.filter)
-    disableActionButton(action_filter_menu)
-    isFilterMenuOpen = true
-  }
-
-  private fun closeFilterMenu() {
-    hideActionButton(action_filter_purchase)
-    action_filter_exchange.postDelayed({ hideActionButton(action_filter_exchange) }, 50)
-      action_filter_menu.setImageResource(R.drawable.filter)
-    enableActionButton(action_filter_menu)
-    isFilterMenuOpen = false
-  }
-
-  private fun initializeLayout() {
-    actionButtons = mutableMapOf(
-      action_filter_menu to false,
-      action_filter_purchase to false,
-      action_filter_exchange to false
-    )
-
-    action_filter_menu.post {
-      hideActionButton(action_filter_purchase, true)
-      hideActionButton(action_filter_exchange, true)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_homepage)
+        initializeSwipeRefreshLayout()
+        initializeLayout()
+        fetchBookOffersList(true, true)
     }
 
-    action_filter_purchase.setOnClickListener {
-      if (isPurchaseFilterEnabled) disableActionButton(action_filter_purchase) else enableActionButton(action_filter_purchase)
-      isPurchaseFilterEnabled = !isPurchaseFilterEnabled
+    private fun openFilterMenu() {
+        showActionButton(action_filter_exchange)
+        action_filter_purchase.postDelayed({ showActionButton(action_filter_purchase) }, 200)
+        action_filter_menu.setImageResource(R.drawable.filter)
+        disableActionButton(action_filter_menu)
+        isFilterMenuOpen = true
     }
 
-    action_filter_exchange.setOnClickListener {
-      if (isExchangeFilterEnabled) disableActionButton(action_filter_exchange) else enableActionButton(action_filter_exchange)
-      isExchangeFilterEnabled = !isExchangeFilterEnabled
+    private fun closeFilterMenu() {
+        hideActionButton(action_filter_purchase)
+        action_filter_exchange.postDelayed({ hideActionButton(action_filter_exchange) }, 50)
+        action_filter_menu.setImageResource(R.drawable.filter)
+        enableActionButton(action_filter_menu)
+        isFilterMenuOpen = false
     }
 
-    action_filter_menu.setOnClickListener {
-      if (isFilterMenuOpen) {
-        closeFilterMenu()
-      } else {
-        openFilterMenu()
-      }
-    }
+    private fun initializeLayout() {
+        actionButtons = mutableMapOf(
+            action_filter_menu to false,
+            action_filter_purchase to false,
+            action_filter_exchange to false
+        )
 
-    search_cancel_button.setOnClickListener {
-      if (isSearchOpen) {
-        if (queryKeyword.isNotBlank()) {
-          search_query_input.text.clear()
-        } else {
-          search_query_input.toGone()
-          (search_wrapper.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.RIGHT_OF)
-            search_cancel_button.setImageResource(R.drawable.magnify)
+        action_filter_menu.post {
+            hideActionButton(action_filter_purchase, true)
+            hideActionButton(action_filter_exchange, true)
         }
-      } else {
-        (search_wrapper.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.RIGHT_OF, R.id.logo)
-        search_query_input.toVisible()
-        search_query_input.requestFocus()
-          search_cancel_button.setImageResource(R.drawable.close)
-      }
-      isSearchOpen = !isSearchOpen
-    }
 
-    search_query_input.addTextChangedListener(object: TextWatcher {
-      private var queryDelayTimer: Timer? = null
+        action_filter_purchase.setOnClickListener {
+            if (isPurchaseFilterEnabled) disableActionButton(action_filter_purchase) else enableActionButton(action_filter_purchase)
+            isPurchaseFilterEnabled = !isPurchaseFilterEnabled
+        }
 
-      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-      override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-      override fun afterTextChanged(string: Editable?) {
-        val query = string?.toString() ?: return
-        queryDelayTimer?.cancel()
-        queryDelayTimer = null
-        searchListAdapter.clearItems()
-        when {
-          query.length > 3 && query.isNotBlank() -> {
-            queryDelayTimer = timer(initialDelay = 200, period = 200) {
-              bottomReached = false
-              runOnUiThread { fetchBookOffersList(true, true) }
-              queryDelayTimer = null
-              cancel()
+        action_filter_exchange.setOnClickListener {
+            if (isExchangeFilterEnabled) disableActionButton(action_filter_exchange) else enableActionButton(action_filter_exchange)
+            isExchangeFilterEnabled = !isExchangeFilterEnabled
+        }
+
+        action_filter_menu.setOnClickListener {
+            if (isFilterMenuOpen) {
+                closeFilterMenu()
+            } else {
+                openFilterMenu()
             }
-          }
-          query.length > 0 -> {
-            books_list_view.adapter = searchListAdapter
-            swipe_refresh_layout.isEnabled = false
-          }
-          query.length == 0 -> {
-            books_list_view.adapter = booksListAdapter
-            swipe_refresh_layout.isEnabled = true
-          }
         }
-      }
-    })
 
-      booksListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, this::bindItem)
-      searchListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, this::bindItem)
-    books_list_view.layoutManager = GridLayoutManager(this, 2)
-    books_list_view.adapter = booksListAdapter
-    books_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(8)))
-    books_list_view.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-      override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
-        if (dy > 10) {
-          if (isFilterMenuOpen) {
-            actionButtons[action_filter_menu] = true
-            closeFilterMenu()
-            books_list_view.postDelayed({
-              actionButtons[action_filter_menu] = false
-              hideActionButton(action_filter_menu)
-            }, 400)
-          } else {
-            hideActionButton(action_filter_menu)
-          }
+        search_cancel_button.setOnClickListener {
+            if (isSearchOpen) {
+                if (queryKeyword.isNotBlank()) {
+                    search_query_input.text.clear()
+                } else {
+                    search_query_input.toGone()
+                    (search_wrapper.layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.RIGHT_OF)
+                    search_cancel_button.setImageResource(R.drawable.magnify)
+                }
+            } else {
+                (search_wrapper.layoutParams as RelativeLayout.LayoutParams).addRule(RelativeLayout.RIGHT_OF, R.id.logo)
+                search_query_input.toVisible()
+                search_query_input.requestFocus()
+                search_cancel_button.setImageResource(R.drawable.close)
+            }
+            isSearchOpen = !isSearchOpen
         }
-        if (dy < -10) {
-          showActionButton(action_filter_menu)
+
+        search_query_input.addTextChangedListener(object : TextWatcher {
+            private var queryDelayTimer: Timer? = null
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(string: Editable?) {
+                val query = string?.toString() ?: return
+                queryDelayTimer?.cancel()
+                queryDelayTimer = null
+                searchListAdapter.clearItems()
+                when {
+                    query.length > 3 && query.isNotBlank() -> {
+                        queryDelayTimer = timer(initialDelay = 200, period = 200) {
+                            bottomReached = false
+                            runOnUiThread { fetchBookOffersList(true, true) }
+                            queryDelayTimer = null
+                            cancel()
+                        }
+                    }
+                    query.length > 0 -> {
+                        books_list_view.adapter = searchListAdapter
+                        swipe_refresh_layout.isEnabled = false
+                    }
+                    query.length == 0 -> {
+                        books_list_view.adapter = booksListAdapter
+                        swipe_refresh_layout.isEnabled = true
+                    }
+                }
+            }
+        })
+
+        booksListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, ::bindItem)
+        searchListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class, ::bindItem)
+        books_list_view.layoutManager = GridLayoutManager(this, 2)
+        books_list_view.adapter = booksListAdapter
+        books_list_view.addItemDecoration(RecyclerViewItemSpacer(dip(8)))
+        books_list_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 10) {
+                    if (isFilterMenuOpen) {
+                        actionButtons[action_filter_menu] = true
+                        closeFilterMenu()
+                        books_list_view.postDelayed({
+                            actionButtons[action_filter_menu] = false
+                            hideActionButton(action_filter_menu)
+                        }, 400)
+                    } else {
+                        hideActionButton(action_filter_menu)
+                    }
+                }
+                if (dy < -10) {
+                    showActionButton(action_filter_menu)
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                recyclerView ?: return
+
+                if (recyclerView.computeVerticalScrollOffset() > 0 && newState == RecyclerView.SCROLL_STATE_IDLE && recyclerView.computeVerticalScrollRange() == recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent()) {
+                    fetchBookOffersList(false, false)
+                }
+            }
+        })
+
+        bookInfoFragment = BookInfoView()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.book_info_fragment, bookInfoFragment)
+            .hide(bookInfoFragment)
+            .commit()
+    }
+
+    private fun enableActionButton(view: FloatingActionButton) {
+        val (fromColorNormal, fromColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
+        val (toColorNormal, toColorDark) = when (view.id) {
+            R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
+            else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
         }
-      }
 
-      override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-        super.onScrollStateChanged(recyclerView, newState)
-        recyclerView ?: return
-
-        if (recyclerView.computeVerticalScrollOffset() > 0 && newState == RecyclerView.SCROLL_STATE_IDLE && recyclerView.computeVerticalScrollRange() == recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent()) {
-          fetchBookOffersList(false, false)
+        ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
+            addUpdateListener {
+                view.backgroundTintList = ColorStateList.valueOf(it.animatedValue as Int)
+            }
+            duration = 100
+            start()
         }
-      }
-    })
-  }
-
-  private fun enableActionButton(view: FloatingActionButton) {
-    val (fromColorNormal, fromColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
-    val (toColorNormal, toColorDark) = when (view.id) {
-      R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
-      else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
+        ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
+            addUpdateListener {
+                view.setColorFilter(it.animatedValue as Int)
+            }
+            duration = 100
+            start()
+        }
     }
 
-    ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
-      addUpdateListener {
-        view.backgroundTintList = ColorStateList.valueOf(it.animatedValue as Int)
-      }
-      duration = 100
-      start()
-    }
-    ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
-      addUpdateListener {
-        view.setColorFilter(it.animatedValue as Int)
-      }
-      duration = 100
-      start()
-    }
-  }
+    private fun disableActionButton(view: FloatingActionButton) {
+        val (toColorNormal, toColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
+        val (fromColorNormal, fromColorDark) = when (view.id) {
+            R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
+            else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
+        }
 
-  private fun disableActionButton(view: FloatingActionButton) {
-    val (toColorNormal, toColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
-    val (fromColorNormal, fromColorDark) = when (view.id) {
-      R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
-      else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
-    }
-
-    ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
-      addUpdateListener {
-        view.backgroundTintList = ColorStateList.valueOf(it.animatedValue as Int)
-      }
-      duration = 100
-      start()
-    }
-    ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
-      addUpdateListener {
-        view.setColorFilter(it.animatedValue as Int)
-      }
-      duration = 100
-      start()
-    }
-  }
-
-  private fun showActionButton(view: FloatingActionButton, immediate: Boolean = false) {
-    val isAnimating: Boolean = actionButtons[view] ?: return
-    val duration: Long = if (immediate) 1 else 250
-    if (!isAnimating && !view.isVisible) {
-      actionButtons[view] = true
-      view.toVisible()
-      view.animate().alpha(1f).translationY(0f).setDuration(duration).withEndAction { actionButtons[view] = false }.start()
-    }
-  }
-
-  private fun hideActionButton(view: FloatingActionButton, immediate: Boolean = false) {
-    val isAnimating: Boolean = actionButtons[view] ?: return
-    val duration: Long = if (immediate) 1 else 100
-    if (!isAnimating && !view.isGone) {
-      actionButtons[view] = true
-      view.animate().alpha(0f).translationY(view.measuredHeight.toFloat()).setDuration(duration).withEndAction { view.toGone(); actionButtons[view] = false }.start()
-    }
-  }
-
-  private fun fetchBookOffersList(isRefresh: Boolean, clear: Boolean) {
-      if (!isRefresh && bottomReached) {
-          swipe_refresh_layout.isRefreshing = false
-          return
-      }
-    val (targetAdapter, targetAction) = if (isSearchOpen) {
-      searchListAdapter to if (isRefresh) RecyclerViewAdapter::swapItems else RecyclerViewAdapter::appendItems
-    } else {
-      booksListAdapter to if (isRefresh) RecyclerViewAdapter::prependItems else RecyclerViewAdapter::appendItems
-    }
-    if (clear) {
-      targetAdapter.clearItems()
-      bottomReached = false
-    }
-    val listPosition = if (isRefresh || clear) 0 else targetAdapter.itemCount
-
-    requestManager.fetchAvailableBooks(queryKeyword, selectedOfferType, listPosition) {
-      it?.result?.let { list ->
-          bottomReached = list.isEmpty()
-          targetAction.invoke(targetAdapter, list)
-      } ?: showSnackbar(R.string.data_fetch_failed)
-        if (isRefresh) swipe_refresh_layout.isRefreshing = false
-    }
-  }
-
-  private fun bindItem(view: View, model: BookModel) {
-    Tools.initializeImage(view.book_image, model.image)
-    view.book_author.text = model.author
-    view.book_title.text = model.title
-    view.book_price.text = model.offerPrice?.prependIndent("€") ?: ""
-    when (valueOf(model.offerType ?: "NONE")) {
-      EXCHANGE -> {
-        view.icon_type_sell.toGone()
-        view.icon_type_trade.toVisible()
-        view.book_price.toGone()
-        view.or_label.toGone()
-        view.for_trade_label.toVisible()
-      }
-      SELL -> {
-        view.icon_type_sell.toVisible()
-        view.icon_type_trade.toGone()
-        view.book_price.toVisible()
-        view.or_label.toGone()
-        view.for_trade_label.toGone()
-      }
-      BOTH -> {
-        view.icon_type_sell.toVisible()
-        view.icon_type_trade.toVisible()
-        view.book_price.toVisible()
-        view.or_label.toVisible()
-        view.for_trade_label.toVisible()
-      }
-      NONE -> {
-        view.icon_type_sell.toGone()
-        view.icon_type_trade.toGone()
-        view.book_price.toGone()
-        view.or_label.toGone()
-        view.for_trade_label.toGone()
-      }
+        ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
+            addUpdateListener {
+                view.backgroundTintList = ColorStateList.valueOf(it.animatedValue as Int)
+            }
+            duration = 100
+            start()
+        }
+        ValueAnimator.ofObject(ArgbEvaluator(), fromColorDark, toColorDark).apply {
+            addUpdateListener {
+                view.setColorFilter(it.animatedValue as Int)
+            }
+            duration = 100
+            start()
+        }
     }
 
-    view.setOnClickListener {
-        startActivity<BookInfoActivity>(Constants.EXTRA_PARAM_BOOK_MODEL to model)
+    private fun showActionButton(view: FloatingActionButton, immediate: Boolean = false) {
+        val isAnimating = actionButtons[view] ?: return
+        val duration = if (immediate) 1L else 250L
+        if (!isAnimating && !view.isVisible) {
+            actionButtons[view] = true
+            view.toVisible()
+            view.animate().alpha(1f).translationY(0f).setDuration(duration).withEndAction { actionButtons[view] = false }.start()
+        }
     }
-  }
 
-  private fun initializeSwipeRefreshLayout() {
-      swipe_refresh_layout.canRefreshUp = true
-      swipe_refresh_layout.setOnUpRefreshListener {
-          fetchBookOffersList(false, false)
-      }
-      swipe_refresh_layout.setOnDownRefreshListener {
-      fetchBookOffersList(true, false)
+    private fun hideActionButton(view: FloatingActionButton, immediate: Boolean = false) {
+        val isAnimating = actionButtons[view] ?: return
+        val duration = if (immediate) 1L else 100L
+        if (!isAnimating && !view.isGone) {
+            actionButtons[view] = true
+            view.animate().alpha(0f).translationY(view.measuredHeight.toFloat()).setDuration(duration).withEndAction { view.toGone(); actionButtons[view] = false }.start()
+        }
     }
-  }
+
+    private fun fetchBookOffersList(isRefresh: Boolean, clear: Boolean) {
+        if (!isRefresh && bottomReached) {
+            swipe_refresh_layout.isRefreshing = false
+            return
+        }
+        val (targetAdapter, targetAction) = if (isSearchOpen) {
+            searchListAdapter to if (isRefresh) searchListAdapter::swapItems else searchListAdapter::appendItems
+        } else {
+            booksListAdapter to if (isRefresh) booksListAdapter::prependItems else booksListAdapter::appendItems
+        }
+        if (clear) {
+            targetAdapter.clearItems()
+            bottomReached = false
+        }
+        val listPosition = if (isRefresh || clear) 0 else targetAdapter.itemCount
+
+        requestManager.fetchAvailableBooks(queryKeyword, selectedOfferType, listPosition) {
+            it?.result?.let(targetAction)
+            bottomReached = it?.result?.isEmpty() ?: bottomReached
+            if (isRefresh) swipe_refresh_layout.isRefreshing = false
+        }
+    }
+
+    private fun bindItem(view: View, model: BookModel) {
+//        Tools.initializeImage(view.book_image, model.image)
+        view.book_author.text = model.author
+        view.book_title.text = model.title
+        view.book_price.text = model.offerPrice?.prependIndent("€") ?: ""
+        when (valueOf(model.offerType ?: "NONE")) {
+            EXCHANGE -> {
+                view.icon_type_sell.toGone()
+                view.icon_type_trade.toVisible()
+                view.book_price.toGone()
+                view.or_label.toGone()
+                view.for_trade_label.toVisible()
+            }
+            SELL -> {
+                view.icon_type_sell.toVisible()
+                view.icon_type_trade.toGone()
+                view.book_price.toVisible()
+                view.or_label.toGone()
+                view.for_trade_label.toGone()
+            }
+            BOTH -> {
+                view.icon_type_sell.toVisible()
+                view.icon_type_trade.toVisible()
+                view.book_price.toVisible()
+                view.or_label.toVisible()
+                view.for_trade_label.toVisible()
+            }
+            NONE -> {
+                view.icon_type_sell.toGone()
+                view.icon_type_trade.toGone()
+                view.book_price.toGone()
+                view.or_label.toGone()
+                view.for_trade_label.toGone()
+            }
+        }
+
+        view.setOnClickListener {
+//            bookInfoFragment.updateBookModel(model)
+//            bookInfoFragment.setSize(view.width, view.height)
+/*
+            Rect().apply {
+                view.getGlobalVisibleRect(this)
+                val topOffset = Rect().apply { (contentView as ViewGroup).offsetDescendantRectToMyCoords(view, this) }.top
+                bookInfoFragment.setBounds(left, topOffset, right, bottom)
+            }
+*/
+//            book_info_fragment.toVisible()
+
+//            book_info_fragment.left = view.left
+//            book_info_fragment.top = view.top
+//            book_info_fragment.right = view.right
+//            book_info_fragment.bottom = view.bottom
+            //book_info_fragment.
+            supportFragmentManager
+                .beginTransaction()
+                .show(bookInfoFragment)
+                .commit()
+//            Rect().apply { view.getGlobalVisibleRect(this) }.apply { offset(0, -window.decorView.rootWindowInsets.stableInsetTop) }.let(bookInfoFragment::setBounds)
+            //startActivity<BookInfoActivity>(Constants.EXTRA_PARAM_BOOK_MODEL to model)
+        }
+    }
+
+    private fun initializeSwipeRefreshLayout() {
+        swipe_refresh_layout.canRefreshUp = true
+        swipe_refresh_layout.setOnUpRefreshListener {
+            fetchBookOffersList(false, false)
+        }
+        swipe_refresh_layout.setOnDownRefreshListener {
+            fetchBookOffersList(true, false)
+        }
+    }
 }

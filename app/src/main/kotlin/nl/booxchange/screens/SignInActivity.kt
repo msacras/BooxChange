@@ -48,7 +48,7 @@ import kotlin.math.absoluteValue
 /**
  * Created by Cristian Velinciuc on 3/12/18.
  */
-class SignInActivity : BaseActivity(), OnCompleteListener<AuthResult> {
+class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     private val facebookCallbackManager = CallbackManager.Factory.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {

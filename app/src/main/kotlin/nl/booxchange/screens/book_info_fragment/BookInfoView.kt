@@ -1,4 +1,4 @@
-package nl.booxchange.screens.book_info
+package nl.booxchange.screens.book_info_fragment
 
 import android.os.Bundle
 import android.support.v7.widget.AppCompatRadioButton
@@ -18,7 +18,7 @@ import nl.booxchange.utilities.Tools
 import nl.booxchange.widget.CustomDismissLayout
 
 
-class BookInfoFragment: BaseFragment() {
+class BookInfoView: BaseFragment() {
     private lateinit var bookModel: BookModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
@@ -91,7 +91,7 @@ class BookInfoFragment: BaseFragment() {
 */
 
     private fun writeBookModelToView() {
-        bookModel.image?.let { Tools.initializeImage(book_image, it) }
+//        bookModel.image?.let { Tools.initializeImage(book_image, it) }
 
         book_price.toVisible()
         currency_label.toVisible()
@@ -108,7 +108,7 @@ class BookInfoFragment: BaseFragment() {
         book_isbn.setText(bookModel.isbn)
         book_info.setText(bookModel.info)
         bookModel.offerPrice?.let(book_price::setText) ?: run { book_price.toGone(); currency_label.toGone() }
-        bookModel.state?.let { (book_condition_radio_group.getChildAt(it - 1) as? AppCompatRadioButton)?.isChecked = true } ?: run { book_condition_radio_group.toGone(); book_condition_unknown.toVisible() }
+        bookModel.condition?.let { (book_condition_radio_group.getChildAt(it - 1) as? AppCompatRadioButton)?.isChecked = true } ?: run { book_condition_radio_group.toGone(); book_condition_unknown.toVisible() }
 
         when (OfferType.valueOf(bookModel.offerType ?: "NONE")) {
             OfferType.NONE -> {

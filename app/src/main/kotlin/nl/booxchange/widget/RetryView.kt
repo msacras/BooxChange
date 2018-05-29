@@ -17,16 +17,16 @@ import kotlin.properties.Delegates
  */
 class RetryView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
 
-  var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
-  var action: () -> Unit = {}
+    var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
+    var action: () -> Unit = {}
 
-  init {
-    View.inflate(context, R.layout.retry_view_layout, this)
-      setBackgroundColor(Color.WHITE)
-      alpha = 0f
-      id = R.id.retry_view
-    toGone()
-  }
+    init {
+        View.inflate(context, R.layout.retry_view_layout, this)
+        setBackgroundColor(Color.WHITE)
+        alpha = 0f
+        id = R.id.retry_view
+        toGone()
+    }
 
     fun show(smooth: Boolean = true) {
         toVisible()
