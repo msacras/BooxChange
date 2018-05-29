@@ -59,14 +59,15 @@ dependencies {
         transitive = true
     }
 
-    implementation "com.github.stfalcon:androidmvvmhelper:0.4"
-
 //    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 //    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
 
     implementation "com.facebook.android:facebook-android-sdk:$facebook_version"
 
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation 'jp.wasabeef:glide-transformations:3.1.1'
+    implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
 
 //    testImplementation "junit:junit:4.12"
 //    androidTestImplementation "com.android.support.test:runner:1.0.1"
