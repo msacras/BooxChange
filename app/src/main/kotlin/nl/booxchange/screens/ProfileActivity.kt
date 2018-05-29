@@ -29,9 +29,11 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_profile.view.*
 import nl.booxchange.R
 import nl.booxchange.R.id.*
 import nl.booxchange.extension.isVisible
+import nl.booxchange.extension.setVisible
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
 import nl.booxchange.model.UserModel
@@ -42,7 +44,7 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
 
-class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
+class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
 
     private val facebookCallbackManager = CallbackManager.Factory.create()
     private val userModel: UserModel = UserData.Session.userModel!!.copy()
@@ -52,84 +54,37 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
 
     val color = Color.parseColor("#939393")
 
-//    var rainfall = floatArrayOf(11.1f, 22.3f, 22.1f, 99.2f, 22f, 11f, 44.1f)
-//    var monthNames = arrayOf<String>("ff", "wed", "gg", "ty", "fck", "hz", "kk")
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         writeFields()
         initializeLayout()
 
-        chevron.setColorFilter(color)
-        fb_icon.setColorFilter(color)
-        not_icon.setColorFilter(color)
-        google_icon.setColorFilter(color)
-        phone_icon.setColorFilter(color)
-        del_l_name.setColorFilter(color)
-        del_f_name.setColorFilter(color)
-        del_email.setColorFilter(color)
-
-        f_name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString().trim().isEmpty()){
-                    del_f_name.toGone()
-                    del_f_name.setOnClickListener {
-                        f_name.text.clear()
+        listOf(chevron, fb_icon, not_icon, google_icon, phone_icon, del_l_name, del_f_name, del_email).forEach { it.setColorFilter(color) }
+        listOf(f_name to del_f_name, l_name to del_l_name, email to del_email).forEach { (view, delete_view) ->
+            view.addTextChangedListener(object : TextWatcher {
+                init {
+                    delete_view.setOnClickListener {
+                        view.text.clear()
                     }
-                } else {
-                    del_f_name.toVisible()
                 }
-            }
-        })
 
-        l_name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+                override fun afterTextChanged(s: Editable?) {}
+                override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString().trim().isEmpty()){
-                    del_l_name.toGone()
-                    del_l_name.setOnClickListener {
-                        l_name.text.clear()
+                override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    if (s.toString().trim().isEmpty()) {
+                        delete_view.toGone()
+                    } else {
+                        if (view.isEnabled) {
+                            delete_view.toVisible()
+                        }
                     }
-                } else {
-                    del_l_name.toVisible()
                 }
-            }
-        })
+            })
+        }
 
-        email.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString().trim().isEmpty()){
-                    del_email.toGone()
-                    del_email.setOnClickListener {
-                        email.text.clear()
-                    }
-                } else {
-                    del_email.toVisible()
-                }
-            }
-        })
-
-
-        Glide.with(getApplicationContext())
+        Glide.with(applicationContext)
                 .load("http://i.imgur.com/DvpvklR.png")
                 //.apply(RequestOptions.bitmapTransform(BlurTransformation(10)))
                 .apply(RequestOptions.circleCropTransform())
@@ -140,66 +95,30 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
 
     private fun initializeLayout() {
 
-/*        save.setOnClickListener {
-            save.toGone()
-            see_more.toGone()
-            chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-            f_name.isEnabled = false
-            l_name.isEnabled = false
-            email.isEnabled = false
-            university.isEnabled = false
-            study_programme.isEnabled = false
-            study_year.isEnabled = false
-            readFields()
-            uploadUser()
-        }*/
-
         edit_exit.setOnClickListener {
-        if (email.isEnabled == false) {
-            see_more.toVisible()
-            chevron.animate().scaleY(-1f).setDuration(350L).start()
-            f_name.isEnabled = true
-            l_name.isEnabled = true
-            email.isEnabled = true
-            university.isEnabled = true
-            study_programme.isEnabled = true
-            study_year.isEnabled = true
-            del_f_name.toVisible()
-            del_l_name.toVisible()
-            del_email.toVisible()
-            save.toVisible()
-//            edit_exit.setImageResource(R.drawable.ic_cancel)
-            save.setOnClickListener {
-                save.toGone()
-                see_more.toGone()
-                chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-                del_f_name.toGone()
-                del_l_name.toGone()
-                del_email.toGone()
-                f_name.isEnabled = false
-                l_name.isEnabled = false
-                email.isEnabled = false
-                university.isEnabled = false
-                study_programme.isEnabled = false
-                study_year.isEnabled = false
-                readFields()
-                uploadUser()
-            }
+            email.isEnabled = !email.isEnabled
+            listOf(f_name, l_name, university, study_programme, study_year).forEach { it.isEnabled = email.isEnabled }
+            listOf(see_more, del_f_name, del_l_name, del_email, save).forEach { it.setVisible(email.isEnabled) }
+
+            if (email.isEnabled) {
+                chevron.animate().scaleY(-1f).setDuration(350L).start()
+                edit_exit.setImageResource(R.drawable.ic_cancel)
             } else {
-            see_more.toGone()
-            chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-            f_name.isEnabled = false
-            l_name.isEnabled = false
-            email.isEnabled = false
-            university.isEnabled = false
-            study_programme.isEnabled = false
-            study_year.isEnabled = false
-            del_f_name.toGone()
-            del_l_name.toGone()
-            del_email.toGone()
-            save.toGone()
+                chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
+                edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+                writeFields()
             }
         }
+
+        save.setOnClickListener {
+            chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
+            listOf(save, see_more, del_f_name, del_l_name, del_email).forEach { it.toGone() }
+            listOf(f_name, l_name, email, university, study_programme, study_year).forEach { it.isEnabled = false }
+            edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+            readFields()
+            uploadUser()
+        }
+
         val providers = FirebaseAuth.getInstance().currentUser?.providerData
         phone_connect.isChecked = providers?.any { it.providerId == "phone" } ?: false
         facebook_connect.isChecked = providers?.any { it.providerId == "facebook.com" } ?: false
@@ -238,7 +157,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     private fun writeFields() {
         f_name.setText(userModel.firstName ?: "")
         l_name.setText(userModel.lastName ?: "")
-        email.setText(userModel.email?: "")
+        email.setText(userModel.email ?: "")
         university.setText(userModel.university ?: "")
         study_programme.setText(userModel.studyProgramme ?: "")
         study_year.setText(userModel.studyYear?.toString() ?: "")
@@ -254,27 +173,25 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     }
 
     private fun uploadUser() {
-/*
         loading_v.show()
         loading_v.message = "Uploading"
-*/
         requestManager.userUpdate(userModel) { response ->
             response?.let {
                 toast("Upload finished")
                 if (response.success) {
                     UserData.Session.userModel = userModel
-//                    loading_v.message = "Success"
+                    loading_v.message = "Success"
                     toast("Request success")
                     //TODO: Show success view
 //                    intent.putExtra(Constants.EXTRA_PARAM_USER_EDIT_RESULT, true)
 //                    logo.postDelayed({ onBackPressed() }, 1000)
                 } else {
-//                    loading_v.hide()
+                    loading_v.hide()
                     toast("Request failure")
                     //TODO: Show failure view; hide loading view
                 }
             } ?: run {
-//                loading_v.hide()
+                loading_v.hide()
                 toast("Upload failed")
                 //TODO: Show connection failure message
             }
@@ -290,7 +207,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
             }
         }
         LoginManager.getInstance().registerCallback(facebookCallbackManager,
-                object: FacebookCallback<LoginResult> {
+                object : FacebookCallback<LoginResult> {
                     override fun onSuccess(loginResult: LoginResult) {
                         toast("succeeded Facebook auth")
                         FirebaseAuth.getInstance().currentUser?.linkWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token))?.addOnCompleteListener(this@ProfileActivity)
@@ -330,7 +247,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 //                imm?.hideSoftInputFromWindow(.windowToken, 0)
 
-                PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                         toast("succeeded Phone auth")
                         FirebaseAuth.getInstance().currentUser?.linkWithCredential(phoneAuthCredential)?.addOnCompleteListener(this@ProfileActivity)
@@ -351,7 +268,7 @@ class ProfileActivity: BaseActivity(), OnCompleteListener<AuthResult> {
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
             val providers = FirebaseAuth.getInstance().currentUser?.providerData
-            userModel.phoneId = providers?.find { it.providerId == "phone" }?.phoneNumber
+            userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
             userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
             userModel.googleId = providers?.find { it.providerId == "google.com" }?.uid
             uploadUser()

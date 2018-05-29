@@ -16,6 +16,10 @@ object Constants {
 
     const val EXTRA_PARAM_BOOK_EDIT_RESULT = "EXTRA_PARAM_BOOK_EDIT_RESULT"
 
+    const val EXTRA_PARAM_TARGET_VIEW = "EXTRA_PARAM_TARGET_VIEW"
+    const val FRAGMENT_HOME = "FRAGMENT_HOME"
+    const val FRAGMENT_PROFILE = "FRAGMENT_PROFILE"
+
     val IDDC = mapOf(
         "AD" to "376",
         "AE" to "971",
