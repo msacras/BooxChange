@@ -41,7 +41,7 @@
         <android.support.v7.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner_solid_green_10dp"
+            android:background="@drawable/rounded_corner_solid_green_12dp"
             android:text="Retry"
             android:textStyle="bold"/>
 

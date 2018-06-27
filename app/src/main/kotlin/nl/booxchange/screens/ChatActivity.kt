@@ -20,6 +20,7 @@ import nl.booxchange.widget.LAnimationDrawable
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
+import nl.booxchange.api.APIClient.Chat
 
 
 /**
@@ -29,7 +30,7 @@ class ChatActivity: BaseActivity() {
     lateinit var chatModel: ChatModel
     private val messagesAdapter = RecyclerViewAdapter()
 
-    private val sendMessageProgressDrawable by lazy { LAnimationDrawable(thickness = dip(2).toFloat(), width = dip(30).toFloat(), primaryColor = getColorById(R.color.colorPrimary), secondaryColor = getColorById(R.color.whiteGray)) }
+    private val sendMessageProgressDrawable by lazy { LAnimationDrawable(thickness = dip(2).toFloat(), width = dip(30).toFloat(), primaryColor = getColorCompat(R.color.colorPrimary), secondaryColor = getColorCompat(R.color.whiteGray)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +47,7 @@ class ChatActivity: BaseActivity() {
         messages_list.adapter = messagesAdapter
         messages_list.addItemDecoration(RecyclerViewItemSpacer(0, dip(4)))
 
-        messagesAdapter.addModelToViewBinding(R.layout.chat_item_request, MessageModel::class, { _, model -> model.type == MessageType.REQUEST.name }) { view, model ->
+        messagesAdapter.addModelToViewBinding(R.layout.chat_item_request, MessageModel::class, { _, model -> model.type == MessageType.REQUEST }) { view, model ->
             view.request_message_content.text = MessageUtilities.formatRequest(model.content, chatModel.usersList)
             view.request_message_content.movementMethod = LinkMovementMethod.getInstance()
         }
@@ -54,23 +55,23 @@ class ChatActivity: BaseActivity() {
             val isReceived = model.userId == UserData.Session.userModel?.id
 
             view.message_content_text.text = model.content
-            view.message_time.text = DateTime.parse(model.createdAt).toString("HH:mm d MMM")
+//            view.message_time.text = DateTime.parse(model.createdAt).toString("HH:mm d MMM")
 
             if (isReceived) {
                 view.author_photo.toGone()
                 view.message_author.toGone()
-                view.background.setColorFilter(getColorById(R.color.colorPrimary), PorterDuff.Mode.SRC_OUT)
+                view.background.setColorFilter(getColorCompat(R.color.colorPrimary), PorterDuff.Mode.SRC_OUT)
             } else {
                 val authorUserModel = chatModel.usersList.find { it.id == model.userId }
                 if (chatModel.usersList.size > 2) {
                     view.message_author.toVisible()
-                    view.message_author.text = authorUserModel?.formattedName ?: "Anonymous"
+                    view.message_author.text = authorUserModel?.getFormattedName() ?: "Anonymous"
                 } else {
                     view.message_author.toGone()
                 }
                 view.author_photo.toVisible()
                 authorUserModel?.photo?.let { Tools.initializeImage(view.author_photo, it) }
-                view.background.setColorFilter(getColorById(R.color.lightGray), PorterDuff.Mode.SRC_OUT)
+                view.background.setColorFilter(getColorCompat(R.color.lightGray), PorterDuff.Mode.SRC_OUT)
             }
             view.layoutParams = (view.layoutParams as RecyclerView.LayoutParams).apply {
                 leftMargin = dip(if (isReceived) 50 else 0)
@@ -96,7 +97,8 @@ class ChatActivity: BaseActivity() {
     }
 
     private fun fetchMessages(index: Int = messagesAdapter.itemCount) {
-        requestManager.fetchMessages(chatModel.id, index) { response ->
+/*
+        Chat.fetchMessages(chatModel.id, index) { response ->
             response?.let { list ->
                 messagesAdapter.prependItems(list)
                 if (messagesAdapter.itemCount == list.size) {
@@ -105,13 +107,15 @@ class ChatActivity: BaseActivity() {
             }
             swipe_refresh_layout.isRefreshing = false
         }
+*/
     }
 
     private fun sendMessage() {
-        val message = MessageModel("", chatModel.id, UserData.Session.userModel?.id ?: "", message_input.text.string, MessageType.TEXT.name, DateTime.now().string)
+/*
+        val message = MessageModel("", chatModel.id, UserData.Session.userModel?.id ?: "", message_input.text.string, MessageType.TEXT, DateTime.now())
         sendMessageProgressDrawable.isEnabled = true
         sendMessageProgressDrawable.start()
-        requestManager.postMessage(message) { response ->
+        Chat.postMessage(message) { response ->
             response?.let { message ->
                 messagesAdapter.appendItem(message)
                 messages_list.smoothScrollToPosition(messagesAdapter.itemCount - 1)
@@ -120,6 +124,7 @@ class ChatActivity: BaseActivity() {
             sendMessageProgressDrawable.stop()
             sendMessageProgressDrawable.isEnabled = false
         }
+*/
     }
 
     fun receiveMessage(message: MessageModel) {
@@ -131,10 +136,10 @@ class ChatActivity: BaseActivity() {
 
     private fun fetchChatRoomInfo() {
         (intent.getSerializableExtra(Constants.EXTRA_PARAM_CHAT_ID) as? String?)?.let { chatId ->
-            requestManager.fetchChatRoom(chatId) { response ->
-                response?.let(this::chatModel::set)?.also { fetchMessages() } ?: retryView.show()
+            Chat.fetchChatRoom(chatId) { response ->
+                response?.let(this::chatModel::set)?.also { fetchMessages() } //?: retryView.show()
             }
-        } ?: retryView.show()
+        } //?: retryView.show()
     }
 
     private fun initializeSwipeRefreshLayout() {

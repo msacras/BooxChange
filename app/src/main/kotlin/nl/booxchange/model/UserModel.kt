@@ -1,6 +1,7 @@
 package nl.booxchange.model
 
 import com.google.gson.annotations.SerializedName
+import nl.booxchange.extension.hashCode
 import nl.booxchange.extension.takeNotBlank
 import java.io.Serializable
 
@@ -17,25 +18,10 @@ data class UserModel(
     @SerializedName("study_programme") var studyProgramme: String? = null,
     @SerializedName("study_year") var studyYear: Int? = null
 ): Distinctive, Serializable {
-    override fun equals(other: Any?): Boolean {
-        return if (other is Distinctive) {
-            this.id == other.id
-        } else false
-    }
+    override fun equals(other: Any?) = (other as? Distinctive)?.id == id
+    override fun hashCode() = hashCode
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (firstName?.hashCode() ?: 0)
-        result = 31 * result + (lastName?.hashCode() ?: 0)
-        result = 31 * result + (email?.hashCode() ?: 0)
-        result = 31 * result + (phoneId?.hashCode() ?: 0)
-        result = 31 * result + (photo?.hashCode() ?: 0)
-        result = 31 * result + (university?.hashCode() ?: 0)
-        result = 31 * result + (studyProgramme?.hashCode() ?: 0)
-        result = 31 * result + (studyYear ?: 0)
-        return result
+    fun getFormattedName(): String {
+        return "${firstName ?: ""} ${lastName ?: ""}".takeNotBlank ?: "Anonymous"
     }
-
-    val formattedName: String
-        get() = "${firstName ?: ""} ${lastName ?: ""}".takeNotBlank ?: "Anonymous"
 }

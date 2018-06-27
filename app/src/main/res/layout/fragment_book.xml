@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="nl.booxchange.model.OfferType"/>
+        <import type="android.text.TextUtils"/>
+        <variable
+            name="viewModel"
+            type="nl.booxchange.screens.BookFragmentViewModel"/>
+    </data>
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whiteGray">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/book_image"
+                scaledImageId="@{viewModel.images[0], default=``}"
+                android:layout_width="135dp"
+                android:layout_height="190dp"
+                android:background="@drawable/rounded_corner_solid_light_8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/ic_no_image"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/book_title"
+                error="@{viewModel.isEditModeEnabled &amp;&amp; TextUtils.isEmpty(viewModel.title) ? `Field cannot be blank` : ``}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:dividerPadding="4dp"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_min="48dp"
+                app:layout_constraintStart_toEndOf="@id/book_image"
+                app:layout_constraintTop_toTopOf="@id/book_image">
+
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/rounded_corner_solid_light_8dp"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:hint="Book title"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:text="@={viewModel.title}"
+                    android:textColor="@color/jetGray"
+                    android:textSize="24sp"
+                    tools:text="A song of Ice and Fire"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/book_author"
+                error="@{viewModel.isEditModeEnabled &amp;&amp; TextUtils.isEmpty(viewModel.author) ? `Field cannot be blank` : ``}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:dividerPadding="4dp"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="@id/book_title"
+                app:layout_constraintHeight_min="24dp"
+                app:layout_constraintStart_toStartOf="@id/book_title"
+                app:layout_constraintTop_toBottomOf="@id/book_title">
+
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corner_solid_light_8dp"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:hint="Book author"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:text="@={viewModel.author}"
+                    android:textColor="@color/darkGray"
+                    android:textSize="14sp"
+                    tools:text="George Raymond Richard Martin"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/book_price"
+                error="@{viewModel.isEditModeEnabled &amp;&amp; TextUtils.isEmpty(viewModel.offerPrice) ? `Field cannot be blank` : ``}"
+                visibleIf="@{viewModel.isSell}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:dividerPadding="4dp"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="@id/book_title"
+                app:layout_constraintHeight_min="24dp"
+                app:layout_constraintStart_toStartOf="@id/book_title"
+                app:layout_constraintTop_toBottomOf="@id/book_author">
+
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rounded_corner_solid_light_8dp"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:hint="Price"
+                    android:inputType="number"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:text="@={viewModel.offerPrice}"
+                    android:textColor="@color/themeGreenDark"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/book_title"
+                    app:layout_constraintHeight_min="24dp"
+                    app:layout_constraintStart_toStartOf="@id/book_title"
+                    app:layout_constraintTop_toBottomOf="@id/book_author"
+                    tools:text="200"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/currency_label"
+                visibleIf="@{viewModel.isSell}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="0.5sp"
+                android:text="€"
+                android:textColor="@color/themeGreenDark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/book_price"
+                app:layout_constraintTop_toTopOf="@id/book_price"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/available_for_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="8dp"
+                android:text="Available for :"
+                android:textColor="@color/jetGray"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="@id/book_author"
+                app:layout_constraintTop_toBottomOf="@id/book_price"/>
+
+            <ToggleButton
+                android:id="@+id/for_sale_label"
+                visibleIf="@{viewModel.isEditModeEnabled || viewModel.isSell}"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/offer_type_toggle_style_green"
+                android:checked="@={viewModel.isSell}"
+                android:enabled="@{viewModel.isEditModeEnabled}"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:paddingBottom="4dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:textColor="@color/white"
+                android:textOff="@string/sale"
+                android:textOn="@string/sale"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/available_for_label"
+                app:layout_constraintTop_toBottomOf="@id/available_for_label"/>
+
+            <ToggleButton
+                android:id="@+id/for_trade_label"
+                visibleIf="@{viewModel.isEditModeEnabled || viewModel.isExchange}"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/offer_type_toggle_style_blue"
+                android:checked="@={viewModel.isExchange}"
+                android:enabled="@{viewModel.isEditModeEnabled}"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:paddingBottom="4dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:textColor="@color/white"
+                android:textOff="@string/trade"
+                android:textOn="@string/trade"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/for_sale_label"
+                app:layout_constraintTop_toBottomOf="@id/available_for_label"
+                app:layout_goneMarginStart="0dp"/>
+
+            <android.support.constraint.Barrier
+                android:id="@+id/info_block_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierAllowsGoneWidgets="true"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="book_image, for_sale_label, for_trade_label"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/book_condition_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="Book Condition: "
+                android:textColor="@color/jetGray"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@id/book_image"
+                app:layout_constraintTop_toBottomOf="@id/info_block_start"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/book_condition_unknown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:textColor="@color/jetGray"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/book_condition_label"
+                app:layout_constraintStart_toEndOf="@id/for_sale_label"
+                app:layout_constraintTop_toTopOf="@id/book_condition_label"/>
+
+            <RadioGroup
+                android:id="@+id/book_condition_radio_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/condition_radio_button_background"
+                android:onCheckedChanged="@{viewModel::setConditionLevel}"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/book_condition_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/for_sale_label"
+                app:layout_constraintTop_toTopOf="@id/book_condition_label"
+                app:layout_constraintWidth_max="150dp"
+                app:layout_constraintWidth_min="120dp">
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/book_condition_1"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/condition_radio_button_left"
+                    android:button="@null"
+                    android:checked="@{viewModel.condition == 1}"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"/>
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/book_condition_2"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/condition_radio_button_mid"
+                    android:button="@null"
+                    android:checked="@{viewModel.condition == 2}"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@color/white"/>
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/book_condition_3"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/condition_radio_button_mid"
+                    android:button="@null"
+                    android:checked="@{viewModel.condition == 3}"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@color/white"/>
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/book_condition_4"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/condition_radio_button_mid"
+                    android:button="@null"
+                    android:checked="@{viewModel.condition == 4}"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textColor="@color/white"/>
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/book_condition_5"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/condition_radio_button_right"
+                    android:button="@null"
+                    android:checked="@{viewModel.condition == 5}"
+                    android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@color/white"/>
+
+            </RadioGroup>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/book_isbn_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="ISBN:"
+                android:textColor="@color/jetGray"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@id/book_condition_label"
+                app:layout_constraintTop_toBottomOf="@id/book_condition_label"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/book_isbn"
+                textFormat="@{`###-#-#####-###-#`}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_solid_light_8dp"
+                android:enabled="@{viewModel.isEditModeEnabled}"
+                android:hint="ISBN code"
+                android:inputType="number"
+                android:paddingBottom="2dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="@={viewModel.isbn}"
+                android:textColor="@color/darkGray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/book_isbn_label"
+                app:layout_constraintEnd_toEndOf="@id/book_condition_radio_group"
+                app:layout_constraintHeight_min="24dp"
+                app:layout_constraintStart_toStartOf="@id/book_condition_radio_group"
+                app:layout_constraintTop_toTopOf="@id/book_isbn_label"
+                tools:text="111-123456789"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/book_edition_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Edition:"
+                android:textColor="@color/jetGray"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@id/book_condition_label"
+                app:layout_constraintTop_toBottomOf="@id/book_isbn_label"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/book_edition"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_solid_light_8dp"
+                android:enabled="@{viewModel.isEditModeEnabled}"
+                android:hint="Edition year"
+                android:inputType="number"
+                android:maxLength="4"
+                android:paddingBottom="2dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="@={viewModel.edition}"
+                android:textColor="@color/darkGray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/book_edition_label"
+                app:layout_constraintEnd_toEndOf="@id/book_condition_radio_group"
+                app:layout_constraintHeight_min="24dp"
+                app:layout_constraintStart_toStartOf="@id/book_condition_radio_group"
+                app:layout_constraintTop_toTopOf="@id/book_edition_label"
+                tools:text="2000"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/book_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corner_solid_light_8dp"
+                android:enabled="@{viewModel.isEditModeEnabled}"
+                android:hint="Aditional info"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:text="@={viewModel.info}"
+                android:textColor="@color/jetGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/book_edition"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent malesuada nulla consequat velit varius, a semper orci feugiat. Curabitur ultricies metus lectus, ut fermentum risus efficitur vel. Vestibulum scelerisque lacus sit amet lectus imperdiet, vitae consectetur nulla ultricies. Praesent placerat ipsum dapibus imperdiet dictum. Donec vitae consectetur lectus. Duis auctor, lorem eu molestie rhoncus, justo ex vestibulum metus, id viverra elit mauris et orci. Aliquam accumsan in mi ut luctus. Mauris eget felis sed urna venenatis interdum. Sed gravida blandit nisl, ut mollis turpis dictum sit amet. Ut non nisl eget neque congue rutrum. Nulla efficitur quam a pretium ullamcorper. Nunc sed erat viverra, scelerisque mi quis, feugiat nisl. Cras laoreet ultrices nisl quis suscipit."/>
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/save_book_button"
+                visibleIf="@{viewModel.isEditModeEnabled &amp;&amp; viewModel.isBookUserOwned}"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_corner_solid_gray_8dp"
+                android:tint="@color/themeGreenDark"
+                android:onClick="@{viewModel::saveBook}"
+                android:stateListAnimator="@animator/button_elevation_animator"
+                app:backgroundTint="@color/themeGreen"
+                app:layout_constraintBottom_toBottomOf="@id/edit_book_button"
+                app:layout_constraintEnd_toStartOf="@id/edit_book_button"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/edit_book_button"
+                app:srcCompat="@drawable/content_save"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/edit_book_button"
+                visibleIf="@{viewModel.isBookUserOwned}"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corner_solid_gray_8dp"
+                android:onClick="@{viewModel::toggleEditMode}"
+                android:stateListAnimator="@animator/button_elevation_animator"
+                android:text="@{viewModel.isEditModeEnabled ? @string/cancel : @string/edit_book}"
+                android:textColor="@color/darkGray"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@id/delete_book_button"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/save_book_button"
+                app:layout_constraintTop_toBottomOf="@id/book_info"
+                app:layout_constraintWidth_max="@{viewModel.bookId != null ? 236 : 300}"/>
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/delete_book_button"
+                visibleIf="@{!viewModel.isEditModeEnabled &amp;&amp; viewModel.isBookUserOwned &amp;&amp; viewModel.bookId != null}"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_corner_solid_gray_8dp"
+                android:tint="@color/themeRedDark"
+                android:onClick="@{viewModel::deleteBook}"
+                android:stateListAnimator="@animator/button_elevation_animator"
+                app:backgroundTint="@color/themeRed"
+                app:layout_constraintBottom_toBottomOf="@id/edit_book_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/edit_book_button"
+                app:layout_constraintTop_toTopOf="@id/edit_book_button"
+                app:srcCompat="@drawable/delete"/>
+
+            <RadioGroup
+                android:id="@+id/offer_type_radio_group"
+                visibleIf="@{!viewModel.isBookUserOwned}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="16dp"
+                android:onCheckedChanged="@{viewModel::setTradeChoice}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_book_button"
+                app:layout_constraintWidth_max="316dp">
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radio_button_buy"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/checkable_rounded_corner_solid_green_8dp"
+                    android:button="@null"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:stateListAnimator="@animator/button_elevation_animator"
+                    android:text="BUY"
+                    android:tag="@{OfferType.SELL}"
+                    android:textColor="@color/gray_to_white"
+                    android:textSize="18sp"/>
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radio_button_trade"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/checkable_rounded_corner_solid_blue_8dp"
+                    android:button="@null"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:stateListAnimator="@animator/button_elevation_animator"
+                    android:text="TRADE"
+                    android:tag="@{OfferType.EXCHANGE}"
+                    android:textColor="@color/gray_to_white"
+                    android:textSize="18sp"/>
+
+            </RadioGroup>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/user_books_list"
+                adapterHandler="@{viewModel}"
+                adapterItems="@{viewModel.userOwnedBooks}"
+                adapterLayout="@{@layout/list_item_book_offer}"
+                visibleIf="@{!viewModel.isBookUserOwned &amp;&amp; viewModel.tradeChoice == OfferType.EXCHANGE}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/offer_type_radio_group"
+                tools:listitem="@layout/list_item_book_offer"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/make_an_offer_button"
+                visibleIf="@{!viewModel.isBookUserOwned}"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:onClick="@{viewModel::postRequest}"
+                android:enabled="@{viewModel.tradeChoice.isSell || (viewModel.tradeChoice.isExchange &amp;&amp; viewModel.checkedBook != null)}"
+                android:background="@drawable/rounded_corner_solid_gray_8dp"
+                android:stateListAnimator="@animator/button_elevation_animator"
+                android:text="MAKE AN OFFER"
+                android:textColor="@color/darkGray"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_books_list"
+                app:layout_constraintWidth_max="300dp"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/image_pager"
+        photoHandler="@{viewModel}"
+        photoItems="@{viewModel.images}"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whiteGray"
+        android:translationY="-56dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="snap|enterAlways|scroll"
+            app:navigationIcon="@drawable/close">
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+</android.support.design.widget.CoordinatorLayout>
+</layout>

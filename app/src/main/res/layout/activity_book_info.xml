@@ -206,7 +206,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
-                android:text="@string/unknown"
                 android:textColor="@color/jetGray"
                 android:textSize="18sp"
                 android:visibility="gone"
@@ -229,7 +228,7 @@
                     android:id="@+id/book_condition_1"
                     android:layout_width="30dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/condition_radio_button_1"
+                    android:background="@drawable/condition_radio_button_left"
                     android:button="@null"
                     android:gravity="center"
                     android:text="1"/>
@@ -238,7 +237,7 @@
                     android:id="@+id/book_condition_2"
                     android:layout_width="30dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/condition_radio_button_2"
+                    android:background="@drawable/condition_radio_button_mid"
                     android:button="@null"
                     android:gravity="center"
                     android:text="2"/>
@@ -247,7 +246,7 @@
                     android:id="@+id/book_condition_3"
                     android:layout_width="30dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/condition_radio_button_3"
+                    android:background="@drawable/condition_radio_button_background"
                     android:button="@null"
                     android:gravity="center"
                     android:text="3"/>
@@ -256,7 +255,6 @@
                     android:id="@+id/book_condition_4"
                     android:layout_width="30dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/condition_radio_button_4"
                     android:button="@null"
                     android:gravity="center"
                     android:text="4"/>
@@ -265,7 +263,7 @@
                     android:id="@+id/book_condition_5"
                     android:layout_width="30dp"
                     android:layout_height="24dp"
-                    android:background="@drawable/condition_radio_button_5"
+                    android:background="@drawable/condition_radio_button_right"
                     android:button="@null"
                     android:gravity="center"
                     android:text="5"/>
@@ -410,8 +408,8 @@
                 android:background="@drawable/rounded_corner_solid_gray_30dp"
                 android:padding="4dp"
                 android:src="@drawable/delete"
-                android:tint="@color/colorWarningDark"
-                app:backgroundTint="@color/colorWarning"
+                android:tint="@color/themeRedDark"
+                app:backgroundTint="@color/themeRed"
                 app:layout_constraintBottom_toBottomOf="@+id/edit_book_button"
                 app:layout_constraintLeft_toRightOf="@+id/edit_book_button"
                 app:layout_constraintTop_toTopOf="@+id/edit_book_button"/>

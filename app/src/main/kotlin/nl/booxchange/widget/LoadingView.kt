@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.loading_view_layout.view.*
 import nl.booxchange.R
-import nl.booxchange.extension.getColorById
+import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
 import org.jetbrains.anko.dip
@@ -21,7 +21,7 @@ import kotlin.properties.Delegates
  */
 class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val progressDrawable = LAnimationDrawable(thickness = dip(2).toFloat(), primaryColor = context.getColorById(R.color.colorPrimary), secondaryColor = context.getColorById(R.color.whiteGray))
+    private val progressDrawable = LAnimationDrawable(thickness = dip(2).toFloat(), primaryColor = context.getColorCompat(R.color.colorPrimary), secondaryColor = context.getColorCompat(R.color.whiteGray))
     var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
 
     init {
@@ -33,7 +33,7 @@ class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSe
             val tintedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(tintedBitmap)
             val paint = Paint().apply {
-                shader = LinearGradient(0f, width.toFloat(), 0f, height.toFloat(), context.getColorById(R.color.colorPrimary), context.getColorById(R.color.colorPrimaryDark), Shader.TileMode.CLAMP)
+                shader = LinearGradient(0f, width.toFloat(), 0f, height.toFloat(), context.getColorCompat(R.color.colorPrimary), context.getColorCompat(R.color.colorPrimaryDark), Shader.TileMode.CLAMP)
                 xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
             }
 

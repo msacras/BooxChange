@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.support.annotation.ColorInt
 import nl.booxchange.R
-import nl.booxchange.extension.getColorById
+import nl.booxchange.extension.getColorCompat
 import nl.booxchange.utilities.Tools.interpolateColor
 import nl.booxchange.utilities.Tools.safeContext
 import kotlin.math.absoluteValue
@@ -54,7 +54,7 @@ class LAnimationDrawable(
             _primaryColorAnimator?.cancel()
             _primaryColorAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
                 val startColor = frameAt(0).primaryColor
-                val endColor = if (isEnabled) value else safeContext.getColorById(R.color.midGray)
+                val endColor = if (isEnabled) value else safeContext.getColorCompat(R.color.midGray)
                 addUpdateListener { anim ->
                     (0 until numberOfFrames).forEach { frameAt(it).primaryColor = interpolateColor(startColor, endColor, anim.animatedFraction) }
                 }
@@ -69,7 +69,7 @@ class LAnimationDrawable(
             _secondaryColorAnimator?.cancel()
             _secondaryColorAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
                 val startColor = frameAt(0).secondaryColor
-                val endColor = if (isEnabled) value else safeContext.getColorById(R.color.midGray)
+                val endColor = if (isEnabled) value else safeContext.getColorCompat(R.color.midGray)
                 addUpdateListener { anim ->
                     (0 until numberOfFrames).forEach { frameAt(it).secondaryColor = interpolateColor(startColor, endColor, anim.animatedFraction) }
                 }

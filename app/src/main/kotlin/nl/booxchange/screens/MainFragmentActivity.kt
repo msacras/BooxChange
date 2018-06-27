@@ -2,42 +2,44 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
+import com.vcristian.combus.expect
 import kotlinx.android.synthetic.main.activity_main_fragment.*
+import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.extension.getColorById
+import nl.booxchange.R.id.*
+import nl.booxchange.extension.getColorCompat
+import nl.booxchange.model.MessageReceivedEvent
+import nl.booxchange.model.OverlayFragment
+import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
+import nl.booxchange.utilities.UserData
 
 class MainFragmentActivity: AppCompatActivity() {
-
-    init {
-        ukrasti_vseo()
-    }
-
-    private fun ukrasti_vseo() {
-
-    }
+    val screens by lazy {listOf (
+        home_page to "home_page",
+        message_page to "message_page",
+        library_page to "library_page",
+        profile_page to "profile_page"
+    )}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        BooxchangeApp.mainActivityDelegate = this
         setContentView(R.layout.activity_main_fragment)
 
-        val fragments = listOf (
-                home_page to HomeFragment(),
-                message_page to MessageFragment(),
-                library_page to LibraryFragment(),
-                profile_page to ProfileFragment()
-        )
+        setSupportActionBar(toolbar)
 
-        fragments.forEachIndexed { currentSelectedIndex, (button, fragment) ->
+        screens.forEachIndexed { currentSelectedIndex, (button, tag) ->
             button.setOnClickListener {
-                showFragment(fragment)
-                fragments.forEach { (otherButton, _) ->
+                showFragment(tag)
+                fragment_title.text = tag.split("_").first().capitalize()
+                screens.forEach { (otherButton, _) ->
                     val color = if (otherButton == button) blackColor else grayColor
                     updateColor(otherButton as AppCompatImageButton, color)
                     app_bar_layout.setExpanded(true, true)
@@ -49,13 +51,20 @@ class MainFragmentActivity: AppCompatActivity() {
         }
 
         when (intent.getStringExtra(Constants.EXTRA_PARAM_TARGET_VIEW)) {
-            Constants.FRAGMENT_PROFILE -> fragments.first { it.first == profile_page }.first.performClick()
-            else -> fragments.first { it.first == home_page }.first.performClick()
+            Constants.FRAGMENT_PROFILE -> profile_page.performClick()
+            else -> home_page.performClick()
+        }
+
+        expect(MessageReceivedEvent::class.java) { (messageModel) ->
+            if (messageModel.userId == UserData.Session.userId) return@expect
+            //TODO: unread messages counter icon
+
+            messageModel.content
         }
     }
 
-    private val blackColor by lazy { getColorById(R.color.black) }
-    private val grayColor by lazy { getColorById(R.color.midGray) }
+    private val blackColor by lazy { getColorCompat(R.color.black) }
+    private val grayColor by lazy { getColorCompat(R.color.midGray) }
     private val colorEvaluator = ArgbEvaluator()
 
     private fun updateColor(button: AppCompatImageButton, toColor: Int) {
@@ -71,7 +80,30 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment, fragment).commit()
+    fun showFragment(tag: String, exclusive: Boolean = true) {
+        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).apply {
+            supportFragmentManager.fragments.forEach { fragment ->
+                if (fragment.tag == tag) show(fragment) else if (exclusive) hide(fragment)
+            }
+            commit()
+        }
+    }
+
+    fun hideFragment(targetTag: String) {
+        val fragment = supportFragmentManager.findFragmentByTag(targetTag)
+        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).hide(fragment).commit()
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.fragments.all {
+                (it as? BaseFragment)?.onBackPressed() != false
+            }) {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onDestroy() {
+        BooxchangeApp.mainActivityDelegate = null
+        super.onDestroy()
     }
 }

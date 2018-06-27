@@ -1,14 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="nl.booxchange.screens.MessageFragmentViewModel"/>
+    </data>
+
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/requests_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="message"
-        android:textColor="#000"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:text="Requests"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        visibleIf="@{viewModel.requestCount &gt; 0}"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</RelativeLayout>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/requests_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        app:layout_constraintLeft_toRightOf="@id/requests_label"
+        app:layout_constraintTop_toTopOf="@id/requests_label"
+        app:layout_constraintBottom_toBottomOf="@id/requests_label"
+        visibleIf="@{viewModel.requestCount &gt; 0}"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/rounded_corner_solid_red_20dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@{`` + viewModel.requestCount}"
+        tools:text="5"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/requests_list"
+        adapterHandler="@{viewModel}"
+        adapterItems="@{viewModel.requestsList}"
+        adapterLayout="@{@layout/list_item_request}"
+        visibleIf="@{viewModel.requestCount &gt; 0}"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/requests_label"
+        tools:listitem="@layout/list_item_request"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/chats_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:text="Messages"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/requests_list"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/unread_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        app:layout_constraintLeft_toRightOf="@id/chats_label"
+        app:layout_constraintTop_toTopOf="@id/chats_label"
+        app:layout_constraintBottom_toBottomOf="@id/chats_label"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/rounded_corner_solid_red_20dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@{Integer.toString(viewModel.unreadCount)}"
+        visibleIf="@{viewModel.unreadCount &gt; 0}"
+        tools:text="5"/>
+
+    <nl.booxchange.widget.CustomRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chats_label">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/chats_list"
+            adapterHandler="@{viewModel}"
+            adapterItems="@{viewModel.chatsList}"
+            adapterLayout="@{@layout/list_item_chat}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/list_item_chat"/>
+
+    </nl.booxchange.widget.CustomRefreshLayout>
+</android.support.constraint.ConstraintLayout>
+</layout>

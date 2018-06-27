@@ -1,23 +1,16 @@
 <resources>
 
-  <style name="AppThemeBase" parent="Theme.AppCompat.NoActionBar">
+  <style name="AppThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/caramel</item>
     <item name="colorAccent">@color/colorAccent</item>
     <item name="colorControlActivated">@color/caramel</item>
     <item name="android:windowBackground">@color/white</item>
     <item name="android:screenOrientation">portrait</item>
-    <item name="android:textColorHint">@color/lightGray</item>
-    <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+    <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
   </style>
 
-  <style name="AppTheme" parent="AppThemeBase">
-
-  </style>
-
-  <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
-    <item name="android:background">@color/white</item>
-  </style>
+  <style name="AppTheme" parent="AppThemeBase"/>
 
   <style name="SplashTheme" parent="AppTheme">
     <item name="android:windowBackground">@drawable/background_splash</item>

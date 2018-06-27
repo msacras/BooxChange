@@ -1,3 +1,4 @@
+/*
 package nl.booxchange.screens
 
 import android.content.res.ColorStateList
@@ -19,6 +20,8 @@ import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.firstChildOrNull
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
+import nl.booxchange.api.APIClient.Book
+import nl.booxchange.api.APIClient.Chat
 
 class BookInfoActivity: BaseActivity() {
     private val booksListAdapter = RecyclerViewAdapter()
@@ -53,7 +56,7 @@ class BookInfoActivity: BaseActivity() {
 
         edit_book_button.setTextColor(ColorStateList(
             arrayOf(intArrayOf(android.R.attr.state_enabled), intArrayOf(android.R.attr.state_pressed)),
-            arrayOf(getColorById(R.color.whiteGray), getColorById(R.color.transparent)).toIntArray()
+            arrayOf(getColorCompat(R.color.whiteGray), getColorCompat(R.color.transparent)).toIntArray()
         ))
 
         if (bookModel.userId == UserData.Session.userModel?.id) {
@@ -74,7 +77,7 @@ class BookInfoActivity: BaseActivity() {
                     initializeLayout()//writeBookModelToView(bookModel)
                 } else {
                     toast("Deleting book.. Please wait")
-                    requestManager.bookDelete(bookModel.id) { response ->
+                    Book.bookDelete(bookModel.id) { response ->
                         response?.let {
                             if (response.success) {
                                 toast("Book was removed")
@@ -93,6 +96,7 @@ class BookInfoActivity: BaseActivity() {
             listOf<View>(edit_book_button, delete_book_button).forEach { it.toGone() }
             user_books_list.adapter = booksListAdapter
             user_books_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+*/
 /*
             booksListAdapter.addModelToViewBinding(R.layout.list_item_book_offer, BookModel::class) { view, model ->
                 Tools.initializeImage(view.book_image, model.image)
@@ -100,7 +104,8 @@ class BookInfoActivity: BaseActivity() {
                 view.book_title.text = model.title
                 view.book_price.text = model.offerPrice?.prependIndent("€") ?: ""
             }
-*/
+*//*
+
 //            booksListAdapter.swapItems(UserData.Session.userBooks)
 
         }
@@ -150,7 +155,7 @@ class BookInfoActivity: BaseActivity() {
         bookModel.offerPrice?.let(book_price::setText) ?: run { book_price.toGone(); currency_label.toGone() }
         bookModel.condition?.let { (book_condition_radio_group.getChildAt(it - 1) as? AppCompatRadioButton)?.isChecked = true } ?: run { book_condition_radio_group.toGone(); book_condition_unknown.toVisible() }
 
-        when (OfferType.valueOf(bookModel.offerType ?: "NONE")) {
+        when (bookModel.offerType) {
             OfferType.NONE -> {
             }
             OfferType.EXCHANGE -> {
@@ -186,19 +191,18 @@ class BookInfoActivity: BaseActivity() {
         bookModel.offerPrice = book_price.text.string.takeNotBlank
         bookModel.info = book_info.text.string.takeNotBlank
         bookModel.condition = book_condition_radio_group.let { it.indexOfChild(it.firstChildOrNull { (it as? AppCompatRadioButton)?.isChecked == true }) }.takeIf { it > -1 }
-        bookModel.offerType = OfferType.getByFilters(for_trade_label.isChecked, for_sale_label.isChecked).name
+        bookModel.offerType = OfferType.getByFilters(for_trade_label.isChecked, for_sale_label.isChecked)
     }
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     private fun uploadBook() {
-        val requestAction = if (intent.hasExtra(Constants.EXTRA_PARAM_BOOK_MODEL)) requestManager::bookUpdate else requestManager::bookAdd
-        loadingView.show()
-        loadingView.message = "Uploading"
+        val requestAction = if (intent.hasExtra(Constants.EXTRA_PARAM_BOOK_MODEL)) Book::bookUpdate else Book::bookAdd
+*/
+/*
         requestAction(bookModel) { response ->
             response?.let {
                 toast("Upload finished")
                 if (response.success) {
-                    loadingView.message = "Success"
                     toast("Request success")
                     toggleEditMode()
                     //TODO: Show success view
@@ -212,45 +216,42 @@ class BookInfoActivity: BaseActivity() {
                 toast("Upload failed")
                 //TODO: Show connection failure message
             }
-            loadingView.hide()
         }
+*//*
+
     }
 
     //(\d{3}-\d-\d{5}-\d{3}-\d)|(\d{3}-\d{10})
     private fun sendRequest() {
-        loadingView.show()
-        loadingView.message = "Finding chat room"
-        requestManager.findChatRoom(listOf(bookModel.userId ?: return, UserData.Session.userModel?.id ?: return), "Exchange book ${bookModel.title}") { response ->
+        Chat.findChatRoom(listOf(bookModel.userId ?: return, UserData.Session.userModel?.id ?: return), "Exchange book ${bookModel.title}") { response ->
             response?.let { chat ->
                 val requestMessage = "User [[#USERMODELID#${UserData.Session.userModel?.id}]] wants to exchange [[YOUR BOOK#BOOKMODELID#${bookModel.id}]] with [[HIS/HER BOOK#BOOKMODELID#undefined]] and is ready to talk about it!"
                 val requestModel = MessageModel("", chat.id, UserData.Session.userModel?.id ?: return@let, requestMessage, MessageType.REQUEST.name, DateTime.now().serverTimestamp)
-                loadingView.message = "Sending request"
-                requestManager.postMessage(requestModel) { response ->
+                Chat.postMessage(requestModel) { response ->
                     response?.let { toast("Request sent, wait for user's response") } ?: toast("Failed to send a request")
-                    loadingView.hide()
                 }
             } ?: run {
                 toast("Failed to contact the book's owner")
-                loadingView.hide()
             }
         }
     }
 
     private fun fetchBook(bookId: String) {
-        loadingView.show()
-        requestManager.bookGet(bookId) {
-            it?.also(::bookModel::set)?.also(::initializeLayout) ?: retryView.show()
-            loadingView.hide()
+        Book.bookGet(bookId) {
+            it?.also(::bookModel::set)?.also(::initializeLayout) //?: retryView.show()
         }
     }
 
+*/
 /*
     override fun onBackPressed() {
         setResult(Constants.REQUEST_BOOK_EDIT, Intent().putExtra(Constants.EXTRA_PARAM_BOOK_EDIT_RESULT, bookWasEdited))
         super.onBackPressed()
     }
-*/
+*//*
 
+
+*/
 /*
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_BOOK_EDIT && resultCode == Activity.RESULT_OK) {
@@ -261,5 +262,7 @@ class BookInfoActivity: BaseActivity() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-*/
+*//*
+
 }
+*/

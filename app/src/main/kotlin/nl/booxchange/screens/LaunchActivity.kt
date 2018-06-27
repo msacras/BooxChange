@@ -15,9 +15,9 @@ import org.jetbrains.anko.startActivity
 class LaunchActivity: AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    FirebaseAuth.getInstance().currentUser?.let { firebaseUser ->
+    FirebaseAuth.getInstance().currentUser?.let {
       setContentView(LoadingView(this).apply { message = "Synchronizing"; toGone(); show()})
-      UserData.Authentication.login(firebaseUser.uid) { isLoggedIn ->
+      UserData.Authentication.login { isLoggedIn ->
         if (isLoggedIn) {
           startActivity<MainFragmentActivity>()
         } else {

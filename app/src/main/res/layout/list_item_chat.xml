@@ -1,38 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="itemHandler"
+            type="nl.booxchange.screens.MessageFragmentViewModel"/>
+        <variable
+            name="itemModel"
+            type="nl.booxchange.model.ChatModel"/>
+    </data>
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_margin="8dp"
-    android:background="@drawable/rounded_corner_solid_gray_30dp"
-    android:clickable="true"
-    android:focusable="true"
+    android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp">
+    android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
+    android:padding="8dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/chat_image"
+        compositeImageIds="@{itemModel.userPhotoIds}"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/account_circle"/>
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/chat_topic"
-        android:layout_width="match_parent"
+        android:id="@+id/requests_counter"
+        visibleIf="@{itemModel.unreadCount &gt; 0}"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@id/chat_image"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/rounded_corner_solid_red_20dp"
+        android:gravity="center"
+        android:text="@{Integer.toString(itemModel.unreadCount)}"
+        android:textColor="@color/white"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/chat_image"
+        app:layout_constraintStart_toStartOf="@+id/chat_image"
+        tools:text="5"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/chat_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@id/chat_image"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@{itemModel.chatTitle}"
         android:textColor="@color/jetGray"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        tools:text="red"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chat_image"
+        app:layout_constraintTop_toTopOf="@+id/chat_image"
+        tools:text="Dakota"/>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/last_message"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_below="@+id/chat_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/chat_image"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:lines="2"
+        android:text="@{itemModel.formattedLastMessage}"
         android:textColor="@color/darkGray"
         android:textSize="12sp"
+        app:constraint_referenced_ids=""
+        app:layout_constraintBottom_toBottomOf="@+id/chat_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chat_image"
+        app:layout_constraintTop_toBottomOf="@+id/chat_title"
         tools:text="lorem ipsum"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
+</layout>

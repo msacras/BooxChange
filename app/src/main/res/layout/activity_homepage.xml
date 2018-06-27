@@ -68,8 +68,7 @@
         app:backgroundTint="@color/colorPrimary"
         app:elevation="4dp"
         app:fabSize="mini"
-        app:rippleColor="@color/lightGray"
-        app:srcCompat="@drawable/temporary_money"/>
+        app:rippleColor="@color/lightGray"/>
 
       <android.support.design.widget.FloatingActionButton
         android:id="@+id/action_filter_exchange"
@@ -83,8 +82,7 @@
         app:backgroundTint="@color/colorAccent"
         app:elevation="4dp"
         app:fabSize="mini"
-        app:rippleColor="@color/lightGray"
-        app:srcCompat="@drawable/temporary_exchange"/>
+        app:rippleColor="@color/lightGray"/>
 
       <android.support.design.widget.FloatingActionButton
         android:id="@+id/action_filter_menu"
@@ -96,8 +94,7 @@
         app:backgroundTint="@color/colorPrimary"
         app:elevation="4dp"
         app:fabSize="normal"
-        app:rippleColor="@color/lightGray"
-        app:srcCompat="@drawable/temporary_filter"/>
+        app:rippleColor="@color/lightGray"/>
 
     </RelativeLayout>
 
@@ -118,8 +115,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:adjustViewBounds="true"
-        android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/temporary_app"/>
+        android:tint="@color/colorPrimary"/>
 
       <LinearLayout
         android:id="@+id/search_wrapper"
@@ -154,8 +150,7 @@
           android:adjustViewBounds="true"
           android:background="@drawable/round_gray"
           android:padding="10dp"
-          android:tint="#bababa"
-          app:srcCompat="@drawable/temporary_search"/>
+          android:tint="#bababa"/>
 
       </LinearLayout>
 
@@ -165,8 +160,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:adjustViewBounds="true"
-        android:tint="#bababa"
-        app:srcCompat="@drawable/temporary_hamburger"/>
+        android:tint="#bababa"/>
 
 
     </RelativeLayout>

@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.view.*
 import nl.booxchange.R
 import nl.booxchange.R.id.*
+import nl.booxchange.api.APIClient
 import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.setVisible
 import nl.booxchange.extension.toGone
@@ -105,7 +106,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
                 edit_exit.setImageResource(R.drawable.ic_cancel)
             } else {
                 chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-                edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+                //edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
                 writeFields()
             }
         }
@@ -114,7 +115,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
             chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
             listOf(save, see_more, del_f_name, del_l_name, del_email).forEach { it.toGone() }
             listOf(f_name, l_name, email, university, study_programme, study_year).forEach { it.isEnabled = false }
-            edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
+            //edit_exit.setImageResource(R.drawable.ic_pencil_black_24dp)
             readFields()
             uploadUser()
         }
@@ -172,10 +173,10 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         userModel.studyYear = study_year.text.toString().takeIf { it.isNotBlank() }?.toInt()
     }
 
-    private fun uploadUser() {
+    private fun uploadUser() {}/*{
         loading_v.show()
         loading_v.message = "Uploading"
-        requestManager.userUpdate(userModel) { response ->
+        APIClient.User.userUpdate(userModel) { response ->
             response?.let {
                 toast("Upload finished")
                 if (response.success) {
@@ -196,7 +197,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
                 //TODO: Show connection failure message
             }
         }
-    }
+    }*/
 
     private fun initializeFacebookAuthorization() {
         facebook_connect.setOnCheckedChangeListener { _, isChecked ->
@@ -268,7 +269,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
             val providers = FirebaseAuth.getInstance().currentUser?.providerData
-            userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
+            userModel.phoneId = providers?.find { it.providerId == "phone" }?.phoneNumber
             userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
             userModel.googleId = providers?.find { it.providerId == "google.com" }?.uid
             uploadUser()

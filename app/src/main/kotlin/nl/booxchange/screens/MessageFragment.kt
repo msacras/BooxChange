@@ -1,16 +1,17 @@
 package nl.booxchange.screens
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-
+import com.vcristian.combus.expect
+import kotlinx.android.synthetic.main.fragment_chat.view.*
 import nl.booxchange.R
+import nl.booxchange.extension.setTintCompat
+import nl.booxchange.model.ChatOpenedEvent
+import nl.booxchange.utilities.BaseFragment
 
-class MessageFragment : Fragment() {
+class MessageFragment: BaseFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(container?.context).inflate(R.layout.fragment_message, container, false)
-    }
+    override val contentViewResourceId = R.layout.fragment_message
+    override val viewModel = MessageFragmentViewModel()
+
 }

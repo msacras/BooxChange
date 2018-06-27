@@ -9,8 +9,7 @@ enum class OfferType {
     NONE, EXCHANGE, SELL, BOTH;
 
     companion object {
-        fun getByFilters(exchangeFilter: Boolean, purchaseFilter: Boolean) =
-            OfferType.values()[purchaseFilter.toByte().shl(1) or exchangeFilter.toByte()]
+        fun getByFilters(exchangeFilter: Boolean, purchaseFilter: Boolean) = OfferType.values()[purchaseFilter.toByte().shl(1) or exchangeFilter.toByte()]
     }
 
     val isExchange

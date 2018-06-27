@@ -41,7 +41,7 @@ class BookEditActivity: BaseActivity() {
         }
         take_photo_button.setOnClickListener {
             val intent = Intent()
-            val outputUri = Tools.getCacheFile("camera_output")
+            val outputUri = Tools.getCacheUri("camera_output")
             intent.action = android.provider.MediaStore.ACTION_IMAGE_CAPTURE
             intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, outputUri)
             startActivityForResult(intent, Constants.REQUEST_CAMERA)
@@ -99,7 +99,7 @@ class BookEditActivity: BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
-            val inputUri = Tools.getCacheFile("camera_output")
+            val inputUri = Tools.getCacheUri("camera_output")
             val inputStream = contentResolver.openInputStream(inputUri)
             ByteArrayOutputStream().apply {
                 inputStream.copyTo(this)

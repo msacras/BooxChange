@@ -13,7 +13,7 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ListView
 import nl.booxchange.R
-import nl.booxchange.extension.getColorById
+import nl.booxchange.extension.getColorCompat
 import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.dip
 import kotlin.math.absoluteValue
@@ -26,7 +26,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
 
     private var mLoadingView = View(context).apply {
         layoutParams = FrameLayout.LayoutParams(dip(75), dip(30), Gravity.CENTER_HORIZONTAL)
-        background = LAnimationDrawable(loopsPerSecond = 1.5f, thickness = dip(2).toFloat(), width = dip(18).toFloat(), primaryColor = context.getColorById(R.color.colorPrimary), secondaryColor = context.getColorById(R.color.colorPrimaryDark))
+        background = LAnimationDrawable(loopsPerSecond = 1.5f, thickness = dip(2).toFloat(), width = dip(18).toFloat(), primaryColor = context.getColorCompat(R.color.colorPrimary), secondaryColor = context.getColorCompat(R.color.colorPrimaryDark))
         alpha = 0f
         translationY = (-dip(30)).toFloat()
     }

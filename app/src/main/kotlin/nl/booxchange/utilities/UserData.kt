@@ -1,16 +1,17 @@
 package nl.booxchange.utilities
 
+import android.databinding.ObservableField
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.iid.FirebaseInstanceId
 import nl.booxchange.BooxchangeApp
-import nl.booxchange.api.APIClient.RequestManager
+import nl.booxchange.api.APIClient.Book
+import nl.booxchange.api.APIClient.User
 import nl.booxchange.extension.asJson
 import nl.booxchange.extension.asObject
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.UserModel
 import org.jetbrains.anko.defaultSharedPreferences
-import kotlin.reflect.KClass
 
 /**
  * Created by Cristian Velinciuc on 3/22/18.
@@ -33,10 +34,8 @@ object UserData {
 
         fun login(onCompleted: (isLoggedIn: Boolean) -> Unit) {
             findUser {
-                it?.let {
-                    UserData.Session.userModel = it
-                    onCompleted(true)
-                } ?: onCompleted(false)
+                UserData.Session.userModel = it
+                onCompleted(it != null)
             }
         }
 
@@ -47,20 +46,21 @@ object UserData {
         }
 
         private fun findUser(onResult: (UserModel?) -> Unit) {
-            RequestManager.instance.userGet(Session.userId) {
-                onResult(it?.result)
+            User.userGet(Session.userId) {
+                onResult(it)
             }
         }
 
         private fun registerUser(onResult: (UserModel?) -> Unit) {
             val userModel = UserModel(Session.userId)
-            RequestManager.instance.userAdd(userModel) {
-                onResult(it?.result)
+            User.userAdd(userModel) {
+                onResult(it)
             }
         }
     }
 
     object Session {
+        @JvmStatic
         val userId
             get() = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("User not found")
         val instanceId
@@ -72,15 +72,15 @@ object UserData {
         init {
             FirebaseAuth.getInstance().addAuthStateListener {
                 FirebaseAuth.getInstance().currentUser?.let {
-                    RequestManager.instance.updateInstanceId {}
+                    User.updateInstanceId {}
                 }
             }
         }
 
         fun fetchUserBooksList(onCompleted: (success: Boolean) -> Unit) {
-            RequestManager.instance.fetchBooksByUserId(userModel?.id ?: return) {
-                userBooks = it?.result ?: emptyList()
-                onCompleted(it?.result != null)
+            Book.fetchBooksByUserId(userModel?.id ?: return) {
+                userBooks = it ?: emptyList()
+                onCompleted(it != null)
             }
         }
 
@@ -101,7 +101,7 @@ object UserData {
                 is Double -> preferences.putFloat(key, value.toFloat())
                 is String -> preferences.putString(key, value)
                 is Boolean -> preferences.putBoolean(key, value)
-                else -> preferences.putString(key, value.asJson())
+                else -> preferences.putString(key, value.asJson)
             }
 
             preferences.apply()

@@ -1,3 +1,4 @@
+/*
 package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
@@ -28,9 +29,11 @@ import java.util.*
 import kotlin.concurrent.timer
 import kotlin.properties.Delegates
 
+*/
 /**
  * Created by Cristian Velinciuc on 3/9/18.
- */
+ *//*
+
 class HomepageActivity: BaseActivity() {
     private val booksListAdapter = RecyclerViewAdapter()
     private val searchListAdapter = RecyclerViewAdapter()
@@ -195,10 +198,10 @@ class HomepageActivity: BaseActivity() {
     }
 
     private fun enableActionButton(view: FloatingActionButton) {
-        val (fromColorNormal, fromColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
+        val (fromColorNormal, fromColorDark) = getColorCompat(R.color.lightGray) to getColorCompat(R.color.midGray)
         val (toColorNormal, toColorDark) = when (view.id) {
-            R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
-            else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
+            R.id.action_filter_exchange -> getColorCompat(R.color.colorAccent) to getColorCompat(R.color.colorAccentDark)
+            else -> getColorCompat(R.color.colorPrimary) to getColorCompat(R.color.colorPrimaryDark)
         }
 
         ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
@@ -218,10 +221,10 @@ class HomepageActivity: BaseActivity() {
     }
 
     private fun disableActionButton(view: FloatingActionButton) {
-        val (toColorNormal, toColorDark) = getColorById(R.color.lightGray) to getColorById(R.color.midGray)
+        val (toColorNormal, toColorDark) = getColorCompat(R.color.lightGray) to getColorCompat(R.color.midGray)
         val (fromColorNormal, fromColorDark) = when (view.id) {
-            R.id.action_filter_exchange -> getColorById(R.color.colorAccent) to getColorById(R.color.colorAccentDark)
-            else -> getColorById(R.color.colorPrimary) to getColorById(R.color.colorPrimaryDark)
+            R.id.action_filter_exchange -> getColorCompat(R.color.colorAccent) to getColorCompat(R.color.colorAccentDark)
+            else -> getColorCompat(R.color.colorPrimary) to getColorCompat(R.color.colorPrimaryDark)
         }
 
         ValueAnimator.ofObject(ArgbEvaluator(), fromColorNormal, toColorNormal).apply {
@@ -321,13 +324,15 @@ class HomepageActivity: BaseActivity() {
         view.setOnClickListener {
 //            bookInfoFragment.updateBookModel(model)
 //            bookInfoFragment.setSize(view.width, view.height)
+*/
 /*
             Rect().apply {
                 view.getGlobalVisibleRect(this)
                 val topOffset = Rect().apply { (contentView as ViewGroup).offsetDescendantRectToMyCoords(view, this) }.top
                 bookInfoFragment.setBounds(left, topOffset, right, bottom)
             }
-*/
+*//*
+
 //            book_info_fragment.toVisible()
 
 //            book_info_fragment.left = view.left
@@ -354,3 +359,4 @@ class HomepageActivity: BaseActivity() {
         }
     }
 }
+*/

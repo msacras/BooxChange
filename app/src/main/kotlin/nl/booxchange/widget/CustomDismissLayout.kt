@@ -232,6 +232,7 @@ class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun processDragMotionDown(overscrollTop: Float) {
+/*
         val originalDragPercent = overscrollTop / mTotalDragDistance
         val dragPercent = Math.min(1f, Math.abs(originalDragPercent))
         val extraOS = Math.abs(overscrollTop) - mTotalDragDistance
@@ -240,10 +241,12 @@ class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: Att
         val tensionPercent = (tensionSlingshotPercent / 4 - Math.pow((tensionSlingshotPercent / 4).toDouble(), 2.0)).toFloat() * 2f
         val extraMove = slingshotDist * tensionPercent * 2f
         val targetY = mProgressViewStartOffset + slingshotDist * dragPercent + extraMove
-        translationY = overscrollTop
+*/
+        mTargetView?.let { it.translationY =+ overscrollTop }
     }
 
     private fun processDragMotionUp(overscrollTop: Float) {
+/*
         val originalDragPercent = overscrollTop / mTotalDragDistance
         val dragPercent = Math.min(1f, Math.abs(originalDragPercent))
         val extraOS = Math.abs(overscrollTop) - mTotalDragDistance
@@ -252,15 +255,17 @@ class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: Att
         val tensionPercent = (tensionSlingshotPercent / 4 - Math.pow((tensionSlingshotPercent / 4).toDouble(), 2.0)).toFloat() * 2f
         val extraMove = slingshotDist * tensionPercent * 2f
         val targetY = mProgressViewStartOffset + slingshotDist * dragPercent + extraMove
-        translationY = overscrollTop
+*/
+
+        mTargetView?.let { it.translationY =+ overscrollTop }
     }
 
     private fun finishSpinner(overscrollTop: Float) {
-        if ((overscrollTop > mTotalDragDistance && translationY > 0) || (-overscrollTop > mTotalDragDistance && translationY < 0)) {
-            animateOffsetToEndPosition()
-        } else {
-            animateOffsetToStartPosition()
-        }
+//        if ((overscrollTop > mTotalDragDistance && translationY > 0) || (-overscrollTop > mTotalDragDistance && translationY < 0)) {
+//            animateOffsetToEndPosition()
+//        } else {
+//            animateOffsetToStartPosition()
+//        }
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
@@ -312,7 +317,7 @@ class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: Att
                     val y = ev.getY(pointerIndex)
                     val overscrollTop = (y - mInitialMotionY) * DRAG_RATE
                     mIsBeingDragged = false
-                    finishSpinner(overscrollTop)
+//                    finishSpinner(overscrollTop)
                 }
                 mActivePointerId = INVALID_POINTER
                 return false
@@ -341,13 +346,13 @@ class CustomDismissLayout @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun animateOffsetToEndPosition() {
-        mReturningToStart = true
-        animate()?.translationY(height * translationY.sign)?.setDuration(350L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false; onDismissAction?.invoke() }?.start()
+//        mReturningToStart = true
+//        animate()?.translation4Y(height * translationY.sign)?.setDuration(350L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false; onDismissAction?.invoke() }?.start()
     }
 
     private fun animateOffsetToStartPosition() {
-        mReturningToStart = true
-        animate()?.translationY(0f)?.setDuration(250L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false }?.start()
+//        mReturningToStart = true
+//        animate()?.translationY(0f)?.setDuration(250L)?.setInterpolator(mDecelerateInterpolator)?.withEndAction { mReturningToStart = false }?.start()
     }
 
     private fun onSecondaryPointerUp(ev: MotionEvent) {

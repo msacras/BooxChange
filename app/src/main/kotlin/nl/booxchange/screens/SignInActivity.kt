@@ -25,7 +25,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
-import nl.booxchange.extension.getColorById
+import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.withExitSymbol
 import nl.booxchange.utilities.BaseActivity
 import nl.booxchange.utilities.Constants
@@ -51,7 +51,7 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
   }
 
   private fun initializeLayout() {
-    progress_bar.indeterminateDrawable.setColorFilter(getColorById(R.color.lightGray), PorterDuff.Mode.SRC_IN);
+    progress_bar.indeterminateDrawable.setColorFilter(getColorCompat(R.color.lightGray), PorterDuff.Mode.SRC_IN);
   }
 
   private fun initializeFacebookAuthorization() {
@@ -124,7 +124,7 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
   override fun onComplete(task: Task<AuthResult>) {
     if (task.isSuccessful) {
       toast("Firebase auth task succeeded")
-      UserData.Authentication.register(task.result.user.uid) { isLoggedIn, isNewUser ->
+      UserData.Authentication.register { isLoggedIn, isNewUser ->
         if (isLoggedIn) {
           toast("Database auth task succeeded")
           UserData.Session.fetchUserBooksList {}

@@ -4,9 +4,10 @@ package nl.booxchange.utilities
  * Created by usr1 on 3/19/18.
  */
 object Constants {
-    const val REQUEST_CAMERA = 10001
-    const val REQUEST_GALLERY = 10002
-    const val REQUEST_BOOK_EDIT = 10001
+    const val REQUEST_CAMERA = 0x11
+    const val REQUEST_GALLERY = 0x12
+
+    const val REQUEST_BOOK_EDIT = 0x13
 
     const val EXTRA_PARAM_BOOK_MODEL = "EXTRA_PARAM_BOOK_MODEL"
     const val EXTRA_PARAM_CHAT_MODEL = "EXTRA_PARAM_CHAT_MODEL"
@@ -19,6 +20,9 @@ object Constants {
     const val EXTRA_PARAM_TARGET_VIEW = "EXTRA_PARAM_TARGET_VIEW"
     const val FRAGMENT_HOME = "FRAGMENT_HOME"
     const val FRAGMENT_PROFILE = "FRAGMENT_PROFILE"
+
+    const val FRAGMENT_ID_MASK = 0xF_00
+    const val FRAGMENT_ID_BOOK = 0x1_00
 
     val IDDC = mapOf(
         "AD" to "376",

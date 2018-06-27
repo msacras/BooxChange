@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/rounded_corner_solid_blue_10dp" android:state_checked="true"/>
-    <item android:drawable="@drawable/rounded_corner_solid_gray_10dp" android:state_checked="false"/>
+    <item android:state_checked="true">
+        <shape
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+
+            <solid android:color="@color/themeBlue"/>
+            <corners android:radius="8dp"/>
+
+        </shape>
+    </item>
+    <item>
+        <shape
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+
+            <solid android:color="@color/midGray"/>
+            <corners android:radius="8dp"/>
+
+        </shape>
+    </item>
 </selector>

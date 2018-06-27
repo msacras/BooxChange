@@ -1,20 +1,24 @@
+/*
 package nl.booxchange.screens
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.list_item_chat.view.*
 import nl.booxchange.R
-import nl.booxchange.R.id.chats_list
-import nl.booxchange.R.id.swipe_refresh_layout
+import nl.booxchange.api.APIClient.Chat
 import nl.booxchange.model.ChatModel
-import nl.booxchange.utilities.*
+import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.utilities.Constants
+import nl.booxchange.utilities.MessageUtilities
+import nl.booxchange.utilities.RecyclerViewAdapter
 import org.jetbrains.anko.startActivity
 
+*/
 /**
  * Created by Dima on 3/10/2018.
- */
+ *//*
+
 class MessagesActivity: BaseActivity() {
   private val chatRoomsAdapter = RecyclerViewAdapter()
 
@@ -36,10 +40,10 @@ class MessagesActivity: BaseActivity() {
   }
 
   private fun fetchChatRooms() {
-    if (!swipe_refresh_layout.isRefreshing) loadingView.show()
-    requestManager.fetchChatRooms {
-      it?.let(chatRoomsAdapter::swapItems) ?: retryView.show()
-      if (!swipe_refresh_layout.isRefreshing) loadingView.hide() else swipe_refresh_layout.isRefreshing = false
+    if (!swipe_refresh_layout.isRefreshing) //loadingView.show()
+    Chat.fetchChatRooms {
+      it?.let(chatRoomsAdapter::swapItems) //?: retryView.show()
+      if (swipe_refresh_layout.isRefreshing) swipe_refresh_layout.isRefreshing = false
     }
   }
 
@@ -49,3 +53,4 @@ class MessagesActivity: BaseActivity() {
     }
   }
 }
+*/

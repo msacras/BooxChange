@@ -1,14 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="nl.booxchange.screens.LibraryFragmentViewModel"/>
+    </data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="libary"
-        android:textColor="#000"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <nl.booxchange.widget.CustomRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/user_books_list"
+                adapterHandler="@{viewModel}"
+                adapterItems="@{viewModel.userBooksList}"
+                adapterLayout="@{@layout/list_item_book_offer}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:listitem="@layout/list_item_book_offer"/>
+
+        </nl.booxchange.widget.CustomRefreshLayout>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/no_books_icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="96dp"
+            visibleIf="@{viewModel.userBooksList.size() == 0}"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="192dp"
+            app:srcCompat="@drawable/ic_library"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/no_books_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            visibleIf="@{viewModel.userBooksList.size() == 0}"
+            android:gravity="center_horizontal"
+            android:text="You have no books in your library"
+            app:layout_constraintEnd_toEndOf="@id/no_books_icon"
+            app:layout_constraintStart_toStartOf="@id/no_books_icon"
+            app:layout_constraintTop_toBottomOf="@id/no_books_icon"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/add_book_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/rounded_corner_solid_gray_8dp"
+            android:onClick="@{viewModel::addBook}"
+            android:stateListAnimator="@animator/button_elevation_animator"
+            android:tint="@color/themeGreenDark"
+            app:backgroundTint="@color/themeGreen"
+            android:translationY="-56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/plus"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
