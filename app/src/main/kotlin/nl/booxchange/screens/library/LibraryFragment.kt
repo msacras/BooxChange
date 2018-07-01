@@ -1,4 +1,4 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.library
 
 import android.graphics.Rect
 import android.os.Bundle

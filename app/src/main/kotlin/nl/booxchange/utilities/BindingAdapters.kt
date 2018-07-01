@@ -3,7 +3,6 @@ package nl.booxchange.utilities
 import android.databinding.BindingAdapter
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
@@ -16,7 +15,6 @@ import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import com.bumptech.glide.*
 import com.bumptech.glide.load.resource.bitmap.*
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -50,14 +48,14 @@ fun ViewPager.updatePhotoViewPagerItems(itemsList: List<EditablePhotoModel?>?, h
 @BindingAdapter("scaledImageId")
 fun AppCompatImageView.setScaledImageFromUrl(imageId: String?) {
     val requestOptions = RequestOptions().error(context.getDrawableCompat(R.drawable.ic_no_image).setTintCompat(R.color.midGray)).transforms(CenterCrop(), RoundedCorners(dip(4)))
-    Glide.with(context).load(imageId?.statisResourceUrl).apply(requestOptions).transition(DrawableTransitionOptions().crossFade()).into(this)
+    Glide.with(context).load(imageId?.staticResourceUrl).apply(requestOptions).transition(DrawableTransitionOptions().crossFade()).into(this)
 }
 
 @BindingAdapter("scaledImageId")
 fun AppCompatImageView.setScaledImageFromUrl(photoModel: EditablePhotoModel?) {
     val path = when (photoModel?.type) {
         EditablePhotoModel.EditablePhotoType.LOCAL_URI -> photoModel.path
-        EditablePhotoModel.EditablePhotoType.REMOTE_URL -> photoModel.path.path.statisResourceUrl
+        EditablePhotoModel.EditablePhotoType.REMOTE_URL -> photoModel.path.path.staticResourceUrl
         else -> null
     }
 
@@ -72,7 +70,7 @@ fun AppCompatImageView.setFullSizeImageFromUrl(photoModel: EditablePhotoModel?) 
     doAsync {
         val path = when (photoModel.type) {
             EditablePhotoModel.EditablePhotoType.LOCAL_URI -> photoModel.path
-            EditablePhotoModel.EditablePhotoType.REMOTE_URL -> photoModel.path.path.statisResourceUrl
+            EditablePhotoModel.EditablePhotoType.REMOTE_URL -> photoModel.path.path.staticResourceUrl
         }
 
         val drawable = Glide.with(context).load(path).submit(1024, 1024).get()
@@ -95,7 +93,7 @@ fun AppCompatImageView.setImageFromUrl(imageIds: List<String?>?) {
     imageIds?.let {
         imageIds.forEachIndexed { index, imageId ->
             doAsync {
-                imageDrawables[index] = imageId?.statisResourceUrl?.let(Glide.with(context)::load)?.submit(width, height)?.get() ?: noImageDrawable
+                imageDrawables[index] = imageId?.staticResourceUrl?.let(Glide.with(context)::load)?.submit(width, height)?.get() ?: noImageDrawable
                 post(::updateState)
             }
         }
@@ -206,3 +204,15 @@ fun View.setEndMargin(dimension: Float) {
         marginEnd = dimension.toInt()
     }
 }
+
+/*
+@BindingAdapter("android:text")
+fun AppCompatEditText.setSpannableText(string: SpannableString?) {
+    setText(string)
+}
+
+@InverseBindingAdapter(attribute = "android:text")
+fun AppCompatEditText.getSpannableText(): SpannableString {
+    return SpannableString(text)
+}
+*/

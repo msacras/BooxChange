@@ -23,19 +23,9 @@ object Tools {
     val safeContext
         get() = BooxchangeApp.delegate.applicationContext
 
-    fun initializeImage(imageView: ImageView, url: String?) {
-        val context = imageView.context
-        val screenWidth = Point().apply((context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay::getSize).x
-        val serverImageUrl = FuelManager.instance.basePath + "/static/$url"
-        val smallThumbnailUrl = "https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?url=$serverImageUrl&container=focus&resize_w=$screenWidth&refresh=604800"
-        try { Glide.with(context).load(smallThumbnailUrl).into(imageView) } catch (e: Exception) { /* Activity was destroyed before load could start */ }
-    }
-
     fun getCacheUri(filename: String): Uri {
         return FileProvider.getUriForFile(safeContext, safeContext.packageName + ".file_provider", File.createTempFile(filename, "", File(safeContext.cacheDir.path)))
     }
-
-    val buttonElevation by lazy { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) AppCompatButton(safeContext).stateListAnimator else null }
 
     fun interpolateColor(colorA: Int, colorB: Int, percentage: Float) =
         (colorA.ARGB to colorB.ARGB).let { (argbA, argbB) ->

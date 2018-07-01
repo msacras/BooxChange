@@ -1,5 +1,6 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.chat
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -12,6 +13,7 @@ import nl.booxchange.extension.setTintCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
 import nl.booxchange.model.ChatOpenedEvent
+import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
 import org.jetbrains.anko.dip
 
@@ -33,12 +35,16 @@ class ChatFragment: BaseFragment() {
         val `40dp` = view.dip(40).toFloat()
 
         view.send_more.setOnClickListener {
-            if (view.buttons_container.isVisible) {
-                view.buttons_container.animate().alpha(0f).translationY(`40dp`).withEndAction(view.buttons_container::toGone).setDuration(150).start()
-                view.send_more.animate().rotation(0f).setDuration(150).start()
+            if (view.message_input.isEnabled) {
+                if (view.buttons_container.isVisible) {
+                    view.buttons_container.animate().alpha(0f).translationY(`40dp`).withEndAction(view.buttons_container::toGone).setDuration(150).start()
+                    view.send_more.animate().rotation(0f).setDuration(150).start()
+                } else {
+                    view.buttons_container.animate().alpha(1f).translationY(0f).withStartAction(view.buttons_container::toVisible).setDuration(150).start()
+                    view.send_more.animate().rotation(135f).setDuration(150).start()
+                }
             } else {
-                view.buttons_container.animate().alpha(1f).translationY(0f).withStartAction(view.buttons_container::toVisible).setDuration(150).start()
-                view.send_more.animate().rotation(135f).setDuration(150).start()
+                viewModel.removeSendableImage()
             }
         }
 
@@ -79,5 +85,10 @@ class ChatFragment: BaseFragment() {
 //        }
 
         return isHidden
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        viewModel.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

@@ -11,23 +11,22 @@
             name="itemHandler"
             type="nl.booxchange.model.BookItemHandler"/>
     </data>
-
 <android.support.constraint.ConstraintLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}"
-    android:background="@{itemHandler.checkedBook == itemModel ? @drawable/rounded_corner_solid_gray_8dp : null}">
+    android:background="@{itemHandler.checkedBook == itemModel ? @drawable/rounded_corner_solid_gray_8dp : null}"
+    android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/book_image"
         scaledImageId="@{itemModel.firstImage}"
         android:layout_width="120dp"
         android:layout_height="160dp"
-        tools:srcCompat="@drawable/ic_no_image"
         android:background="@drawable/rounded_corner_solid_light_8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_no_image"/>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/book_title"
@@ -40,6 +39,7 @@
         android:text="@{itemModel.title}"
         android:textColor="@color/jetGray"
         android:textStyle="bold"
+        android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="@id/book_image"
         app:layout_constraintStart_toStartOf="@id/book_image"
         app:layout_constraintTop_toBottomOf="@id/book_image"
@@ -51,12 +51,12 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center_horizontal"
-        android:textSize="10sp"
         android:lines="1"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
         android:text="@{itemModel.author}"
         android:textColor="@color/darkGray"
+        android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="@id/book_image"
         app:layout_constraintStart_toStartOf="@id/book_image"
         app:layout_constraintTop_toBottomOf="@id/book_title"

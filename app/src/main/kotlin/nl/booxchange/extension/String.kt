@@ -16,5 +16,5 @@ val String.digitsOnly
 val String.takeNotBlank
     get() = this.takeIf { it.isNotBlank() }
 
-val String.statisResourceUrl
+val String.staticResourceUrl
     get() = FuelManager.instance.basePath + "/static/$this"

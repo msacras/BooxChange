@@ -6,7 +6,7 @@
     <data>
         <variable
             name="itemHandler"
-            type="nl.booxchange.screens.MessageFragmentViewModel"/>
+            type="nl.booxchange.screens.messages.MessagesFragmentViewModel"/>
         <variable
             name="itemModel"
             type="nl.booxchange.model.ChatModel"/>

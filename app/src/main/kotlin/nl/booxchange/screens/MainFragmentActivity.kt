@@ -9,11 +9,13 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
 import com.vcristian.combus.expect
+import com.vcristian.combus.post
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
+import nl.booxchange.model.ChatOpenedEvent
 import nl.booxchange.model.MessageReceivedEvent
 import nl.booxchange.model.OverlayFragment
 import nl.booxchange.utilities.BaseFragment
@@ -30,7 +32,6 @@ class MainFragmentActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        BooxchangeApp.mainActivityDelegate = this
         setContentView(R.layout.activity_main_fragment)
 
         setSupportActionBar(toolbar)
@@ -52,6 +53,7 @@ class MainFragmentActivity: AppCompatActivity() {
 
         when (intent.getStringExtra(Constants.EXTRA_PARAM_TARGET_VIEW)) {
             Constants.FRAGMENT_PROFILE -> profile_page.performClick()
+            Constants.FRAGMENT_CHAT -> post(ChatOpenedEvent(chatId = intent.getStringExtra(Constants.EXTRA_PARAM_CHAT_ID)))
             else -> home_page.performClick()
         }
 
@@ -63,7 +65,7 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
-    private val blackColor by lazy { getColorCompat(R.color.black) }
+    private val blackColor by lazy { getColorCompat(R.color.mountainMeadow) }
     private val grayColor by lazy { getColorCompat(R.color.midGray) }
     private val colorEvaluator = ArgbEvaluator()
 
@@ -94,16 +96,21 @@ class MainFragmentActivity: AppCompatActivity() {
         supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).hide(fragment).commit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        BooxchangeApp.isInForeground = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BooxchangeApp.isInForeground = false
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.fragments.all {
                 (it as? BaseFragment)?.onBackPressed() != false
             }) {
             super.onBackPressed()
         }
-    }
-
-    override fun onDestroy() {
-        BooxchangeApp.mainActivityDelegate = null
-        super.onDestroy()
     }
 }

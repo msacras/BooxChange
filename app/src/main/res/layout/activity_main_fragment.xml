@@ -15,28 +15,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <fragment
-            android:name="nl.booxchange.screens.HomeFragment"
+            android:name="nl.booxchange.screens.home.HomeFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:tag="home_page"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <fragment
-            android:name="nl.booxchange.screens.LibraryFragment"
+            android:name="nl.booxchange.screens.library.LibraryFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:tag="library_page"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <fragment
-            android:name="nl.booxchange.screens.MessageFragment"
+            android:name="nl.booxchange.screens.messages.MessagesFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:tag="message_page"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <fragment
-            android:name="nl.booxchange.screens.ProfileFragment"
+            android:name="nl.booxchange.screens.profile.ProfileFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:tag="profile_page"
@@ -134,7 +134,7 @@
 
     <fragment
         android:tag="chat_view"
-        android:name="nl.booxchange.screens.ChatFragment"
+        android:name="nl.booxchange.screens.chat.ChatFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:visibility="gone"
@@ -145,7 +145,7 @@
 
     <fragment
         android:tag="book_view"
-        android:name="nl.booxchange.screens.BookFragment"
+        android:name="nl.booxchange.screens.book.BookFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:visibility="gone"

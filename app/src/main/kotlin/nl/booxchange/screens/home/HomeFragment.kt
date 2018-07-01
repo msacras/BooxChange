@@ -1,16 +1,11 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.home
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.transition.TransitionManager
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.activity_profile.view.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import nl.booxchange.R
 import nl.booxchange.extension.isGone

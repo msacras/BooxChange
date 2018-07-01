@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="nl.booxchange.screens.HomeFragmentViewModel"/>
+            type="nl.booxchange.screens.home.HomeFragmentViewModel"/>
     </data>
 <nl.booxchange.widget.CustomRefreshLayout
     android:id="@+id/swipe_refresh_layout"

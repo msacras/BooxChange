@@ -1,3 +1,4 @@
+/*
 package nl.booxchange.screens
 
 import android.content.Context
@@ -128,6 +129,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         initializePhoneAuthorizationLayout()
         initializeFacebookAuthorization()
         initializeGoogleAuthorization()
+*/
 /*
         take_photo_button.setOnClickListener {
             val intent = Intent()
@@ -138,12 +140,15 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         }
         upload_photo_button.setOnClickListener {
             val intent = Intent()
-            intent.type = "image*/
+            intent.type = "image*//*
+
+*/
 /*"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constants.REQUEST_GALLERY)
         }
-*/
+*//*
+
         chevron.setOnClickListener {
             if (see_more.isVisible) {
                 see_more.toGone()
@@ -173,7 +178,8 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         userModel.studyYear = study_year.text.toString().takeIf { it.isNotBlank() }?.toInt()
     }
 
-    private fun uploadUser() {}/*{
+    private fun uploadUser() {}*/
+/*{
         loading_v.show()
         loading_v.message = "Uploading"
         APIClient.User.userUpdate(userModel) { response ->
@@ -197,7 +203,8 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
                 //TODO: Show connection failure message
             }
         }
-    }*/
+    }*//*
+
 
     private fun initializeFacebookAuthorization() {
         facebook_connect.setOnCheckedChangeListener { _, isChecked ->
@@ -299,3 +306,4 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         }
     }
 }
+*/

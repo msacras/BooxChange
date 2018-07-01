@@ -2,6 +2,8 @@ package nl.booxchange.utilities
 
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.graphics.drawable.Animatable
+import android.os.Build
 import android.support.annotation.LayoutRes
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +11,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import nl.booxchange.BR
+import nl.booxchange.R
+import nl.booxchange.extension.getDrawableCompat
 import nl.booxchange.model.Distinctive
 import java.lang.ref.WeakReference
 

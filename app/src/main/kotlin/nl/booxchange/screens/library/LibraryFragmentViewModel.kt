@@ -1,4 +1,4 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.library
 
 import android.databinding.Observable
 import android.databinding.ObservableField

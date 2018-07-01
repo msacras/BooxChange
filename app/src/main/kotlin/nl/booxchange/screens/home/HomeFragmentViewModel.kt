@@ -1,9 +1,7 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.home
 
 import android.databinding.Observable
 import android.databinding.ObservableField
-import android.graphics.Point
-import android.util.Size
 import android.view.View
 import com.vcristian.combus.post
 import nl.booxchange.api.APIClient.Book

@@ -1,4 +1,4 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.book
 
 import android.app.Activity
 import android.content.Intent
@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.RadioGroup
 import com.vcristian.combus.expect
 import com.vcristian.combus.post
-import nl.booxchange.api.APIClient
 import nl.booxchange.api.APIClient.Chat
 import nl.booxchange.api.APIClient.Book
 import nl.booxchange.extension.takeNotBlank
@@ -199,7 +198,7 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val imageUri = when (requestCode) {
-                Constants.REQUEST_CAMERA -> Tools.getCacheUri("camera_output")
+                Constants.REQUEST_CAMERA -> Tools.getCacheUri("camera_output.jpeg")
                 Constants.REQUEST_GALLERY -> data!!.data
                 else -> return
             }

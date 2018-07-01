@@ -9,20 +9,13 @@ object Constants {
 
     const val REQUEST_BOOK_EDIT = 0x13
 
-    const val EXTRA_PARAM_BOOK_MODEL = "EXTRA_PARAM_BOOK_MODEL"
-    const val EXTRA_PARAM_CHAT_MODEL = "EXTRA_PARAM_CHAT_MODEL"
-
     const val EXTRA_PARAM_BOOK_ID = "EXTRA_PARAM_BOOK_ID"
     const val EXTRA_PARAM_CHAT_ID = "EXTRA_PARAM_CHAT_ID"
 
-    const val EXTRA_PARAM_BOOK_EDIT_RESULT = "EXTRA_PARAM_BOOK_EDIT_RESULT"
-
     const val EXTRA_PARAM_TARGET_VIEW = "EXTRA_PARAM_TARGET_VIEW"
     const val FRAGMENT_HOME = "FRAGMENT_HOME"
+    const val FRAGMENT_CHAT = "FRAGMENT_CHAT"
     const val FRAGMENT_PROFILE = "FRAGMENT_PROFILE"
-
-    const val FRAGMENT_ID_MASK = 0xF_00
-    const val FRAGMENT_ID_BOOK = 0x1_00
 
     val IDDC = mapOf(
         "AD" to "376",

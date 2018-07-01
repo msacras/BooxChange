@@ -2,12 +2,12 @@ package nl.booxchange.screens
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.constraint.ConstraintSet
 import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
+import android.support.v7.app.AppCompatActivity
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -25,9 +25,9 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
+import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.withExitSymbol
-import nl.booxchange.utilities.BaseActivity
 import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.UserData
 import org.jetbrains.anko.startActivity
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Cristian Velinciuc on 3/12/18.
  */
-class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
+class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   private val facebookCallbackManager = CallbackManager.Factory.create()
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +129,7 @@ class SignInActivity: BaseActivity(), OnCompleteListener<AuthResult> {
           toast("Database auth task succeeded")
           UserData.Session.fetchUserBooksList {}
           if (isNewUser) {
-            startActivity<ProfileActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
+            startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
           } else {
             startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
           }

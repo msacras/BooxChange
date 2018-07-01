@@ -26,7 +26,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
 
     private var mLoadingView = View(context).apply {
         layoutParams = FrameLayout.LayoutParams(dip(75), dip(30), Gravity.CENTER_HORIZONTAL)
-        background = LAnimationDrawable(loopsPerSecond = 1.5f, thickness = dip(2).toFloat(), width = dip(18).toFloat(), primaryColor = context.getColorCompat(R.color.colorPrimary), secondaryColor = context.getColorCompat(R.color.colorPrimaryDark))
+        //background = LAnimationDrawable(loopsPerSecond = 1.5f, thickness = dip(2).toFloat(), width = dip(18).toFloat(), primaryColor = context.getColorCompat(R.color.colorPrimary), secondaryColor = context.getColorCompat(R.color.colorPrimaryDark))
         alpha = 0f
         translationY = (-dip(30)).toFloat()
     }
@@ -109,7 +109,7 @@ class CustomRefreshLayout @JvmOverloads constructor(context: Context, attrs: Att
 
     private fun createProgressView() {
         addView(mLoadingView)
-        (mLoadingView.background as LAnimationDrawable).start()
+        //(mLoadingView.background as LAnimationDrawable).start()
     }
 
     private fun setRefreshing(refreshing: Boolean, notify: Boolean) {

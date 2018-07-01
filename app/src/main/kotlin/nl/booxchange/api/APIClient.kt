@@ -26,7 +26,7 @@ object APIClient {
     private var idToken: String? = null
 
     init {
-        FuelManager.instance.basePath = /*"http://test.api.booxchange.website"*/"http://192.168.88.128:8000"/*"http://192.168.0.104:8000"*/
+        FuelManager.instance.basePath = /*"https://api.booxchange.website"*//*"http://192.168.88.128:8000"*/"http://192.168.0.104:8000"
         FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
         FirebaseAuth.getInstance().addIdTokenListener(::requestToken)
     }
@@ -51,7 +51,7 @@ object APIClient {
     }
 
     private val pendingRequests = Stack<Pair<Request, (JsonObject?) -> Unit>>()
-    private val requests: MutableMap<String, Request> = mutableMapOf()
+    private val requests = mutableMapOf<String, Request>()
 
     private fun executeRequest(request: Request, callback: (JsonObject?) -> Unit) {
         requests.put(request.name, request)?.cancel()

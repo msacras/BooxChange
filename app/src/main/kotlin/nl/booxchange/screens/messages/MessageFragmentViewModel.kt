@@ -1,4 +1,4 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.messages
 
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
@@ -11,7 +11,7 @@ import nl.booxchange.utilities.BaseViewModel
 import nl.booxchange.utilities.UserData
 
 
-class MessageFragmentViewModel: BaseViewModel() {
+class MessagesFragmentViewModel: BaseViewModel() {
     val requestsList = ObservableField<List<ChatModel>>()
     val chatsList = ObservableField<List<ChatModel>>()
 

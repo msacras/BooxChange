@@ -1,4 +1,4 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.profile
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

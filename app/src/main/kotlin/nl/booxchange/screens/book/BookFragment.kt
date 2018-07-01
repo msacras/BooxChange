@@ -1,7 +1,6 @@
-package nl.booxchange.screens
+package nl.booxchange.screens.book
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.vcristian.combus.expect
@@ -12,6 +11,7 @@ import nl.booxchange.extension.setTintCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
 import nl.booxchange.model.BookOpenedEvent
+import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
 import org.jetbrains.anko.dip
 

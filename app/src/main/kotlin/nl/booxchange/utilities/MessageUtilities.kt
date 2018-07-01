@@ -5,16 +5,13 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.*
 import android.view.View
-import com.vcristian.combus.post
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.string
-import nl.booxchange.model.BookOpenedEvent
 import nl.booxchange.model.MessageModel
 import nl.booxchange.model.MessageType
 import nl.booxchange.model.UserModel
-import org.jetbrains.anko.startActivity
 
 object MessageUtilities {
     fun getActionCommentary(message: MessageModel, talkersList: List<UserModel>): String {
@@ -29,6 +26,14 @@ object MessageUtilities {
         }
 
         return contentInfo.string
+    }
+
+    fun getFormattedMessage(message: MessageModel): CharSequence {
+        return when (message.type) {
+            MessageType.IMAGE -> ""
+            MessageType.TEXT -> message.content
+            MessageType.REQUEST -> message.content
+        }
     }
 
     fun formatRequest(content: String, talkersList: List<UserModel>): Spannable {

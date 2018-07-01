@@ -1,3 +1,4 @@
+/*
 package nl.booxchange.widget
 
 import android.content.Context
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.loading_view_layout.view.*
 import nl.booxchange.R
+import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
@@ -16,9 +18,11 @@ import org.jetbrains.anko.dip
 import kotlin.properties.Delegates
 
 
+*/
 /**
  * Created by Cristian Velinciuc on 3/24/18.
- */
+ *//*
+
 class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val progressDrawable = LAnimationDrawable(thickness = dip(2).toFloat(), primaryColor = context.getColorCompat(R.color.colorPrimary), secondaryColor = context.getColorCompat(R.color.whiteGray))
@@ -61,3 +65,4 @@ class LoadingView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         postDelayed({ animate().alpha(0f).setDuration(animation).withEndAction { progressDrawable.stop(); toGone() }.start() }, delay)
     }
 }
+*/
