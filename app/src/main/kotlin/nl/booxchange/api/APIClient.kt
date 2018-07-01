@@ -19,9 +19,6 @@ import org.jetbrains.anko.uiThread
 import java.lang.ref.WeakReference
 import java.util.*
 
-/**
- * Created by Cristian Velinciuc on 3/9/18.
- */
 object APIClient {
   private var isRequestingToken = false
   private var userToken: String? = null

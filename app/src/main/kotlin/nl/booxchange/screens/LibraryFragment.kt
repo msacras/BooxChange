@@ -2,24 +2,23 @@ package nl.booxchange.screens
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.offer_list_book_item.view.*
+import kotlinx.android.synthetic.main.activity_main_fragment.*
+import kotlinx.android.synthetic.main.fragment_library.*
 import nl.booxchange.R
-import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
-import nl.booxchange.model.BookModel
-import nl.booxchange.model.OfferType
 import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.Tools
-import nl.booxchange.utilities.UserData
-import org.jetbrains.anko.startActivityForResult
 
 class LibraryFragment : Fragment() {
+
+    val colorGray = Color.parseColor("#939393")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(container?.context).inflate(R.layout.fragment_library, container, false)
@@ -30,8 +29,19 @@ class LibraryFragment : Fragment() {
         initializeLayout()
         reloadUsersBooks()
 
-    }
+        library_icon.setColorFilter(colorGray)
 
+        (activity as MainFragmentActivity).setTitle("Library")
+        (activity as MainFragmentActivity).toolbar_title.setTextAppearance(activity, R.style.restPage)
+        (activity as MainFragmentActivity).add_book_button.toVisible()
+        add_book_btn.setOnClickListener {
+            val nextFrag = BookEditFragment()
+            activity!!.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment, nextFrag, "findThisFragment")
+                    .addToBackStack(null)
+                    .commit()
+        }
+    }
 
     private fun initializeLayout() {
 /*

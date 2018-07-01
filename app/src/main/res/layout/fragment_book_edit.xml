@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="nl.booxchange.screens.BookEditFragment">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/top_card_view"
+        android:layout_width="match_parent"
+        app:cardBackgroundColor="@color/bordeaux"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="3dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/back_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:padding="1dp"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="left|center"
+            android:src="@drawable/ic_back"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/plus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="35dp"
+            android:layout_gravity="left|center"
+            android:src="@drawable/ic_plus"/>
+
+    </android.support.v7.widget.CardView>
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@color/tuna"
+        android:text="@string/hello_blank_fragment" />
+
+</RelativeLayout>

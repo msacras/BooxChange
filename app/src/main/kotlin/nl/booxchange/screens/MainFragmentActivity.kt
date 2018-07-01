@@ -2,6 +2,7 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,22 +11,24 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.R
+import nl.booxchange.R.color.tuna
 import nl.booxchange.extension.getColorById
+import nl.booxchange.extension.setVisible
+import nl.booxchange.extension.toGone
 import nl.booxchange.utilities.Constants
 
 class MainFragmentActivity: AppCompatActivity() {
 
-    init {
-        ukrasti_vseo()
-    }
-
-    private fun ukrasti_vseo() {
-
-    }
+    private val blueColor by lazy { getColorById(R.color.mountainMeadow) }
+    private val grayColor by lazy { getColorById(R.color.midGray) }
+    private val lightGray by lazy { getColorById(R.color.lightGray) }
+    private val colorEvaluator = ArgbEvaluator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_fragment)
+
+        listOf(add_book_button, log_out).forEach { it.setColorFilter(tuna) }
 
         val fragments = listOf (
                 home_page to HomeFragment(),
@@ -38,9 +41,9 @@ class MainFragmentActivity: AppCompatActivity() {
             button.setOnClickListener {
                 showFragment(fragment)
                 fragments.forEach { (otherButton, _) ->
-                    val color = if (otherButton == button) blackColor else grayColor
+                    val color = if (otherButton == button) blueColor else grayColor
                     updateColor(otherButton as AppCompatImageButton, color)
-                    app_bar_layout.setExpanded(true, true)
+                    //app_bar_layout.setExpanded(true, true)
                 }
                 val targetPositionX = (currentSelectedIndex * focused_button_highlight.width).toFloat()
                 val transitionDuration = (Math.abs(focused_button_highlight.translationX - targetPositionX) / (focused_button_highlight.width * 3)) * 450
@@ -54,9 +57,11 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
-    private val blackColor by lazy { getColorById(R.color.black) }
-    private val grayColor by lazy { getColorById(R.color.midGray) }
-    private val colorEvaluator = ArgbEvaluator()
+    fun setTitle(title: String) {
+        toolbar_title.setText(title)
+        add_book_button.toGone()
+        log_out.toGone()
+    }
 
     private fun updateColor(button: AppCompatImageButton, toColor: Int) {
         val fromColor = button.tag as? Int ?: grayColor

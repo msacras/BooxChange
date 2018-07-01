@@ -61,7 +61,7 @@ class LibraryActivity: BaseActivity() {
   }
 
   private fun reloadUsersBooks() {
-    loading_view.show()
+/*    loading_view.show()
     loading_view.message = "Synchronizing"
     UserData.Session.fetchUserBooksList { success ->
       userBooksAdapter.swapItems(UserData.Session.userBooks)
@@ -75,7 +75,7 @@ class LibraryActivity: BaseActivity() {
         //        retry_view.show()
       }
       loading_view.hide()
-    }
+    }*/
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

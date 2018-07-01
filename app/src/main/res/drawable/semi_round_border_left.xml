@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetLeft="-1dp">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <shape android:shape="rectangle">
-        <stroke android:width="2dp" android:color="@color/lightGray" />
-    </shape>
+    <item
+        android:top="0dp"
+        android:left="0dp"
+        android:right="-6dp"
+        android:bottom="0dp">
 
-</inset>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="0.5dp"
+                android:color="#CABBBBBB"/>
+        </shape>
+    </item>
+
+</layer-list>

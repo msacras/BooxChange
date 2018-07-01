@@ -1,31 +1,66 @@
 <resources>
 
-  <style name="AppThemeBase" parent="Theme.AppCompat.NoActionBar">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/caramel</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="colorControlActivated">@color/caramel</item>
-    <item name="android:windowBackground">@color/white</item>
-    <item name="android:screenOrientation">portrait</item>
-    <item name="android:textColorHint">@color/lightGray</item>
-    <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-  </style>
+    <style name="AppThemeBase" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/mountainMeadow</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/caramel</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="android:textColorHint">@color/lightGray</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+    </style>
 
-  <style name="AppTheme" parent="AppThemeBase">
+    <style name="AppTheme" parent="AppThemeBase">
 
-  </style>
+    </style>
 
-  <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
-    <item name="android:background">@color/white</item>
-  </style>
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
 
-  <style name="SplashTheme" parent="AppTheme">
-    <item name="android:windowBackground">@drawable/background_splash</item>
-  </style>
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
 
-  <style name="CustomSwitch">
-    <item name="android:track">@drawable/switch_track</item>
-    <item name="android:thumb">@drawable/switch_thumb</item>
-  </style>
+    <style name="CustomSwitch">
+        <item name="android:track">@drawable/switch_track</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/dustyGray</item>
+        <item name="colorControlActivated">@color/dustyGray</item>
+    </style>
+
+    <style name="MyHintText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="MySwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:fontFamily">@font/poppins_light</item>
+    </style>
+
+    <style name="mainPage">
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textColor">@color/salem</item>
+        <item name="android:textSize">23dp</item>
+    </style>
+
+    <style name="restPage">
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textColor">@color/tuna</item>
+        <item name="android:textSize">23dp</item>
+    </style>
+
+    <style name="TextAppearance.Design.Hint" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">?attr/colorControlActivated</item>
+    </style>
+
+    <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
 
 </resources>
