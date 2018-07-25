@@ -1,15 +1,9 @@
 package nl.booxchange.extension
 
 
-import android.databinding.ObservableField
 import android.databinding.ObservableInt
-import android.support.v7.widget.SwitchCompat
-import android.support.v7.widget.Toolbar
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
-import nl.booxchange.utilities.Tools
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 
@@ -27,11 +21,11 @@ val json = GsonBuilder()
 val parser = JsonParser()
 
 inline fun <reified T> String.asObject(): T? {
-  return try { json.fromJson<T>(this, object: TypeToken<T>(){}.type) } catch (e: Exception) { null }
+  return /*try {*/ json.fromJson<T>(this, object: TypeToken<T>(){}.type)// } catch (e: Exception) { null }
 }
 
 inline fun <reified T> JsonElement.asObject(): T? {
-  return try { json.fromJson<T>(this, object: TypeToken<T>(){}.type) } catch (e: Exception) { null }
+  return /*try {*/ json.fromJson<T>(this, object: TypeToken<T>(){}.type)// } catch (e: Exception) { null }
 }
 
 val Any.asJson

@@ -3,6 +3,8 @@ package nl.booxchange
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
 import android.os.Build
 import com.facebook.appevents.AppEventsLogger
 import nl.booxchange.api.APIClient
@@ -26,9 +28,10 @@ class BooxchangeApp: Application() {
     AppEventsLogger.activateApp(this)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val notificationManager = getSystemService(NotificationManager::class.java)
-      notificationManager.createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+      getSystemService(NotificationManager::class.java).createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
     }
+
+    BooxchangeDatabase.instance = Room.databaseBuilder(this, BooxchangeDatabase::class.java, "booxchange_database").fallbackToDestructiveMigration().build()
 //    Fabric.with(this, Crashlytics())
   }
 

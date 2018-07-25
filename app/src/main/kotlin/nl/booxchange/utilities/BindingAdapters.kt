@@ -1,5 +1,7 @@
 package nl.booxchange.utilities
 
+import android.arch.lifecycle.LiveData
+import android.arch.paging.PagedList
 import android.databinding.BindingAdapter
 import android.graphics.*
 import android.graphics.drawable.Drawable
@@ -38,6 +40,16 @@ fun RecyclerView.setupSimpleRecyclerAdapter(@LayoutRes withLayoutResourceId: Int
 @BindingAdapter("adapterItems")
 fun RecyclerView.updateRecyclerAdapterItems(itemsList: Collection<Distinctive>?) {
     (adapter as? BindingRecyclerAdapter)?.swapItems(itemsList ?: emptyList())
+}
+
+@BindingAdapter("recyclerLayout", "recyclerHandler")
+fun RecyclerView.setupPagingLiveRecyclerAdapter(@LayoutRes withLayoutResourceId: Int, withHandler: Any?) {
+    adapter = LiveBindingPagedListAdapter(withLayoutResourceId, withHandler)
+}
+
+@BindingAdapter("recyclerItems")
+fun <T: Distinctive> RecyclerView.updatePagingRecyclerAdapterItems(itemsList: LiveData<PagedList<T>>) {
+    itemsList.observeForever { (adapter as LiveBindingPagedListAdapter).submitList(it as PagedList<Distinctive>) }
 }
 
 @BindingAdapter("photoItems", "photoHandler", requireAll = false)

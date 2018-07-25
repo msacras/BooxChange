@@ -9,8 +9,13 @@ import com.vcristian.combus.dismiss
 open class BaseViewModel: ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val hasFailed = MutableLiveData<Boolean>()
+    val isInitialized = MutableLiveData<Boolean>()
 
     open fun onRefresh() {}
+
+    fun notifyDataInitialized() {
+        isInitialized.postValue(true)
+    }
 
     fun onLoadingStarted() {
         isLoading.postValue(true)

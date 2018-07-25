@@ -57,6 +57,7 @@ class ChatFragment: BaseFragment() {
             }
         })
 
+/*
         view.messages_list.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -67,10 +68,11 @@ class ChatFragment: BaseFragment() {
                 }
             }
         })
+*/
 
-        view.swipe_refresh_layout.canRefreshUp = true
-        view.swipe_refresh_layout.setOnUpRefreshListener(viewModel::fetchLatestMessages)
-        view.swipe_refresh_layout.setOnDownRefreshListener(viewModel::fetchOlderMessages)
+//        view.swipe_refresh_layout.canRefreshUp = true
+//        view.swipe_refresh_layout.setOnUpRefreshListener(viewModel::fetchLatestMessages)
+//        view.swipe_refresh_layout.setOnDownRefreshListener(viewModel::fetchOlderMessages)
     }
 
     override fun onBackPressed(): Boolean {

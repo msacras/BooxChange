@@ -1,5 +1,9 @@
 package nl.booxchange.model
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.PrimaryKey
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.ObservableField
@@ -11,34 +15,34 @@ import nl.booxchange.utilities.MessageUtilities
 import nl.booxchange.utilities.UserData
 import java.io.Serializable
 
-class ChatModel: BaseObservable(), Distinctive, Serializable {
 
+@Entity(tableName = "chats")
+data class ChatModel(
+
+    @PrimaryKey
+    @ColumnInfo(name = "chat_id")
     @SerializedName("chat_id")
-    override val id: String = ""
+    override val id: String,
 
+    @ColumnInfo(name = "chat_title")
     @SerializedName("chat_title")
-    val chatTitle: String = ""
+    val chatTitle: String,
 
+    @ColumnInfo(name = "last_message")
+    @SerializedName("last_message")
+    var lastMessage: MessageModel?,
+
+    @ColumnInfo(name = "unread_count")
+    @SerializedName("unread_count")
+    var unreadCount: Int
+
+): Serializable, Distinctive {
+
+    //    @ColumnInfo(name = "users_list")
+    @Ignore
     @SerializedName("users_list")
     val usersList: List<UserModel> = emptyList()
 
-    @Bindable
-    @SerializedName("last_message")
-    var lastMessage: MessageModel? = null
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.lastMessage)
-        }
-
-    @get:Bindable
-    @SerializedName("unread_count")
-    var unreadCount: Int = 0
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.unreadCount)
-        }
-
-    @Bindable("lastMessage")
     fun getFormattedLastMessage(): Spannable {
         return MessageUtilities.formatRequest(lastMessage?.content ?: "", usersList)
     }

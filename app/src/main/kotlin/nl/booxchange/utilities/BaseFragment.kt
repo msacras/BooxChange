@@ -46,6 +46,12 @@ abstract class BaseFragment: Fragment() {
                 }
             }
         }
+
+        onFragmentReady()
+    }
+
+    open fun onFragmentReady() {
+
     }
 
     override fun onDestroy() {

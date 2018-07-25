@@ -30,50 +30,18 @@ import java.io.ByteArrayOutputStream
 class ChatFragmentViewModel: BaseViewModel() {
     val isSending = ObservableBoolean()
 
-    private val chatMessagesMap = mutableMapOf<ChatModel, MutableSet<MessageModel>>()
-    val messagesList = ObservableMutableSet<MessageModel>()
-
     var chatModel: ChatModel? = null
 
     val messageInput = ObservableField<CharSequence>()
 
     init {
-        expect(MessageReceivedEvent::class.java) { (messageModel) ->
-            if (messageModel.chatId == chatModel?.id) {
-                messagesList.add(messageModel)
-            }
-        }
-
         expect(ChatOpenedEvent::class.java) { event ->
-            event.chatModel?.let(::bindChatModel) ?: fetchChat(event.chatId)
+            event.chatModel?.let(::bindChatModel)
         }
     }
 
     private fun bindChatModel(chatModel: ChatModel) {
-        messagesList.set(chatMessagesMap[chatModel] ?: mutableSetOf())
-        chatMessagesMap[chatModel] = messagesList.get()
         this.chatModel = chatModel
-        fetchLatestMessages()
-    }
-
-    private fun fetchChat(chatId: String) {
-        chatMessagesMap.keys.find { it.id == chatId }?.let { bindChatModel(it) } ?: Chat.fetchChatRoom(chatId) { it?.let(::bindChatModel) }
-    }
-
-    fun fetchLatestMessages() {
-        val messageId = messagesList.get().lastOrNull()?.id
-        Chat.fetchMessagesAfterId(chatModel?.id ?: return, messageId) {
-            it?.let(messagesList::addAll) ?: onLoadingFailed()
-            onLoadingFinished()
-        }
-    }
-
-    fun fetchOlderMessages() {
-        val messageId = messagesList.get().firstOrNull()?.id
-        Chat.fetchMessagesBeforeId(chatModel?.id ?: return, messageId) {
-            it?.let(messagesList::addAll) ?: onLoadingFailed()
-            onLoadingFinished()
-        }
     }
 
     fun sendMessage() {
@@ -81,11 +49,13 @@ class ChatFragmentViewModel: BaseViewModel() {
             ?: MessageModel("", chatModel?.id!!, UserData.Session.userId, messageInput.get()?.toString()?.takeNotBlank ?: return, MessageType.TEXT, DateTime.now())
         isSending.set(true)
         Chat.postMessage(messageModel) {
+/*
             it?.let {
                 messagesList.add(it)
                 messageInput.set(SpannableString(""))
             }
             isSending.set(false)
+*/
         }
     }
 
@@ -106,10 +76,6 @@ class ChatFragmentViewModel: BaseViewModel() {
 
     fun isUserOwnedMessage(senderId: String): Boolean {
         return senderId == UserData.Session.userId
-    }
-
-    override fun onRefresh() {
-        fetchLatestMessages()
     }
 
     fun onAddPhotoFromCameraClick(view: View) {

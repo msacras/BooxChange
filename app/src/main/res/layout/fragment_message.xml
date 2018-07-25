@@ -45,9 +45,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/requests_list"
-        adapterHandler="@{viewModel}"
-        adapterItems="@{viewModel.requestsList}"
-        adapterLayout="@{@layout/list_item_request}"
+        recyclerHandler="@{viewModel}"
+        recyclerItems="@{viewModel.requestsList}"
+        recyclerLayout="@{@layout/list_item_request}"
         visibleIf="@{viewModel.requestCount &gt; 0}"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -105,9 +105,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chats_list"
-            adapterHandler="@{viewModel}"
-            adapterItems="@{viewModel.chatsList}"
-            adapterLayout="@{@layout/list_item_chat}"
+            recyclerHandler="@{viewModel}"
+            recyclerItems="@{viewModel.chatsList}"
+            recyclerLayout="@{@layout/list_item_chat}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"

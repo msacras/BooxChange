@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
+import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,6 +24,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
 import nl.booxchange.R.id.*
@@ -57,7 +59,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   private fun initializeFacebookAuthorization() {
     facebook_sign_in_button.setOnClickListener {
       hideViews {
-        LoginManager.getInstance().logInWithReadPermissions(this, emptyList())
+        LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile", "email"))
       }
     }
     LoginManager.getInstance().registerCallback(facebookCallbackManager,
