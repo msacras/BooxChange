@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.vcristian.combus.expect
+import kotlinx.android.synthetic.main.activity_main_fragment.*
 import kotlinx.android.synthetic.main.fragment_book.view.*
+import kotlinx.android.synthetic.main.fragment_library.*
 import nl.booxchange.R
 import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.setTintCompat
@@ -51,7 +53,6 @@ class BookFragment: BaseFragment() {
         } else {
             (activity as? MainFragmentActivity)?.hideFragment("book_view")
         }
-
         return isHidden
     }
 

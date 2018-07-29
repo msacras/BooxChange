@@ -9,10 +9,6 @@ import android.view.ViewGroup
 
 import nl.booxchange.R
 
-
-/**
- * A simple [Fragment] subclass.
- */
 class MoreFragment : Fragment() {
 
 

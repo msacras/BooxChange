@@ -68,17 +68,17 @@
             android:id="@+id/add_book_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/rounded_corner_solid_gray_8dp"
             android:onClick="@{viewModel::addBook}"
             android:stateListAnimator="@animator/button_elevation_animator"
             android:tint="@color/themeGreenDark"
             app:backgroundTint="@color/themeGreen"
-            android:translationY="-56dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/plus"/>
+            app:layout_constraintEnd_toEndOf="@+id/no_books_label"
+            app:layout_constraintStart_toStartOf="@+id/no_books_label"
+            app:srcCompat="@drawable/plus" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

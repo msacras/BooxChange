@@ -4,7 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:background="@drawable/rounded_corner_border_gray_4dp"
+  android:background="@drawable/sign_in_round_btn"
   android:padding="8dp">
 
   <LinearLayout

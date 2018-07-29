@@ -1,14 +1,18 @@
 <resources>
 
-    <style name="AppThemeBase" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/mountainMeadow</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlActivated">@color/caramel</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:screenOrientation">portrait</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:textColorHint">@color/lightGray</item>
         <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="AppTheme" parent="AppThemeBase">
@@ -38,19 +42,16 @@
     </style>
 
     <style name="MySwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
-        <item name="android:fontFamily">@font/poppins_light</item>
     </style>
 
     <style name="mainPage">
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:textColor">@color/salem</item>
         <item name="android:textSize">23dp</item>
     </style>
 
     <style name="restPage">
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">@font/poppins_light</item>
         <item name="android:textColor">@color/tuna</item>
         <item name="android:textSize">23dp</item>
     </style>
@@ -61,6 +62,14 @@
 
     <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
+
+    <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">
+        <item name="android:fontFamily">@font/pt_sans</item>
+    </style>
+
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/pt_sans</item>
     </style>
 
 </resources>

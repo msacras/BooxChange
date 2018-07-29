@@ -116,7 +116,7 @@
             android:hint="First Name"
             android:maxLines="3"
             android:maxWidth="50dp"
-            android:fontFamily="@font/poppins_light"
+
             android:paddingLeft="27dp"
             android:paddingRight="5dp"
             android:textColor="#808080"
@@ -150,7 +150,7 @@
             android:hint="Last Name"
             android:paddingLeft="13dp"
             android:lines="1"
-            android:fontFamily="@font/poppins_light"
+
             android:maxLines="1"
             android:textSize="17dp"
             android:textColor="#808080"
@@ -187,7 +187,7 @@
                 android:layout_marginStart="5dp"
                 android:background="@drawable/top_bottom_border"
                 android:enabled="false"
-                android:fontFamily="@font/poppins_light"
+
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:lines="1"
@@ -330,7 +330,6 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginRight="10dp"
-            android:src="@mipmap/ic_facebook"
             app:layout_constraintBottom_toTopOf="@+id/google_connect"
             app:layout_constraintEnd_toStartOf="@+id/facebook_connect"
             app:layout_constraintTop_toBottomOf="@+id/conn_text" />

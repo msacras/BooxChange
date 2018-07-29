@@ -66,8 +66,8 @@
                     android:paddingTop="2dp"
                     android:text="@={viewModel.title}"
                     android:textColor="@color/jetGray"
-                    android:textSize="24sp"
-                    tools:text="A song of Ice and Fire"/>
+                    android:textSize="20sp"
+                    tools:text="A song of Ice and Fire" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -89,15 +89,16 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corner_solid_light_8dp"
                     android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:fontFamily="@font/pt_sans"
                     android:hint="Book author"
                     android:paddingBottom="2dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:paddingTop="2dp"
+                    android:paddingTop="3dp"
                     android:text="@={viewModel.author}"
                     android:textColor="@color/darkGray"
-                    android:textSize="14sp"
-                    tools:text="George Raymond Richard Martin"/>
+                    android:textSize="16sp"
+                    tools:text="George Raymond Richard Martin" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -121,15 +122,18 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/rounded_corner_solid_light_8dp"
                     android:enabled="@{viewModel.isEditModeEnabled}"
+                    android:fontFamily="@font/pt_sans"
                     android:hint="Price"
                     android:inputType="number"
-                    android:paddingBottom="2dp"
+                    android:paddingBottom="3dp"
                     android:paddingLeft="18dp"
                     android:paddingRight="8dp"
-                    android:paddingTop="2dp"
+                    android:paddingTop="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
                     android:text="@={viewModel.offerPrice}"
                     android:textColor="@color/themeGreenDark"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/book_title"
                     app:layout_constraintHeight_min="24dp"
@@ -145,20 +149,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_marginTop="0.5sp"
+                android:layout_marginTop="4dp"
                 android:text="€"
                 android:textColor="@color/themeGreenDark"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/book_price"
-                app:layout_constraintTop_toTopOf="@id/book_price"/>
+                app:layout_constraintTop_toTopOf="@+id/book_price" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/available_for_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:paddingStart="8dp"
+                android:paddingStart="6dp"
                 android:text="Available for :"
                 android:textColor="@color/jetGray"
                 android:textSize="10sp"
@@ -351,6 +355,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="2dp"
+                android:textColorHint="@color/dustyGray"
                 android:text="@={viewModel.isbn}"
                 android:textColor="@color/darkGray"
                 android:textSize="14sp"
@@ -386,6 +391,7 @@
                 android:paddingRight="8dp"
                 android:paddingTop="2dp"
                 android:text="@={viewModel.edition}"
+                android:textColorHint="@color/dustyGray"
                 android:textColor="@color/darkGray"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/book_edition_label"
@@ -405,8 +411,11 @@
                 android:hint="Aditional info"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"
                 android:paddingRight="8dp"
                 android:paddingTop="4dp"
+                android:textColorHint="@color/dustyGray"
                 android:text="@={viewModel.info}"
                 android:textColor="@color/jetGray"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -421,10 +430,10 @@
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/rounded_corner_solid_gray_8dp"
-                android:tint="@color/themeGreenDark"
+                android:tint="@color/themeRedDark"
                 android:onClick="@{viewModel::saveBook}"
                 android:stateListAnimator="@animator/button_elevation_animator"
-                app:backgroundTint="@color/themeGreen"
+                app:backgroundTint="@color/themeRed"
                 app:layout_constraintBottom_toBottomOf="@id/edit_book_button"
                 app:layout_constraintEnd_toStartOf="@id/edit_book_button"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -577,7 +586,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="snap|enterAlways|scroll"
             app:navigationIcon="@drawable/close">
 
         </android.support.v7.widget.Toolbar>

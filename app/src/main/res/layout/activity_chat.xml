@@ -57,7 +57,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginBottom="2dp"
-            android:src="@drawable/google_maps"
+            app:srcCompat="@drawable/google_maps"
             android:tint="@color/darkGray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
@@ -68,7 +68,7 @@
             android:layout_height="24dp"
             android:layout_marginBottom="2dp"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/book"
+            app:srcCompat="@drawable/book"
             android:tint="@color/darkGray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/send_appointment"/>
@@ -79,7 +79,7 @@
             android:layout_height="24dp"
             android:layout_marginBottom="2dp"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/camera_image"
+            app:srcCompat="@drawable/camera_image"
             android:tint="@color/darkGray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/send_book"/>
@@ -108,7 +108,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="4dp"
-            android:src="@drawable/send"
+            app:srcCompat="@drawable/send"
             android:tint="@color/colorPrimaryDark"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -134,7 +134,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/arrow_left"
+            app:srcCompat="@drawable/arrow_left"
             android:tint="@color/midGray"/>
 
         <android.support.v7.widget.AppCompatImageView
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_logo_48dp"
+            app:srcCompat="@drawable/logo_icon"
             android:tint="@color/colorPrimary"/>
 
     </RelativeLayout>

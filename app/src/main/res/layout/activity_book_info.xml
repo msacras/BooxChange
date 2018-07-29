@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/arrow_left"
+            app:srcCompat="@drawable/clear"
             android:tint="@color/midGray"/>
 
         <android.support.v7.widget.AppCompatImageView
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_logo_48dp"
+            app:srcCompat="@drawable/logo_icon"
             android:tint="@color/colorPrimary"/>
 
     </RelativeLayout>
@@ -58,7 +58,7 @@
                 android:layout_height="190dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/rounded_corner_border_gray_4dp"
+                android:background="@drawable/sign_in_round_btn"
                 android:padding="18dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -407,7 +407,7 @@
                 android:layout_marginLeft="12dp"
                 android:background="@drawable/rounded_corner_solid_gray_30dp"
                 android:padding="4dp"
-                android:src="@drawable/delete"
+                app:srcCompat="@drawable/delete"
                 android:tint="@color/themeRedDark"
                 app:backgroundTint="@color/themeRed"
                 app:layout_constraintBottom_toBottomOf="@+id/edit_book_button"

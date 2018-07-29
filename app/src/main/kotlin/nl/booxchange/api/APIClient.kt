@@ -23,7 +23,7 @@ object APIClient {
     private var idToken: String? = null
 
     init {
-        FuelManager.instance.basePath = /*"https://api.booxchange.website"*//*"http://192.168.88.128:8000"*/"http://192.168.0.104:8000"
+        FuelManager.instance.basePath = "https://api.booxchange.website"
         FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
         FirebaseAuth.getInstance().addIdTokenListener(::requestToken)
     }

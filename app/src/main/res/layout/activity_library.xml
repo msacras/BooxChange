@@ -28,7 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:src="@drawable/plus"
         android:tint="@color/colorPrimaryDark"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="4dp"
@@ -51,7 +50,6 @@
             android:layout_height="16dp"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/library"
             app:layout_constraintBottom_toBottomOf="@+id/my_library_label"
             app:layout_constraintRight_toLeftOf="@+id/my_library_label"
             app:layout_constraintTop_toTopOf="@+id/my_library_label"/>
@@ -128,7 +126,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:adjustViewBounds="true"
-            android:src="@mipmap/ic_logo_48dp"
             android:tint="@color/colorPrimary"/>
 
         <LinearLayout
@@ -161,7 +158,6 @@
                 android:adjustViewBounds="true"
                 android:background="@drawable/round_gray"
                 android:padding="10dp"
-                android:src="@drawable/magnify"
                 android:tint="@color/midGray"/>
 
         </LinearLayout>
@@ -172,7 +168,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/menu"
             android:tint="@color/midGray"/>
 
     </RelativeLayout>

@@ -1,28 +1,37 @@
 package nl.booxchange.screens.profile
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.databinding.adapters.TextViewBindingAdapter.setText
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Color.RED
+import android.graphics.Color.WHITE
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
+import android.support.transition.Visibility
 import android.support.v4.app.Fragment
-import android.support.v4.widget.TextViewCompat
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import com.bumptech.glide.Glide
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
+import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.facebook.login.widget.ProfilePictureView
+import com.github.mikephil.charting.charts.Chart.LOG_TAG
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -30,24 +39,30 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
-import kotlinx.android.synthetic.main.activity_main_fragment.*
+import com.vcristian.combus.dismiss
 import kotlinx.android.synthetic.main.fragment_profile.*
 import nl.booxchange.R
+import nl.booxchange.R.color.midGray
 import nl.booxchange.api.APIClient
-import nl.booxchange.extension.isVisible
-import nl.booxchange.extension.setVisible
-import nl.booxchange.extension.toGone
-import nl.booxchange.extension.toVisible
+import nl.booxchange.extension.*
 import nl.booxchange.model.UserModel
-import nl.booxchange.utilities.BaseActivity
+import nl.booxchange.screens.BottomSheetDialog
+import nl.booxchange.screens.MainFragmentActivity
+import nl.booxchange.screens.SignInActivity
 import nl.booxchange.utilities.UserData
+import nl.booxchange.utilities.setErrorText
 import org.jetbrains.anko.toast
+import org.json.JSONException
+import org.json.JSONObject
+import org.w3c.dom.Text
+import java.io.ByteArrayOutputStream
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
 class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
     private val facebookCallbackManager = CallbackManager.Factory.create()
-    private val userModel: UserModel = UserData.Session.userModel!!.copy()
+    private val userModel by lazy { UserData.Session.userModel?.copy() ?: UserModel("") }
 
     var imageuri: Uri? = null
         set(value) {
@@ -55,10 +70,8 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
             value?.let { Glide.with(context!!).load(value).into(profile_image) }
         }
 
-    private val requestManager = APIClient.RequestManager(BaseActivity())
-
     val color = Color.parseColor("#939393")
-    val colorBlue = Color.parseColor("#33cccc")
+    val green = Color.parseColor("#17bd90")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile, container, false)
@@ -68,71 +81,54 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
         super.onViewCreated(view, savedInstanceState)
         writeFields()
         initializeLayout()
+        university.setText("Hogeschool van Amsterdam")
 
-        (activity as MainFragmentActivity).setTitle("Profile")
-        TextViewCompat.setTextAppearance((activity as MainFragmentActivity).toolbar_title, R.style.restPage)
-        (activity as MainFragmentActivity).log_out.toVisible()
-        (activity as MainFragmentActivity).log_out.setOnClickListener {
-            UserData.Authentication.logout()
-            val intent = Intent(activity, SignInActivity::class.java)
-            startActivity(intent)
-        }
-
-        listOf(chevron, edit_btn, gallery).forEach { it.setColorFilter(color) }
-        listOf(tick_btn).forEach { it.setColorFilter(colorBlue) }
+        listOf(chevron, edit_btn).forEach { it.setColorFilter(color) }
+        gallery.setColorFilter(green)
 
         gallery.setOnClickListener {
             val bottomSheet = BottomSheetDialog()
             bottomSheet.show(fragmentManager, null)
         }
 
-        val myString = arrayOf("A", "B", "C", "D")
-        mySpinner.adapter = ArrayAdapter(activity, R.layout.spinner_item, myString)
-        mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                toast(myString[position])
-            }
-        }
-
         val providers = FirebaseAuth.getInstance().currentUser?.providerData
-        userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
+        userModel.phoneId = providers?.find { it.providerId == "phone" }?.phoneNumber
         userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
         userModel.googleId = providers?.find { it.providerId == "google.com" }?.uid
 
         initializeFacebookAuthorization(userModel.facebookId != null)
         initializeGoogleAuthorization(userModel.googleId != null)
-        initializePhoneAuthorizationLayout(userModel.phone != null)
+        initializePhoneAuthorizationLayout(userModel.phoneId != null)
+
+
     }
 
     private fun initializeLayout() {
-
         edit_btn.setOnClickListener {
             TransitionManager.beginDelayedTransition(constraint_layout, AutoTransition())
             email.isEnabled = !email.isEnabled
-            listOf(f_name, l_name, university, study_programme, study_year).forEach { it.isEnabled = email.isEnabled }
-            listOf(see_more, tick_btn, gallery).forEach { it.setVisible(email.isEnabled) }
+            listOf(f_name, l_name).forEach { it.isEnabled = email.isEnabled }
+            listOf(see_more, tick_btn, gallery, gallery_btn_des).forEach { it.setVisible(email.isEnabled) }
             if (email.isEnabled) {
                 chevron.animate().scaleY(-1f).setDuration(350L).start()
-                edit_btn.setImageResource(R.mipmap.ic_cancel)
+                edit_btn.setImageResource(R.drawable.close_button)
             } else {
                 chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-                edit_btn.setImageResource(R.drawable.ic_edit_btn)
+                edit_btn.setImageResource(R.drawable.create_new_pencil_button)
                 writeFields()
             }
-
-
-//            UserData.Persistent.write("user wants to receive push notifications?", true)
         }
-
         tick_btn.setOnClickListener {
+            if (TextUtils.isEmpty(f_name.text.toString())){
+                label_f_name.error = "empty!!!"
+            } else {
+                label_f_name.error = null
+            }
             TransitionManager.beginDelayedTransition(constraint_layout, AutoTransition())
+            listOf(f_name, l_name, email).forEach { it.isEnabled = false }
             chevron.animate().scaleY(1f).setDuration(300L).setStartDelay(350L).start()
-            listOf(tick_btn, see_more, gallery).forEach { it.toGone() }
-            listOf(f_name, l_name, email, university, study_programme, study_year).forEach { it.isEnabled = false }
-            edit_btn.setImageResource(R.drawable.ic_edit_btn)
+            listOf(tick_btn, see_more, gallery, gallery_btn_des).forEach { it.toGone() }
+            edit_btn.setImageResource(R.drawable.create_new_pencil_button)
             readFields()
             uploadUser()
         }
@@ -154,8 +150,6 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
         l_name.setText(userModel.lastName ?: "")
         email.setText(userModel.email ?: "")
         university.setText(userModel.university ?: "")
-        study_programme.setText(userModel.studyProgramme ?: "")
-        study_year.setText(userModel.studyYear?.toString() ?: "")
     }
 
     private fun readFields() {
@@ -163,28 +157,23 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
         userModel.lastName = l_name.text.toString().takeIf { it.isNotBlank() }
         userModel.email = email.text.toString().takeIf { it.isNotBlank() }
         userModel.university = university.text.toString().takeIf { it.isNotBlank() }
-        userModel.studyProgramme = study_programme.text.toString().takeIf { it.isNotBlank() }
-        userModel.studyYear = study_year.text.toString().takeIf { it.isNotBlank() }?.toInt()
+        //userModel.photo = progress_bar.text.toString().takeIf { it.isNotBlank() }
     }
 
     private fun uploadUser() {
-        loading_v.show()
-        loading_v.message = "Uploading"
-        requestManager.userUpdate(userModel) { response ->
+        APIClient.User.userUpdate(userModel) { response ->
             response?.let {
                 toast("Upload finished!")
-                if (response.success) {
+//                if (response.success) {
                     UserData.Session.userModel = userModel
-                    loading_v.message = "Success"
                     toast("Request success!")
                     //TODO: Show success view
-                } else {
-                    loading_v.hide()
+//                } else {
+//                    loading_v.hide()
                     toast("Request failure!")
                     //TODO: Show failure view; hide loading view
-                }
+//                }
             } ?: run {
-                loading_v.hide()
                 toast("Upload failed!")
                 //TODO: Show connection failure message
             }
@@ -194,12 +183,19 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
     private fun initializeFacebookAuthorization(isLoggedIn: Boolean) {
         facebook_connect.isChecked = isLoggedIn
 
+
         facebook_connect.setOnCheckedChangeListener { _, isChecked ->
+            val pd = ProgressDialog.show(context, null, null)
+            pd.getWindow().setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            pd.setContentView(R.layout.my_progress)
             if (isChecked) {
-                LoginManager.getInstance().logInWithReadPermissions(this, emptyList())
+                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile, email"))
+                pd.dismiss()
             } else {
+                LoginManager.getInstance().logOut()
                 FirebaseAuth.getInstance().currentUser?.unlink("facebook.com")?.addOnSuccessListener {
                     updateSwitchesAvailability()
+                    pd.dismiss()
                 }
             }
         }
@@ -208,6 +204,19 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
                     override fun onSuccess(loginResult: LoginResult) {
                         toast("succeeded Facebook auth")
                         FirebaseAuth.getInstance().currentUser?.linkWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token))?.addOnCompleteListener(this@ProfileFragment)
+                        val request  = GraphRequest.newMeRequest(
+                                loginResult.accessToken,
+                                object:GraphRequest.GraphJSONObjectCallback {
+                                    override fun onCompleted(json:JSONObject, response:GraphResponse) {
+                                        email.setText(json.getString("email"))
+                                        f_name.setText(json.getString("first_name"))
+                                        l_name.setText(json.getString("last_name"))
+                                        readFields()
+                                        uploadUser()
+                                    }
+                                })
+                        request.parameters = Bundle().apply { putString("fields", "email, first_name, last_name") }
+                        request.executeAsync()
                     }
 
                     override fun onCancel() {
@@ -230,11 +239,16 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
         google_connect.isChecked = isLoggedIn
 
         google_connect.setOnCheckedChangeListener { _, isChecked ->
+            val pd = ProgressDialog.show(context, null, null)
+            pd.getWindow().setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            pd.setContentView(R.layout.my_progress)
             if (isChecked) {
                 startActivityForResult(googleSignInClient.signInIntent, 9001)
+                pd.dismiss()
             } else {
                 FirebaseAuth.getInstance().currentUser?.unlink("google.com")?.addOnSuccessListener {
                     updateSwitchesAvailability()
+                    pd.dismiss()
                 }
             }
         }
@@ -246,7 +260,13 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
         phone_connect.isChecked = isLoggedIn
 
         phone_connect.setOnCheckedChangeListener { _, isChecked ->
+            val pd = ProgressDialog.show(context, null, null)
+            pd.getWindow().setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            pd.setContentView(R.layout.my_progress)
             if (isChecked) {
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?").show()
                 val phoneNumber = ("+37367123575").takeIf { it.isNotBlank() } ?: return@setOnCheckedChangeListener
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 //                imm?.hideSoftInputFromWindow(.windowToken, 0)
@@ -263,15 +283,11 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
                         //TODO: Handle failed Phone auth!
                     }
                 })
+                pd.dismiss()
             } else {
-
-
-
                 FirebaseAuth.getInstance().currentUser?.unlink("phone")?.addOnSuccessListener {
-
-
-
                     updateSwitchesAvailability()
+                    pd.dismiss()
                 }
             }
         }
@@ -280,7 +296,7 @@ class ProfileFragment : Fragment(), OnCompleteListener<AuthResult> {
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
             val providers = FirebaseAuth.getInstance().currentUser?.providerData
-            userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
+            userModel.phoneId = providers?.find { it.providerId == "phone" }?.phoneNumber
             userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
             userModel.googleId = providers?.find { it.providerId == "google.com" }?.uid
             uploadUser()
