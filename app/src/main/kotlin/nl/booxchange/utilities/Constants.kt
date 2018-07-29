@@ -4,18 +4,17 @@ package nl.booxchange.utilities
  * Created by usr1 on 3/19/18.
  */
 object Constants {
-    const val REQUEST_CAMERA = 10001
-    const val REQUEST_GALLERY = 10002
-    const val REQUEST_BOOK_EDIT = 10001
+    const val REQUEST_CAMERA = 0x11
+    const val REQUEST_GALLERY = 0x12
 
-    const val EXTRA_PARAM_BOOK_MODEL = "EXTRA_PARAM_BOOK_MODEL"
-    const val EXTRA_PARAM_BOOK_EDIT_RESULT = "EXTRA_PARAM_BOOK_EDIT_RESULT"
+    const val REQUEST_BOOK_EDIT = 0x13
 
-    const val EXTRA_PARAM_USER_MODEL = "EXTRA_PARAM_USER_MODEL"
-    const val EXTRA_PARAM_USER_EDIT_RESULT = "EXTRA_PARAM_USER_EDIT_RESULT"
+    const val EXTRA_PARAM_BOOK_ID = "EXTRA_PARAM_BOOK_ID"
+    const val EXTRA_PARAM_CHAT_ID = "EXTRA_PARAM_CHAT_ID"
 
     const val EXTRA_PARAM_TARGET_VIEW = "EXTRA_PARAM_TARGET_VIEW"
     const val FRAGMENT_HOME = "FRAGMENT_HOME"
+    const val FRAGMENT_CHAT = "FRAGMENT_CHAT"
     const val FRAGMENT_PROFILE = "FRAGMENT_PROFILE"
 
     val IDDC = mapOf(

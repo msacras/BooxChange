@@ -1,22 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="nl.booxchange.screens.home.HomeFragmentViewModel"/>
+    </data>
+<nl.booxchange.widget.CustomRefreshLayout
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/popular_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Most Popular"
-        android:fontFamily="@font/poppins_light"
-        android:textColor="@color/black"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/books_list_view"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/popular_text"/>
+        android:layout_height="match_parent"
+        android:background="@color/whiteGray"
+        android:clickable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.Group
+                android:id="@+id/most_viewed_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="most_viewed_label, most_viewed_more, most_viewed_list"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/most_viewed_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:padding="8dp"
+                android:text="Most Popular"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/most_viewed_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:text="@string/more"
+                android:textColor="@color/midGray"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/most_viewed_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/most_viewed_label"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/most_viewed_list"
+                adapterHandler="@{viewModel}"
+                adapterItems="@{viewModel.topBooksList}"
+                adapterLayout="@{@layout/list_item_book_offer}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/most_viewed_label"
+                tools:listitem="@layout/list_item_book_offer"/>
+
+            <android.support.constraint.Group
+                android:id="@+id/latest_exchange_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="latest_exchange_label, latest_exchange_more, latest_exchange_list"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/latest_exchange_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:padding="8dp"
+                android:text="Latest for exchange"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                app:layout_goneMarginTop="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/most_viewed_list"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/latest_exchange_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:text="@string/more"
+                android:textColor="@color/midGray"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/latest_exchange_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/latest_exchange_label"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/latest_exchange_list"
+                adapterHandler="@{viewModel}"
+                adapterItems="@{viewModel.latestExchangeList}"
+                adapterLayout="@{@layout/list_item_book_offer}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/latest_exchange_label"
+                tools:listitem="@layout/list_item_book_offer"/>
+
+            <android.support.constraint.Group
+                android:id="@+id/latest_sell_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="latest_sell_label, latest_sell_more, latest_sell_list"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/latest_sell_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:padding="8dp"
+                android:text="Latest for sale"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                app:layout_goneMarginTop="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/latest_exchange_list"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/latest_sell_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:text="@string/more"
+                android:textColor="@color/midGray"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/latest_sell_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/latest_sell_label"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/latest_sell_list"
+                adapterHandler="@{viewModel}"
+                adapterItems="@{viewModel.latestSellList}"
+                adapterLayout="@{@layout/list_item_book_offer}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/latest_sell_label"
+                tools:listitem="@layout/list_item_book_offer"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</nl.booxchange.widget.CustomRefreshLayout>
+</layout>

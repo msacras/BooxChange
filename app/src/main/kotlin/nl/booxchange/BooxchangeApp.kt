@@ -1,13 +1,12 @@
 package nl.booxchange
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import com.facebook.appevents.AppEventsLogger
 import nl.booxchange.api.APIClient
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import nl.booxchange.model.BookModel
-import nl.booxchange.model.UserModel
-import com.crashlytics.android.Crashlytics
-import io.fabric.sdk.android.Fabric
+
 
 /**
  * Created by Cristian Velinciuc on 3/10/18.
@@ -24,13 +23,17 @@ class BooxchangeApp: Application() {
     APIClient
     delegate = this
 
-    FacebookSdk.sdkInitialize(applicationContext)
     AppEventsLogger.activateApp(this)
-//    Fabric.with(this, Crashlytics())
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val notificationManager = getSystemService(NotificationManager::class.java)
+      notificationManager.createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+    }
+//    Fabric.with(this, Crashlytics())
   }
 
   companion object {
     lateinit var delegate: BooxchangeApp
+    var isInForeground = false
   }
 }

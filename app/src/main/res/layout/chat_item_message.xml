@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="nl.booxchange.utilities.UserData.Session"/>
+        <variable
+            name="itemHandler"
+            type="nl.booxchange.screens.chat.ChatFragmentViewModel"/>
+        <variable
+            name="itemModel"
+            type="nl.booxchange.model.MessageModel"/>
+    </data>
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/rounded_corner_solid_gray_8dp"
+    android:layout_marginStart="@{itemHandler.isUserOwnedMessage(itemModel.userId) ? @dimen/message_offset : 0f}"
+    android:layout_marginEnd="@{itemHandler.isUserOwnedMessage(itemModel.userId) ? 0f : @dimen/message_offset}">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/author_photo"
+        compositeImageIds="@{itemHandler.getImageByUserId(itemModel.userId)}"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:srcCompat="@drawable/account_circle"
+        tools:tint="@color/jetGray"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@{itemHandler.getAuthorByUserId(itemModel.userId)}"
+        android:textColor="@color/jetGray"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/author_photo"
+        app:layout_constraintTop_toTopOf="@id/author_photo"
+        app:layout_constraintBottom_toBottomOf="@id/author_photo"
+        app:layout_constraintEnd_toStartOf="@id/message_time"
+        tools:text="John Doe"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_content_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@{itemModel.formattedContent}"
+        android:textColor="@color/pitchGray"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/author_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ipsum orci, fringilla ut quam id, dignissim laoreet est. Curabitur lectus felis, elementum id tincidunt at, eleifend non ipsum. Nulla a ante quis metus imperdiet feugiat. Fusce iaculis neque vel condimentum viverra. Nullam vel velit accumsan, luctus enim a, dictum dolor. Phasellus non est dui. Vestibulum vitae eleifend metus, a dictum nisi. Duis at porttitor nulla. Cras mattis nec quam eu vestibulum."/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/message_content_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        scaledImageId="@{itemModel.image}"
+        android:layout_marginTop="8dp"
+        visibleIf="@{itemModel.image != null}"
+        app:layout_constraintDimensionRatio="W,1:1"
+        app:layout_constraintTop_toBottomOf="@id/author_photo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:srcCompat="@drawable/account_circle"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="@{itemModel.formattedDateTime}"
+        android:textColor="@color/darkGray"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/message_author"
+        app:layout_constraintBottom_toBottomOf="@id/message_author"
+        tools:text="10:11:12 3 Mar. '18"/>
+
+</android.support.constraint.ConstraintLayout>
+</layout>

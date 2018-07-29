@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#26F47D</color>
-    <color name="colorPrimaryDark">#2BAE6A</color>
-    <color name="colorAccent">#5A85FF</color>
-    <color name="curiousBlue">#169de0</color>
-    <color name="colorAccentDark">#516cb8</color>
+    <!--
+        <color name="colorPrimary">#26F47D</color>
+        <color name="colorPrimaryDark">#2BAE6A</color>
+        <color name="colorAccent">#5A85FF</color>
+        <color name="colorAccentDark">#516CB8</color>
+    -->
+    <color name="colorPrimary">@color/whiteGray</color>
+    <color name="colorPrimaryDark">@color/lightGray</color>
+    <color name="colorAccent">@color/jetGray</color>
+    <color name="colorAccentDark">@color/pitchGray</color>
+
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="caramel">#613b26</color>
@@ -12,11 +18,16 @@
     <color name="whiteGray">#FCFCFC</color>
     <color name="lightGray">#F2F2F2</color>
     <color name="midGray">#BABABA</color>
+    <color name="darkGray">#888888</color>
+    <color name="jetGray">#464646</color>
+    <color name="pitchGray">#252525</color>
+
     <color name="springGreen">#27f67e</color>
     <color name="mountainMeadow">#11a761</color>
     <color name="salem">#0fa35f</color>
     <color name="shamrock">#43cea2</color>
     <color name="pelorous">#4BC0C8</color>
+    <color name="curiousBlue">#169de0</color>
     <color name="tuna">#353536</color>
     <color name="dustyGray">#9C9C9C</color>
     <color name="alabaster">#fafafa</color>
@@ -25,4 +36,11 @@
     <color name="castro">#4F001A</color>
     <color name="paprika">#9B0034</color>
     <color name="bordeaux">#680023</color>
+
+    <color name="themeGreen">#26F47D</color>
+    <color name="themeGreenDark">#2BAE6A</color>
+    <color name="themeBlue">#5A85FF</color>
+    <color name="themeBlueDark">#516CB8</color>
+    <color name="themeRed">#FF5A62</color>
+    <color name="themeRedDark">#B85451</color>
 </resources>

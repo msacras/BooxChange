@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="itemHandler"
+            type="nl.booxchange.model.PhotoItemHandler"/>
+    </data>
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/add_image_from_camera_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:gravity="bottom|center_horizontal"
+        android:padding="8dp"
+        android:text="Camera"
+        android:textColor="@color/whiteGray"
+        android:background="@drawable/rounded_corner_solid_gray_8dp"
+        app:backgroundTint="@color/jetGray"
+        android:onClick="@{(v) -> itemHandler.onAddPhotoFromCameraClick(v)}"
+        app:layout_constraintBottom_toTopOf="@id/add_image_from_gallery_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="300dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="300dp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/add_image_from_gallery_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:gravity="bottom|center_horizontal"
+        android:padding="8dp"
+        android:text="Gallery"
+        android:textColor="@color/whiteGray"
+        android:background="@drawable/rounded_corner_solid_gray_8dp"
+        app:backgroundTint="@color/jetGray"
+        android:onClick="@{(v) -> itemHandler.onAddPhotoFromGalleryClick(v)}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="300dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_image_from_camera_label"
+        app:layout_constraintWidth_max="300dp"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/add_image_from_camera_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:tint="@color/whiteGray"
+        app:layout_constraintBottom_toBottomOf="@+id/add_image_from_camera_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/camera"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/add_image_from_gallery_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:tint="@color/whiteGray"
+        app:layout_constraintBottom_toBottomOf="@+id/add_image_from_gallery_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/folder_image"/>
+
+</android.support.constraint.ConstraintLayout>
+</layout>

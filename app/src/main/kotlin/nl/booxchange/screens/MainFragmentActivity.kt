@@ -2,48 +2,48 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.graphics.Color
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
+import com.vcristian.combus.expect
+import com.vcristian.combus.post
 import kotlinx.android.synthetic.main.activity_main_fragment.*
+import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.R.color.tuna
-import nl.booxchange.extension.getColorById
-import nl.booxchange.extension.setVisible
-import nl.booxchange.extension.toGone
+import nl.booxchange.R.id.*
+import nl.booxchange.extension.getColorCompat
+import nl.booxchange.model.ChatOpenedEvent
+import nl.booxchange.model.MessageReceivedEvent
+import nl.booxchange.model.OverlayFragment
+import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
+import nl.booxchange.utilities.UserData
 
 class MainFragmentActivity: AppCompatActivity() {
-
-    private val blueColor by lazy { getColorById(R.color.mountainMeadow) }
-    private val grayColor by lazy { getColorById(R.color.midGray) }
-    private val lightGray by lazy { getColorById(R.color.lightGray) }
-    private val colorEvaluator = ArgbEvaluator()
+    val screens by lazy {listOf (
+        home_page to "home_page",
+        message_page to "message_page",
+        library_page to "library_page",
+        profile_page to "profile_page"
+    )}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_fragment)
 
-        listOf(add_book_button, log_out).forEach { it.setColorFilter(tuna) }
+        setSupportActionBar(toolbar)
 
-        val fragments = listOf (
-                home_page to HomeFragment(),
-                message_page to MessageFragment(),
-                library_page to LibraryFragment(),
-                profile_page to ProfileFragment()
-        )
-
-        fragments.forEachIndexed { currentSelectedIndex, (button, fragment) ->
+        screens.forEachIndexed { currentSelectedIndex, (button, tag) ->
             button.setOnClickListener {
-                showFragment(fragment)
-                fragments.forEach { (otherButton, _) ->
-                    val color = if (otherButton == button) blueColor else grayColor
+                showFragment(tag)
+                fragment_title.text = tag.split("_").first().capitalize()
+                screens.forEach { (otherButton, _) ->
+                    val color = if (otherButton == button) blackColor else grayColor
                     updateColor(otherButton as AppCompatImageButton, color)
-                    //app_bar_layout.setExpanded(true, true)
+                    app_bar_layout.setExpanded(true, true)
                 }
                 val targetPositionX = (currentSelectedIndex * focused_button_highlight.width).toFloat()
                 val transitionDuration = (Math.abs(focused_button_highlight.translationX - targetPositionX) / (focused_button_highlight.width * 3)) * 450
@@ -52,16 +52,22 @@ class MainFragmentActivity: AppCompatActivity() {
         }
 
         when (intent.getStringExtra(Constants.EXTRA_PARAM_TARGET_VIEW)) {
-            Constants.FRAGMENT_PROFILE -> fragments.first { it.first == profile_page }.first.performClick()
-            else -> fragments.first { it.first == home_page }.first.performClick()
+            Constants.FRAGMENT_PROFILE -> profile_page.performClick()
+            Constants.FRAGMENT_CHAT -> post(ChatOpenedEvent(chatId = intent.getStringExtra(Constants.EXTRA_PARAM_CHAT_ID)))
+            else -> home_page.performClick()
+        }
+
+        expect(MessageReceivedEvent::class.java) { (messageModel) ->
+            if (messageModel.userId == UserData.Session.userId) return@expect
+            //TODO: unread messages counter icon
+
+            messageModel.content
         }
     }
 
-    fun setTitle(title: String) {
-        toolbar_title.setText(title)
-        add_book_button.toGone()
-        log_out.toGone()
-    }
+    private val blackColor by lazy { getColorCompat(R.color.mountainMeadow) }
+    private val grayColor by lazy { getColorCompat(R.color.midGray) }
+    private val colorEvaluator = ArgbEvaluator()
 
     private fun updateColor(button: AppCompatImageButton, toColor: Int) {
         val fromColor = button.tag as? Int ?: grayColor
@@ -76,7 +82,35 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
-    private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).replace(R.id.fragment, fragment).commit()
+    fun showFragment(tag: String, exclusive: Boolean = true) {
+        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).apply {
+            supportFragmentManager.fragments.forEach { fragment ->
+                if (fragment.tag == tag) show(fragment) else if (exclusive) hide(fragment)
+            }
+            commit()
+        }
+    }
+
+    fun hideFragment(targetTag: String) {
+        val fragment = supportFragmentManager.findFragmentByTag(targetTag)
+        supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).hide(fragment).commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        BooxchangeApp.isInForeground = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BooxchangeApp.isInForeground = false
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.fragments.all {
+                (it as? BaseFragment)?.onBackPressed() != false
+            }) {
+            super.onBackPressed()
+        }
     }
 }

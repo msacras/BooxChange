@@ -1,81 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context="nl.booxchange.screens.MainFragmentActivity">
 
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/top_card_view"
-        android:layout_width="match_parent"
-        app:cardBackgroundColor="@color/white"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="3dp">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="23dp"/>
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/add_book_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="right|center"
-            android:src="@drawable/ic_plus"/>
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/log_out"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="15dp"
-            android:padding="2dp"
-            android:layout_gravity="right|center"
-            android:src="@drawable/ic_log_out_2"/>
-
-    </android.support.v7.widget.CardView>
-
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/pages_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/button_panel"
-        app:layout_constraintTop_toBottomOf="@id/top_card_view">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v4.widget.NestedScrollView
+        <fragment
+            android:name="nl.booxchange.screens.home.HomeFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:tag="home_page"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-            <FrameLayout
-                android:id="@+id/fragment"
+        <fragment
+            android:name="nl.booxchange.screens.library.LibraryFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tag="library_page"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <fragment
+            android:name="nl.booxchange.screens.messages.MessagesFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tag="message_page"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <fragment
+            android:name="nl.booxchange.screens.profile.ProfileFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tag="profile_page"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:paddingEnd="16dp"
+                app:layout_scrollFlags="snap|enterAlways|scroll">
 
-        </android.support.v4.widget.NestedScrollView>
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/fragment_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    tools:text="Message"/>
 
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <LinearLayout
         android:id="@+id/button_panel"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="@drawable/bottom_bar_style"
         android:orientation="horizontal"
         android:paddingTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <android.support.v7.widget.AppCompatImageButton
@@ -124,12 +124,34 @@
         android:id="@+id/focused_button_highlight"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:background="@color/mountainMeadow"
+        android:background="#000"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_weight="0.25"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/button_panel"
-        app:layout_constraintWidth_percent="0.25" />
+        app:layout_constraintWidth_percent="0.25"/>
+
+    <fragment
+        android:tag="chat_view"
+        android:name="nl.booxchange.screens.chat.ChatFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <fragment
+        android:tag="book_view"
+        android:name="nl.booxchange.screens.book.BookFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

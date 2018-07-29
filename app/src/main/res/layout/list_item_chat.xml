@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="itemHandler"
+            type="nl.booxchange.screens.messages.MessagesFragmentViewModel"/>
+        <variable
+            name="itemModel"
+            type="nl.booxchange.model.ChatModel"/>
+    </data>
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
+    android:padding="8dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/chat_image"
+        compositeImageIds="@{itemModel.userPhotoIds}"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/account_circle"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/requests_counter"
+        visibleIf="@{itemModel.unreadCount &gt; 0}"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/rounded_corner_solid_red_20dp"
+        android:gravity="center"
+        android:text="@{Integer.toString(itemModel.unreadCount)}"
+        android:textColor="@color/white"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/chat_image"
+        app:layout_constraintStart_toStartOf="@+id/chat_image"
+        tools:text="5"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/chat_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@{itemModel.chatTitle}"
+        android:textColor="@color/jetGray"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chat_image"
+        app:layout_constraintTop_toTopOf="@+id/chat_image"
+        tools:text="Dakota"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/last_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:text="@{itemModel.formattedLastMessage}"
+        android:textColor="@color/darkGray"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/chat_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chat_image"
+        app:layout_constraintTop_toBottomOf="@+id/chat_title"
+        tools:text="lorem ipsum"/>
+
+</android.support.constraint.ConstraintLayout>
+</layout>
