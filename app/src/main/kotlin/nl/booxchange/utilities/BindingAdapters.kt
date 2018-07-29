@@ -47,9 +47,10 @@ fun RecyclerView.setupPagingLiveRecyclerAdapter(@LayoutRes withLayoutResourceId:
     adapter = LiveBindingPagedListAdapter(withLayoutResourceId, withHandler)
 }
 
+@Suppress("UNCHECKED_CAST")
 @BindingAdapter("recyclerItems")
-fun <T: Distinctive> RecyclerView.updatePagingRecyclerAdapterItems(itemsList: LiveData<PagedList<T>>) {
-    itemsList.observeForever { (adapter as LiveBindingPagedListAdapter).submitList(it as PagedList<Distinctive>) }
+fun <T: Distinctive> RecyclerView.updatePagingRecyclerAdapterItems(itemsList: LiveData<PagedList<T>>?) {
+    (adapter as? LiveBindingPagedListAdapter)?.observeList((itemsList as? LiveData<PagedList<Distinctive>>) ?: return)
 }
 
 @BindingAdapter("photoItems", "photoHandler", requireAll = false)

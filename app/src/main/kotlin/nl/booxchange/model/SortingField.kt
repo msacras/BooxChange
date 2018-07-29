@@ -1,5 +1,9 @@
 package nl.booxchange.model
 
 enum class SortingField {
-    NONE, VIEWS
+    VIEWS, BOOK_ID;
+
+    override fun toString(): String {
+        return super.toString().toLowerCase()
+    }
 }

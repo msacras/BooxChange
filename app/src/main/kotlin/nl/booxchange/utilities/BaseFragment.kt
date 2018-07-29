@@ -27,15 +27,18 @@ abstract class BaseFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         DataBindingUtil.getBinding<ViewDataBinding>(view)?.apply {
+            executePendingBindings()
             setVariable(BR.viewModel, viewModel)
         }
 
+/*
         val swipeRefreshLayout = view.findOptional<CustomRefreshLayout>(R.id.swipe_refresh_layout)
 
         swipeRefreshLayout?.setOnDownRefreshListener { viewModel.onRefresh() }
         viewModel.isLoading.observe(::getLifecycle) {
             swipeRefreshLayout?.isRefreshing = it ?: false
         }
+*/
 
         expect(StartActivity::class.java) { (intent, requestCode, targetFragmentClass) ->
             if (this::class.java == targetFragmentClass) {

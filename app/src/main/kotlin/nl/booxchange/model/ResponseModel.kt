@@ -3,7 +3,8 @@ package nl.booxchange.model
 /**
  * Created by Cristian Velinciuc on 3/10/18.
  */
-open class ResponseModel {
-  val success: Boolean = false
-  val message: String = ""
-}
+data class ResponseModel<T> (
+  val success: Boolean,
+  val message: String,
+  val result: T?
+)

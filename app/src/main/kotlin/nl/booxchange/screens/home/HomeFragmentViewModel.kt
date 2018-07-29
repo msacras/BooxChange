@@ -42,12 +42,12 @@ class HomeFragmentViewModel: BaseViewModel(), BookItemHandler {
         requestsSemaphore = 0
         when (currentListType) {
             OfferType.BOTH -> fetchBooksByCriteria("", OfferType.BOTH, 0, SortingField.VIEWS, topBooksList)
-            OfferType.EXCHANGE -> fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.NONE, latestExchangeList)
-            OfferType.SELL -> fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.NONE, latestSellList)
+            OfferType.EXCHANGE -> fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.BOOK_ID, latestExchangeList)
+            OfferType.SELL -> fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.BOOK_ID, latestSellList)
             else -> {
                 fetchBooksByCriteria("", OfferType.BOTH, 0, SortingField.VIEWS, topBooksList)
-                fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.NONE, latestExchangeList)
-                fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.NONE, latestSellList)
+                fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.BOOK_ID, latestExchangeList)
+                fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.BOOK_ID, latestSellList)
             }
         }
     }

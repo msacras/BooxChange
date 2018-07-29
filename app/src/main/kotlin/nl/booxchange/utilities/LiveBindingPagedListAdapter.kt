@@ -1,5 +1,8 @@
 package nl.booxchange.utilities
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
+import android.arch.paging.PagedList
 import android.arch.paging.PagedListAdapter
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
@@ -17,6 +20,15 @@ class LiveBindingPagedListAdapter(@LayoutRes private val layoutId: Int, private 
             binding.setVariable(BR.itemModel, model)
             binding.setVariable(BR.itemHandler, handler)
         }
+    }
+
+    private val itemsObserver = Observer<PagedList<Distinctive>>(::submitList)
+    private var observableList: LiveData<PagedList<Distinctive>>? = null
+
+    fun observeList(itemsList: LiveData<PagedList<Distinctive>>) {
+        observableList?.removeObserver(itemsObserver)
+        observableList = itemsList
+        observableList?.observeForever(itemsObserver)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericBindingViewHolder {

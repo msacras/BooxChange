@@ -19,18 +19,4 @@ abstract class MessagesDAO {
 
     @Delete
     abstract fun deleteMessages(vararg messages: MessageModel)
-
-    companion object {
-        @JvmStatic
-        @TypeConverter
-        fun messageTypeToString(messageType: MessageType): String {
-            return messageType.name
-        }
-
-        @JvmStatic
-        @TypeConverter
-        fun messageTypeFromString(messageType: String): MessageType {
-            return MessageType.valueOf(messageType)
-        }
-    }
 }

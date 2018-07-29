@@ -3,6 +3,7 @@ package nl.booxchange.model
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.TypeConverter
 import com.google.gson.annotations.SerializedName
 import nl.booxchange.utilities.MessageUtilities
 import org.joda.time.DateTime
@@ -49,5 +50,4 @@ data class MessageModel(
     fun getImage(): String? {
         return content.takeIf { type == MessageType.IMAGE }
     }
-
 }

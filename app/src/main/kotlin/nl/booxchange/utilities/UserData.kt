@@ -1,31 +1,51 @@
 package nl.booxchange.utilities
 
-import android.databinding.ObservableField
+import android.arch.lifecycle.LiveData
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.iid.FirebaseInstanceId
 import nl.booxchange.BooxchangeApp
-import nl.booxchange.api.APIClient.Book
+import nl.booxchange.BooxchangeDatabase
+import nl.booxchange.api.APIClient
 import nl.booxchange.api.APIClient.User
 import nl.booxchange.extension.asJson
 import nl.booxchange.extension.asObject
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.UserModel
 import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 /**
  * Created by Cristian Velinciuc on 3/22/18.
  */
 object UserData {
+    init {
+        Session; Authentication; Persistent
+    }
+
     object Authentication {
         fun register(onCompleted: (isLoggedIn: Boolean, isNewUser: Boolean) -> Unit) {
-            findUser {
-                it?.let {
-                    UserData.Session.userModel = it
-                    onCompleted(true, false)
+            findUser { hasConnected, userModel ->
+                if (!hasConnected) {
+                    onCompleted(false, false)
+                    return@findUser
+                }
+
+                userModel?.let {
+                    doAsync {
+                        BooxchangeDatabase.instance.usersDao().insertUsers(userModel)
+                        uiThread {
+                            onCompleted(true, false)
+                        }
+                    }
                 } ?: registerUser {
-                    it?.let {
-                        UserData.Session.userModel = it
+                    it?.let { userModel ->
+                        doAsync {
+                            BooxchangeDatabase.instance.usersDao().insertUsers(userModel)
+                            uiThread {
+                                onCompleted(true, true)
+                            }
+                        }
                         onCompleted(true, true)
                     } ?: onCompleted(false, false)
                 }
@@ -33,9 +53,15 @@ object UserData {
         }
 
         fun login(onCompleted: (isLoggedIn: Boolean) -> Unit) {
-            findUser {
-                UserData.Session.userModel = it
-                onCompleted(it != null)
+            findUser { _, userModel ->
+                doAsync {
+                    userModel?.let {
+                        BooxchangeDatabase.instance.usersDao().insertUsers(userModel)
+                    }
+                    uiThread {
+                        onCompleted(userModel != null)
+                    }
+                }
             }
         }
 
@@ -45,9 +71,16 @@ object UserData {
             UserData.purge()
         }
 
-        private fun findUser(onResult: (UserModel?) -> Unit) {
-            User.userGet(Session.userId) {
-                onResult(it)
+        private fun findUser(onResult: (Boolean, UserModel?) -> Unit) {
+            User.userGet {
+                println("USER_MODEL_CACHE")
+                println(Session.userModel.value)
+
+                it?.let {
+                    onResult(true, it.result)
+                } ?: run {
+                    onResult(false, Session.userModel.value)
+                }
             }
         }
 
@@ -61,32 +94,29 @@ object UserData {
 
     object Session {
         @JvmStatic
-        val userId
-            get() = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("User not found")
-        val instanceId
-            get() = FirebaseInstanceId.getInstance().token ?: throw Exception("No id at this moment")
+        val userId get() = FirebaseAuth.getInstance().currentUser?.uid ?: throw Exception("User not found")
+        var instanceId: String? = null
 
-        var userModel: UserModel? = null
-        var userBooks: List<BookModel> = emptyList()
+        lateinit var userModel: LiveData<UserModel>
+        lateinit var userBooks: LiveData<List<BookModel>>
 
         init {
             FirebaseAuth.getInstance().addAuthStateListener {
-                FirebaseAuth.getInstance().currentUser?.let {
-                    User.updateInstanceId {}
+                it.currentUser?.let {
+                    userModel = BooxchangeDatabase.instance.usersDao().getUserById(it.uid)
+                    userBooks = BooxchangeDatabase.instance.booksDao().getBooksByUserId(it.uid)
+                    userModel.observeForever {}
+                    userBooks.observeForever {}
                 }
             }
         }
 
-        fun fetchUserBooksList(onCompleted: (success: Boolean) -> Unit) {
-            Book.fetchBooksByUserId(userModel?.id ?: return) {
-                userBooks = it ?: emptyList()
-                onCompleted(it != null)
-            }
-        }
-
         fun purge() {
+            //TODO: DROP DATABASE
+/*
             userModel = null
             userBooks = emptyList()
+*/
         }
     }
 

@@ -62,6 +62,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
         LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile", "email"))
       }
     }
+
     LoginManager.getInstance().registerCallback(facebookCallbackManager,
       object: FacebookCallback<LoginResult> {
         override fun onSuccess(loginResult: LoginResult) {
@@ -87,6 +88,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   private fun initializeGoogleAuthorization() {
     val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.google_web_client_id)).requestEmail().build()
     val googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+
     google_sign_in_button.setOnClickListener {
       hideViews {
         startActivityForResult(googleSignInClient.signInIntent, 9001)
@@ -98,8 +100,9 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
     country_code_field.setText(getUserCountryCode())
     phone_sign_in_button.setOnClickListener {
       val phoneNumber = ("${country_code_field.text} ${phone_number_field.text}").takeIf { it.isNotBlank() } ?: return@setOnClickListener
-      val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-      imm?.hideSoftInputFromWindow(phone_number_field.windowToken, 0)
+
+      (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(phone_number_field.windowToken, 0)
+
       hideViews {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
           override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential?) {
@@ -120,6 +123,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
 
   private fun getUserCountryCode(): String {
     val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+
     return (Constants.IDDC[telephonyManager?.simCountryIso?.toUpperCase()] ?: Constants.IDDC["NL"]!!).withExitSymbol
   }
 
@@ -129,7 +133,6 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
       UserData.Authentication.register { isLoggedIn, isNewUser ->
         if (isLoggedIn) {
           toast("Database auth task succeeded")
-          UserData.Session.fetchUserBooksList {}
           if (isNewUser) {
             startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
           } else {
@@ -156,6 +159,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
 
     if (requestCode == 9001) {
       val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+
       try {
         val account = task.getResult(ApiException::class.java)
         toast("succeeded Google auth")

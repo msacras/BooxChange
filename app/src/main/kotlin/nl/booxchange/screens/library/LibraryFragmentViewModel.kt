@@ -16,12 +16,6 @@ class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
     val userBooksList = ObservableField<List<BookModel>>()
 
     init {
-        userBooksList.addOnPropertyChangedCallback(object: Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                UserData.Session.userBooks = userBooksList.get() ?: emptyList()
-            }
-        })
-
         onRefresh()
     }
 
@@ -42,6 +36,6 @@ class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
     }
 
     fun addBook(view: View) {
-        post(BookOpenedEvent(BookModel(userId = UserData.Session.userId)))
+        post(BookOpenedEvent(BookModel.newEmptyBook))
     }
 }

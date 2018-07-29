@@ -8,6 +8,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.os.Build
 import com.facebook.appevents.AppEventsLogger
 import nl.booxchange.api.APIClient
+import nl.booxchange.utilities.UserData
 
 
 /**
@@ -22,7 +23,9 @@ class BooxchangeApp: Application() {
     LeakCanary.install(this)
 */
 
+    UserData
     APIClient
+
     delegate = this
 
     AppEventsLogger.activateApp(this)

@@ -79,7 +79,7 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
         isBookUserOwned.set(bookModel.userId == UserData.Session.userId)
 
         this.userOwnedBooks.clear()
-        this.userOwnedBooks.addAll(UserData.Session.userBooks)
+        this.userOwnedBooks.addAll(UserData.Session.userBooks.value.orEmpty())
         this.checkedBook.set(null)
         this.bookModel = bookModel
         bookId.get()?.takeIf { it.isNotBlank() && !isBookUserOwned.get() }?.let(Book::incrementViewsCount)
@@ -166,7 +166,8 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             imagesData,
             UserData.Session.userId,
             offerPrice.get(),
-            OfferType.getByFilters(isExchange.get(), isSell.get())
+            OfferType.getByFilters(isExchange.get(), isSell.get()),
+            0
         )
 
         (if (bookModel.id.isEmpty()) Book::bookAdd else Book::bookUpdate).invoke(bookModel) {

@@ -7,11 +7,17 @@ import nl.booxchange.BooxchangeDatabase
 
 @Dao
 abstract class ChatsDAO {
-    @Query("SELECT * FROM chats")
+    @Query("SELECT * FROM chats WHERE is_active = 1")
     abstract fun getChats(): DataSource.Factory<Int, ChatModel>
 
-    @Query("SELECT * FROM chats")
+    @Query("SELECT * FROM chats WHERE is_active = 0")
     abstract fun getRequests(): DataSource.Factory<Int, ChatModel>
+
+    @Query("SELECT SUM(unread_count) FROM chats WHERE is_active = 1")
+    abstract fun getUnreadMessagesCount(): LiveData<Int>
+
+    @Query("SELECT COUNT(*) FROM chats WHERE is_active = 0")
+    abstract fun getChatRequestsCount(): LiveData<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertChats(vararg chats: ChatModel)
@@ -21,18 +27,4 @@ abstract class ChatsDAO {
 
     @Delete
     abstract fun deleteChats(vararg chats: ChatModel)
-
-    companion object {
-        @JvmStatic
-        @TypeConverter
-        fun messageModelToId(messageModel: MessageModel): String {
-            return messageModel.id
-        }
-
-        @JvmStatic
-        @TypeConverter
-        fun messageIdToModel(messageId: String): MessageModel {
-            return BooxchangeDatabase.instance.messagesDao().getMessage(messageId)
-        }
-    }
 }

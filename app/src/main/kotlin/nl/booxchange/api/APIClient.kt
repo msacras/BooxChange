@@ -26,7 +26,7 @@ object APIClient {
     private var idToken: String? = null
 
     init {
-        FuelManager.instance.basePath = "https://api.booxchange.website"/*"http://192.168.88.128:8000"*//*"http://192.168.0.104:8000"*/
+        FuelManager.instance.basePath = "https://a2pi.booxchange.website"/*"http://192.168.88.128:8000"*//*"http://192.168.0.104:8000"*/
         FuelManager.instance.baseHeaders = mapOf("Content-Type" to "application/json")
         FirebaseAuth.getInstance().addIdTokenListener(::requestToken)
     }
@@ -58,7 +58,7 @@ object APIClient {
 
         idToken?.let { idToken ->
             doAsync {
-                request.header("Id-Token" to idToken, "Instance-Id" to UserData.Session.instanceId, "User-Id" to UserData.Session.userId)
+                request.header("Id-Token" to idToken, "Instance-Id" to (UserData.Session.instanceId ?: ""), "User-Id" to UserData.Session.userId)
 
                 Log.d("APIClient", "${request.method} ${request.path}")
                 Log.d("APIClient", request.toString())
@@ -118,7 +118,7 @@ object APIClient {
             return RequestModel(request)
         }
 
-        fun bookDelete(bookId: String, callback: (ResponseModel?) -> Unit): RequestModel {
+        fun bookDelete(bookId: String, callback: (ResponseModel<Nothing>?) -> Unit): RequestModel {
             val parameters = mapOf("book_id" to bookId)
             val request = BOOK_DELETE.setParameters(parameters).httpDelete().name(::BOOK_DELETE)
             executeRequest(request) { callback(it?.asObject()) }
@@ -140,10 +140,11 @@ object APIClient {
             return RequestModel(request)
         }
 
-        fun userGet(userId: String, callback: (UserModel?) -> Unit): RequestModel {
-            val parameters = mapOf("user_id" to userId)
-            val request = USER_GET.setParameters(parameters).httpGet().name(::USER_GET)
-            executeRequest(request) { callback(it?.get("result")?.asObject()) }
+        fun userGet(callback: (ResponseModel<UserModel>?) -> Unit): RequestModel {
+            val request = USER_GET.httpGet().name(::USER_GET)
+
+            executeRequest(request) { callback(it?.asObject()) }
+
             return RequestModel(request)
         }
 
@@ -153,23 +154,17 @@ object APIClient {
             return RequestModel(request)
         }
 
-        fun userDelete(userId: String, callback: (ResponseModel?) -> Unit): RequestModel {
+        fun userDelete(userId: String, callback: (ResponseModel<Nothing>?) -> Unit): RequestModel {
             val parameters = mapOf("user_id" to userId)
             val request = USER_DELETE.setParameters(parameters).httpDelete().name(::USER_DELETE)
             executeRequest(request) { callback(it?.asObject()) }
             return RequestModel(request)
         }
-
-        fun updateInstanceId(callback: (ResponseModel?) -> Unit): RequestModel {
-            val request = USER_UPDATE_INSTANCE.httpGet().name(::USER_UPDATE_INSTANCE)
-            executeRequest(request) {}
-            return RequestModel(request)
-        }
     }
 
     object Chat {
-        fun fetchChatRooms(type: String, callback: (List<ChatModel>?) -> Unit): RequestModel {
-            val parameters = mapOf("user_id" to UserData.Session.userId, "type" to type)
+        fun fetchChatRooms(callback: (List<ChatModel>?) -> Unit): RequestModel {
+            val parameters = mapOf("user_id" to UserData.Session.userId)
             val request = CHAT_USER_ROOMS.setParameters(parameters).httpGet().name(::CHAT_USER_ROOMS)
             executeRequest(request) { callback(it?.get("result")?.asObject()) }
             return RequestModel(request)
@@ -216,16 +211,16 @@ object APIClient {
             return RequestModel(request)
         }
 
-        fun postRequest(bookId: String, tradeType: String, exchangeBookId: String?, callback: (ResponseModel?) -> Unit): RequestModel {
+        fun postRequest(bookId: String, tradeType: String, exchangeBookId: String?, callback: (ResponseModel<Nothing>?) -> Unit): RequestModel {
             val body = mapOf("book_id" to bookId, "trade_type" to tradeType, "exchange_book_id" to exchangeBookId)
             val request = REQUEST_POST.httpPost().body(body.asJson).name(::REQUEST_POST)
             executeRequest(request) { callback(it?.asObject()) }
             return RequestModel(request)
         }
 
-        fun markAsRead(chatId: String, callback: (ResponseModel?) -> Unit): RequestModel {
+        fun markAsRead(chatId: String, callback: (ResponseModel<Nothing>?) -> Unit): RequestModel {
             val request = CHAT_MARK_READ.httpGet().name(::CHAT_MARK_READ)
-            executeRequest(request) { callback(it?.get("result")?.asObject()) }
+            executeRequest(request) { callback(it?.asObject()) }
             return RequestModel(request)
         }
     }
@@ -235,7 +230,7 @@ object APIClient {
     }
 
     private const val ALL_AVAILABLE_BOOKS = "/books/available"
-    private const val BOOKS_BY_USER_ID = "/books/library/{user_id}"
+    private const val BOOKS_BY_USER_ID = "/books/library"
 
     private const val BOOK_ADD = "/book/add"
     private const val BOOK_GET = "/book/{book_id}"
@@ -243,16 +238,15 @@ object APIClient {
     private const val BOOK_DELETE = "/book/{book_id}"
     private const val BOOK_INCREMENT_VIEWS = "/book/views/{book_id}"
 
-    private const val USER_ADD = "/user/add"
-    private const val USER_GET = "/user/{user_id}"
-    private const val USER_UPDATE = "/user/update"
-    private const val USER_DELETE = "/user/{user_id}"
-    private const val USER_UPDATE_INSTANCE = "/user/instances"
+    private const val USER_ADD = "/user"
+    private const val USER_GET = "/user"
+    private const val USER_UPDATE = "/user"
+    private const val USER_DELETE = "/user"
 
-    private const val CHAT_USER_ROOMS = "/chats/{user_id}/{type}"
+    private const val CHAT_USER_ROOMS = "/chats"
     private const val CHAT_ROOM_FIND = "/chats/join/by_users"
     private const val CHAT_ROOM_JOIN = "/chats/join/by_chat/{chat_id}"
-    private const val CHAT_MARK_READ = "/chats/read/{chat_id}/{user_id}"
+    private const val CHAT_MARK_READ = "/chats/read/{chat_id}"
 
     private const val MESSAGE_CHAT_BEFORE = "/messages/{chat_id}/before/{message_id}"
     private const val MESSAGE_CHAT_AFTER = "/messages/{chat_id}/after/{message_id}"

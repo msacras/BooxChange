@@ -3,6 +3,7 @@ package nl.booxchange.screens
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import nl.booxchange.extension.toGone
 import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.UserData
@@ -16,10 +17,14 @@ class LaunchActivity: AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     FirebaseAuth.getInstance().currentUser?.let {
-//      setContentView(LoadingView(this).apply { message = "Synchronizing"; toGone(); show()})
       UserData.Authentication.login { isLoggedIn ->
         if (isLoggedIn) {
-          startActivity<MainFragmentActivity>()
+            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    UserData.Session.instanceId = it.result.token
+                }
+                startActivity<MainFragmentActivity>()
+            }
         } else {
           UserData.Authentication.logout()
           startActivity<SignInActivity>()

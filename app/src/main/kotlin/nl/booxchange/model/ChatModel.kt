@@ -1,9 +1,6 @@
 package nl.booxchange.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.ObservableField
@@ -11,6 +8,7 @@ import android.databinding.ObservableInt
 import android.text.Spannable
 import com.google.gson.annotations.SerializedName
 import nl.booxchange.BR
+import nl.booxchange.BooxchangeDatabase
 import nl.booxchange.utilities.MessageUtilities
 import nl.booxchange.utilities.UserData
 import java.io.Serializable
@@ -34,7 +32,11 @@ data class ChatModel(
 
     @ColumnInfo(name = "unread_count")
     @SerializedName("unread_count")
-    var unreadCount: Int
+    var unreadCount: Int,
+
+    @ColumnInfo(name = "is_active")
+    @SerializedName("is_active")
+    val isActive: Boolean
 
 ): Serializable, Distinctive {
 
@@ -48,6 +50,6 @@ data class ChatModel(
     }
 
     fun getUserPhotoIds(): List<String?> {
-        return usersList.minus(UserData.Session.userModel!!).sortedWith(compareBy({ it.id != lastMessage?.userId }, { it.photo == null })).take(3).map(UserModel::photo)
+        return usersList.minus(UserData.Session.userModel.value!!).sortedWith(compareBy({ it.id != lastMessage?.userId }, { it.photo == null })).take(3).map(UserModel::photo)
     }
 }
