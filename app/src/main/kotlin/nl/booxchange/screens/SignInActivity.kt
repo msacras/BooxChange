@@ -14,7 +14,6 @@ import android.view.inputmethod.InputMethodManager
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,14 +23,14 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
-import com.google.gson.JsonParser
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
-import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.withExitSymbol
 import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.UserData
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
@@ -53,7 +52,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   }
 
   private fun initializeLayout() {
-    progress_bar.indeterminateDrawable.setColorFilter(getColorCompat(R.color.lightGray), PorterDuff.Mode.SRC_IN);
+    progress_bar.indeterminateDrawable.setColorFilter(getColorCompat(R.color.lightGray), PorterDuff.Mode.SRC_IN)
   }
 
   private fun initializeFacebookAuthorization() {
@@ -99,7 +98,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   private fun initializePhoneAuthorizationLayout() {
     country_code_field.setText(getUserCountryCode())
     phone_sign_in_button.setOnClickListener {
-      val phoneNumber = ("${country_code_field.text} ${phone_number_field.text}").takeIf { it.isNotBlank() } ?: return@setOnClickListener
+      val phoneNumber = ("${country_code_field.text} ${phone_number_field.text}").takeIf(String::isNotBlank) ?: return@setOnClickListener
 
       (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(phone_number_field.windowToken, 0)
 
@@ -129,43 +128,31 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
 
   override fun onComplete(task: Task<AuthResult>) {
     if (task.isSuccessful) {
-      toast("Firebase auth task succeeded")
-      UserData.Authentication.register { isLoggedIn, isNewUser ->
-        if (isLoggedIn) {
-          toast("Database auth task succeeded")
-          if (isNewUser) {
-            startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
-          } else {
-            startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
-          }
-          finish()
-        } else {
-          toast("Database auth task failed")
-          //TODO: Show failure message
-          //TODO: Show help message if user fails to authenticate more than 3 times with the same credentials
-          UserData.Authentication.logout()
-          showViews()
-        }
+      FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+        FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
       }
+      if (task.result.additionalUserInfo.isNewUser) {
+        startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
+      } else {
+        startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
+      }
+      finish()
     } else {
-      toast("Firebase auth task failed")
-      //TODO: Handle failed Firebase auth!
+//      if ((task.exception as FirebaseAuthInvalidUserException).errorCode == "ERROR_USER_DISABLED") {}
+      task.exception?.localizedMessage?.let { alert(it).show() }
       showViews()
     }
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
 
     if (requestCode == 9001) {
       val task = GoogleSignIn.getSignedInAccountFromIntent(data)
 
       try {
-        val account = task.getResult(ApiException::class.java)
-        toast("succeeded Google auth")
-        FirebaseAuth.getInstance().signInWithCredential(GoogleAuthProvider.getCredential(account.idToken, null)).addOnCompleteListener(this)
+        FirebaseAuth.getInstance().signInWithCredential(GoogleAuthProvider.getCredential(task.getResult(ApiException::class.java).idToken, null)).addOnCompleteListener(this)
       } catch (e: ApiException) {
-        toast("failed Google auth")
         showViews()
         e.printStackTrace()
       }

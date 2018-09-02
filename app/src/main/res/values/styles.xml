@@ -1,13 +1,12 @@
 <resources>
 
-  <style name="AppThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/caramel</item>
     <item name="colorAccent">@color/colorAccent</item>
     <item name="colorControlActivated">@color/caramel</item>
     <item name="android:windowBackground">@color/white</item>
     <item name="android:screenOrientation">portrait</item>
-    <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
   </style>
 
   <style name="AppTheme" parent="AppThemeBase"/>
@@ -15,10 +14,4 @@
   <style name="SplashTheme" parent="AppTheme">
     <item name="android:windowBackground">@drawable/background_splash</item>
   </style>
-
-  <style name="CustomSwitch">
-    <item name="android:track">@drawable/switch_track</item>
-    <item name="android:thumb">@drawable/switch_thumb</item>
-  </style>
-
 </resources>

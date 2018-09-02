@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="itemHandler"
+            type="nl.booxchange.screens.chat.ChatFragmentViewModel"/>
+
+        <variable
+            name="itemModel"
+            type="nl.booxchange.model.MessageModel"/>
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/chat_item_content"
+            scaledImageId="@{itemModel.content}"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="@drawable/rounded_corner_solid_gray_8dp"
+            tools:srcCompat="@drawable/account_circle"/>
+
+    </FrameLayout>
+</layout>

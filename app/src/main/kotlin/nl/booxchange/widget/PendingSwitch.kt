@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Checkable
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.pending_switch_layout.view.*
-import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.utilities.Tools.interpolateColor
 import nl.booxchange.utilities.Tools.interpolateValue
@@ -18,6 +17,9 @@ import org.jetbrains.anko.dip
 
 
 class PendingSwitch @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attributeSet, defStyleAttr), Checkable {
+
+    private val MAX_CLICK_DURATION = 200
+    private val THUMB_SIZE = dip(15f)
 
     val isPending
         get() = isChecked == null
@@ -154,10 +156,5 @@ class PendingSwitch @JvmOverloads constructor(context: Context, attributeSet: At
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         renderThumbState()
-    }
-
-    companion object {
-        private const val MAX_CLICK_DURATION = 200 //ms
-        private val THUMB_SIZE = BooxchangeApp.delegate.applicationContext.dip(15f)
     }
 }

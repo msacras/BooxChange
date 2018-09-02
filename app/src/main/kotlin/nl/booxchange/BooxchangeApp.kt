@@ -3,12 +3,11 @@ package nl.booxchange
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
 import android.os.Build
 import com.facebook.appevents.AppEventsLogger
-import nl.booxchange.api.APIClient
-import nl.booxchange.utilities.UserData
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import java.lang.ref.WeakReference
 
 
 /**
@@ -18,28 +17,38 @@ class BooxchangeApp: Application() {
   override fun onCreate() {
     super.onCreate()
 
+      FirebaseRemoteConfig.getInstance().apply {
+          setDefaults(mapOf(
+              "KEY_SUBSCRIPTION_SYSTEM_ENABLED" to false
+          ))
+          fetch(60).addOnCompleteListener {
+              FirebaseRemoteConfig.getInstance().activateFetched()
+          }
+      }
+
 /*
     if (LeakCanary.isInAnalyzerProcess(this)) return
     LeakCanary.install(this)
 */
 
-    UserData
-    APIClient
+      _delegate = WeakReference(this)
 
-    delegate = this
-
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     AppEventsLogger.activateApp(this)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      getSystemService(NotificationManager::class.java).createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+        getSystemService(NotificationManager::class.java).apply {
+            createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+            createNotificationChannel(NotificationChannel("booxchange.channel.requesting", "Requests", NotificationManager.IMPORTANCE_HIGH))
+        }
     }
-
-    BooxchangeDatabase.instance = Room.databaseBuilder(this, BooxchangeDatabase::class.java, "booxchange_database").fallbackToDestructiveMigration().build()
-//    Fabric.with(this, Crashlytics())
   }
 
   companion object {
-    lateinit var delegate: BooxchangeApp
+      private var _delegate = WeakReference<BooxchangeApp>(null)
+      val delegate: BooxchangeApp?
+          get() = _delegate.get()
+
     var isInForeground = false
   }
 }

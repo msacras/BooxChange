@@ -17,6 +17,12 @@ object Constants {
     const val FRAGMENT_CHAT = "FRAGMENT_CHAT"
     const val FRAGMENT_PROFILE = "FRAGMENT_PROFILE"
 
+    const val KEY_ACTION_REPLY = "KEY_ACTION_REPLY"
+    const val KEY_RESPONSE_ID = "KEY_RESPONSE_ID"
+    const val KEY_CHAT_ID = "KEY_CHAT_ID"
+
+    const val KEY_SUBSCRIPTION_SYSTEM_ENABLED = "KEY_SUBSCRIPTION_SYSTEM_ENABLED"
+
     val IDDC = mapOf(
         "AD" to "376",
         "AE" to "971",

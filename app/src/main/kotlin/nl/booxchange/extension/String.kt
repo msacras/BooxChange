@@ -1,8 +1,5 @@
 package nl.booxchange.extension
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.FuelManager
-
 /**
  * Created by Cristian Velinciuc on 3/21/18.
  */
@@ -16,5 +13,5 @@ val String.digitsOnly
 val String.takeNotBlank
     get() = this.takeIf { it.isNotBlank() }
 
-val String.staticResourceUrl
-    get() = FuelManager.instance.basePath + "/static/$this"
+val String.firebaseStoragePath
+    get() = "gs://booxchange-nl.appspot.com/images/$this"

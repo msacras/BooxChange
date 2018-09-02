@@ -1,55 +1,87 @@
 package nl.booxchange.model
 
-import android.arch.persistence.room.*
-import android.databinding.BaseObservable
-import android.databinding.Bindable
-import android.databinding.ObservableField
-import android.databinding.ObservableInt
+import android.databinding.*
 import android.text.Spannable
-import com.google.gson.annotations.SerializedName
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.FirebaseDatabase
 import nl.booxchange.BR
-import nl.booxchange.BooxchangeDatabase
-import nl.booxchange.utilities.MessageUtilities
-import nl.booxchange.utilities.UserData
-import java.io.Serializable
+import nl.booxchange.screens.messages.single
 
 
-@Entity(tableName = "chats")
-data class ChatModel(
+class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObject {
+    class ChatUserDataModel(val id: String, val unread: Int, val name: String?, val photo: String?)
 
-    @PrimaryKey
-    @ColumnInfo(name = "chat_id")
-    @SerializedName("chat_id")
-    override val id: String,
+    val users = ObservableArrayMap<String, ChatUserDataModel>()
+    val message = ObservableField<MessageModel>()
+    var isRequest = false
 
-    @ColumnInfo(name = "chat_title")
-    @SerializedName("chat_title")
-    val chatTitle: String,
-
-    @ColumnInfo(name = "last_message")
-    @SerializedName("last_message")
-    var lastMessage: MessageModel?,
-
-    @ColumnInfo(name = "unread_count")
-    @SerializedName("unread_count")
-    var unreadCount: Int,
-
-    @ColumnInfo(name = "is_active")
-    @SerializedName("is_active")
-    val isActive: Boolean
-
-): Serializable, Distinctive {
-
-    //    @ColumnInfo(name = "users_list")
-    @Ignore
-    @SerializedName("users_list")
-    val usersList: List<UserModel> = emptyList()
-
-    fun getFormattedLastMessage(): Spannable {
-        return MessageUtilities.formatRequest(lastMessage?.content ?: "", usersList)
+    init {
+        users.addOnMapChangedCallback(object: ObservableMap.OnMapChangedCallback<ObservableArrayMap<String, ChatUserDataModel>, String, ChatUserDataModel>() {
+            override fun onMapChanged(sender: ObservableArrayMap<String, ChatUserDataModel>?, key: String?) {
+                this@ChatModel.notifyPropertyChanged(BR.title)
+                this@ChatModel.notifyPropertyChanged(BR.image)
+            }
+        })
     }
 
-    fun getUserPhotoIds(): List<String?> {
-        return usersList.minus(UserData.Session.userModel.value!!).sortedWith(compareBy({ it.id != lastMessage?.userId }, { it.photo == null })).take(3).map(UserModel::photo)
+    @Bindable
+    fun getTitle(): String? {
+        return getUserOther()?.name
+    }
+
+    @Bindable
+    fun getImage(): String? {
+        return getUserOther()?.photo
+    }
+
+    @Bindable
+    fun getUnreadCount(): Int {
+        return getUserSelf()?.unread ?: 0
+    }
+
+    private fun getUserSelf(): ChatUserDataModel? {
+        return users["self"]
+    }
+
+    private fun getUserOther(): ChatUserDataModel? {
+        return users["other"]
+    }
+
+    fun getFormattedLastMessage(): Spannable? {
+        return message.get()?.formattedContent
+    }
+
+    companion object {
+        fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): ChatModel {
+            val (key, value) = entry
+            val lastMessageId = value["lastMessageId"] as String
+            val usersList = value.filter { it.key !in listOf("isRequest", "lastMessageId") }
+            val chatModel = ChatModel(key)
+
+            usersList.forEach { (userId, userUnreadMessages) ->
+                val userType: String
+
+                if (userId == FirebaseAuth.getInstance().currentUser?.uid) {
+                    userType = "self"
+                } else {
+                    chatModel.isRequest = userUnreadMessages == -1L
+                    userType = "other"
+                }
+                FirebaseDatabase.getInstance().getReference("users").child(userId).single {
+                    it?.let { (_, userData) ->
+                        chatModel.users[userType] = ChatModel.ChatUserDataModel(userId, (userUnreadMessages as Long).toInt(), userData["alias"] as? String, userData["imageUrl"] as? String)
+                    }
+                }
+            }
+
+            FirebaseDatabase.getInstance().getReference("messages/$key").child(lastMessageId).single {
+                it?.let { messageData ->
+                    chatModel.message.set(MessageModel.fromFirebaseEntry(messageData))
+                }
+            }
+
+            return chatModel
+        }
     }
 }

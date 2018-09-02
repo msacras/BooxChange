@@ -2,8 +2,6 @@ package nl.booxchange.utilities
 
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
-import android.graphics.drawable.Animatable
-import android.os.Build
 import android.support.annotation.LayoutRes
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
@@ -11,18 +9,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import nl.booxchange.BR
-import nl.booxchange.R
-import nl.booxchange.extension.getDrawableCompat
-import nl.booxchange.model.Distinctive
 import java.lang.ref.WeakReference
 
 class BindingRecyclerAdapter(@LayoutRes private val layoutId: Int, private val handler: Any?): RecyclerView.Adapter<BindingRecyclerAdapter.BindingViewHolder>() {
     inner class BindingViewHolder(val binding: ViewDataBinding): RecyclerView.ViewHolder(binding.root)
 
-    private val items = ArrayList<Distinctive>()
+    private val items = ArrayList<Any>()
     private var recyclerView = WeakReference<RecyclerView>(null)
 
-    fun swapItems(items: Collection<Distinctive>) {
+    fun swapItems(items: Collection<Any>) {
         val recyclerView = recyclerView.get()
 
         val isInitialScroll = this.items.isEmpty()
@@ -65,7 +60,7 @@ class BindingRecyclerAdapter(@LayoutRes private val layoutId: Int, private val h
         this.recyclerView = WeakReference(recyclerView)
     }
 
-    inner class DifferenceResolutionHelper(private val oldItems: List<Distinctive>, private val newItems: List<Distinctive>): DiffUtil.Callback() {
+    inner class DifferenceResolutionHelper(private val oldItems: List<Any>, private val newItems: List<Any>): DiffUtil.Callback() {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
 
             val oldItem = oldItems[oldItemPosition]

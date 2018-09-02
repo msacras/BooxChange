@@ -18,16 +18,20 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages_list"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
+        recyclerHandler="@{viewModel}"
+        recyclerItems="@{viewModel.messagesList}"
         android:clipToPadding="false"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        recyclerLayout="@{viewModel.messagesViewsConfigurations}"
+        android:descendantFocusability="afterDescendants"
+        android:paddingBottom="4dp"
         app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/message_input"
+        android:paddingTop="4dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/input_barrier"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:stackFromEnd="true"
         tools:listitem="@layout/chat_item_message"/>
@@ -44,33 +48,52 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@{viewModel.chatModel.chatTitle}"
-            app:layout_scrollFlags="snap|enterAlways|scroll"
+            app:title="@{viewModel.chatModel.title}"
             app:navigationIcon="@drawable/close">
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
+    <View
+        android:id="@+id/input_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/whiteGray"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/input_barrier"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/input_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="message_input, image_input_top_guide"/>
+
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/message_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/whiteGray"
+        android:background="@null"
         android:elevation="4dp"
+        android:enabled="@{viewModel.imageInput == null}"
+        android:gravity="@{viewModel.imageInput == null ? Gravity.TOP | Gravity.START : Gravity.CENTER}"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:inputType="textMultiLine"
         android:paddingEnd="48dp"
         android:paddingStart="48dp"
-        android:enabled="@{!viewModel.hasSendableImage}"
         android:text="@={viewModel.messageInput}"
-        android:gravity="@{viewModel.hasSendableImage ? Gravity.CENTER : Gravity.LEFT}"
         android:textColor="@color/pitchGray"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHeight_max="200dp"
         app:layout_constraintHeight_min="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Random text message"/>
+        tools:text="Random text message that cannot fit in a single line and thus will expand this container in the preview"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/send_message"
@@ -82,7 +105,7 @@
         android:clickable="true"
         android:focusable="true"
         visibleIf="@{!viewModel.isSending}"
-        android:onClick="@{() -> viewModel.sendMessage()}"
+        android:onClick="@{viewModel::send}"
         android:tint="@{TextUtils.isEmpty(viewModel.messageInput) ? @color/midGray : @color/pitchGray}"
         app:layout_constraintBottom_toBottomOf="@id/message_input"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +120,6 @@
         android:padding="8dp"
         android:elevation="4dp"
         android:indeterminate="true"
-        android:visibility="gone"
         visibleIf="@{viewModel.isSending}"
         app:layout_constraintBottom_toBottomOf="@id/message_input"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,12 +146,11 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_corner_solid_white_8dp"
         android:clipToPadding="false"
-        android:elevation="2dp"
+        android:elevation="4dp"
         android:visibility="gone"
         android:orientation="vertical"
         android:translationY="40dp"
         android:alpha="0"
-        visibleIf="@{!viewModel.hasSendableImage &amp;&amp; false}"
         app:layout_constraintBottom_toTopOf="@id/send_more"
         app:layout_constraintEnd_toEndOf="@id/send_more"
         app:layout_constraintStart_toStartOf="@id/send_more"
@@ -170,5 +191,30 @@
             app:srcCompat="@drawable/google_maps"/>
 
     </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_input"
+        scaledImageId="@{viewModel.imageInput}"
+        visibleIf="@{viewModel.imageInput != null}"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="48dp"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:background="#7f00"
+        tools:layout_height="300dp"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/image_input_top_guide"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/image_input"/>
+
 </android.support.constraint.ConstraintLayout>
 </layout>

@@ -6,97 +6,120 @@ import android.content.pm.PackageManager
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
-import android.databinding.ObservableInt
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v7.widget.AppCompatRadioButton
-import android.util.Base64
 import android.view.View
 import android.widget.RadioGroup
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.storage.FirebaseStorage
 import com.vcristian.combus.expect
 import com.vcristian.combus.post
-import nl.booxchange.api.APIClient.Chat
-import nl.booxchange.api.APIClient.Book
-import nl.booxchange.extension.takeNotBlank
 import nl.booxchange.model.*
 import nl.booxchange.utilities.BaseViewModel
 import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.Tools
-import nl.booxchange.utilities.UserData
 import org.jetbrains.anko.find
+import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
-import java.io.ByteArrayOutputStream
+import org.joda.time.DateTime
 
 class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler {
     override val isEditModeEnabled = ObservableBoolean(false)
     val isBookUserOwned = ObservableBoolean(false)
     val userOwnedBooks = ObservableArrayList<BookModel>()
 
-    private var bookModel: BookModel? = null
+    val bookModel = ObservableField<BookModel>()
+    var sourceBookModel = BookModel()
+        set(value) {
+            field = value
+            bookModel.set(value.copy())
+        }
 
-    val bookId = ObservableField<String>()
-    val title = ObservableField<String>()
-    val author = ObservableField<String>()
-    val edition = ObservableField<String>()
-    val condition = ObservableInt()
-    val isbn = ObservableField<String>()
-    val info = ObservableField<String>()
-    val images = ObservableArrayList<EditablePhotoModel>()
-    val offerPrice = ObservableField<String>()
-    val isSell = ObservableBoolean()
-    val isExchange = ObservableBoolean()
+    val images = ObservableArrayList<ImageModel>()
+    var sourceImages = emptyList<ImageModel>()
+        set(value) {
+            field = value
+            images.addAll(value)
+        }
 
     init {
         expect(BookOpenedEvent::class.java) { event ->
-            isEditModeEnabled.set(event.bookModel?.id == "")
-            event.bookModel?.let(::bindBookModel) ?: fetchBook(event.bookId)
+            isEditModeEnabled.set(event.bookId.isBlank())
+            if (event.bookId.isBlank()) {
+                bindBookModel(BookModel())
+            } else {
+                event.bookModel?.let(::bindBookModel) ?: fetchBook(event.bookId)
+            }
         }
     }
 
     private fun fetchBook(bookId: String) {
         onLoadingStarted()
-        Book.bookGet(bookId) {
-            it?.let(::bindBookModel) ?: onLoadingFailed()
-            onLoadingFinished()
-        }
+        FirebaseDatabase.getInstance().getReference("books").child(bookId).addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(databaseError: DatabaseError) {
+                databaseError.toException().printStackTrace()
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.getValue(BookModel::class.java)?.let(::bindBookModel) ?: onLoadingFailed()
+                onLoadingFinished()
+            }
+        })
     }
 
     private fun bindBookModel(bookModel: BookModel) {
-        bookId.set(bookModel.id)
-        title.set(bookModel.title)
-        author.set(bookModel.author)
-        edition.set(bookModel.edition)
-        condition.set(bookModel.condition ?: 0)
-        isbn.set(bookModel.isbn)
-        info.set(bookModel.info)
-        offerPrice.set(bookModel.offerPrice)
-
-        isSell.set(bookModel.offerType?.isSell ?: false)
-        isExchange.set(bookModel.offerType?.isExchange ?: false)
+        sourceBookModel = bookModel
 
         images.clear()
-        images.addAll((bookModel.images ?: emptyList()).map { EditablePhotoModel(EditablePhotoModel.EditablePhotoType.REMOTE_URL, Uri.parse(it)) })
-        isBookUserOwned.set(bookModel.userId == UserData.Session.userId)
+        FirebaseDatabase.getInstance().getReference("images/books").child(bookModel.id).addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onCancelled(databaseError: DatabaseError) {
+                databaseError.toException().printStackTrace()
+            }
 
-        this.userOwnedBooks.clear()
-        this.userOwnedBooks.addAll(UserData.Session.userBooks.value.orEmpty())
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                sourceImages = dataSnapshot.children.map { ImageModel(it.key, ImageModel.EditablePhotoType.REMOTE, Uri.parse(it.value as? String)) }
+            }
+        })
+
+        isBookUserOwned.set(bookModel.userId == FirebaseAuth.getInstance().currentUser?.uid)
+
         this.checkedBook.set(null)
-        this.bookModel = bookModel
-        bookId.get()?.takeIf { it.isNotBlank() && !isBookUserOwned.get() }?.let(Book::incrementViewsCount)
+
+        if (!isBookUserOwned.get()) {
+            val viewsReference = FirebaseDatabase.getInstance().getReference("books").child(bookModel.id).child("views")
+
+            viewsReference.addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onCancelled(databaseError: DatabaseError) {
+                    databaseError.toException().printStackTrace()
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        viewsReference.setValue(dataSnapshot.getValue(Int::class.java)?.plus(1))
+                    }
+                }
+            })
+        }
     }
 
-    fun toggleEditMode(view: View) {
+    fun toggleEditMode(view: View?) {
         isEditModeEnabled.set(!isEditModeEnabled.get())
         if (isEditModeEnabled.get()) {
             images.add(null)
         } else {
-            bindBookModel(bookModel ?: return)
+            bindBookModel(sourceBookModel)
             images.remove(null)
         }
     }
 
     fun setConditionLevel(radioGroup: RadioGroup, buttonId: Int) {
-        condition.set(radioGroup.find<AppCompatRadioButton>(buttonId).text.toString().toInt())
+        bookModel.get()!!.condition.set(radioGroup.find<AppCompatRadioButton>(buttonId).text.toString().toInt())
     }
 
     override val checkedBook = ObservableField<BookModel>()
@@ -117,6 +140,7 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
     override fun onAddPhotoFromCameraClick(view: View) {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val temporaryImageUri = Tools.getCacheUri("camera_output.jpeg")
+
         view.context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
             view.context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
@@ -128,72 +152,75 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
         post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookFragment::class.java))
     }
 
-    override fun onRemovePhotoClick(photoModel: EditablePhotoModel) {
+    override fun onRemovePhotoClick(photoModel: ImageModel) {
         images.remove(photoModel)
     }
 
-    override fun setMainPhoto(photoModel: EditablePhotoModel) {
+    override fun setMainPhoto(photoModel: ImageModel) {
         images.remove(photoModel)
         images.add(0, photoModel)
     }
 
-    override fun isMainPhoto(photoModel: EditablePhotoModel): Boolean {
+    override fun isMainPhoto(photoModel: ImageModel): Boolean {
+        if (photoModel.type == ImageModel.EditablePhotoType.REMOTE) {
+            photoModel.path
+        }
         return images.indexOf(photoModel) == 0
     }
 
     fun saveBook(view: View) {
-        val imagesData = images.mapNotNull {
-            it ?: return@mapNotNull null
+        val progressDialog = view.context.indeterminateProgressDialog("Saving")
+        val mainImage = images.firstOrNull()
 
-            if (it.type == EditablePhotoModel.EditablePhotoType.REMOTE_URL) {
-                it.path.path
-            } else {
-                val inputStream = Tools.safeContext.contentResolver.openInputStream(it.path)
-                val byteStream = ByteArrayOutputStream().apply { inputStream.copyTo(this) }
-                val base64Image = Base64.encodeToString(byteStream.toByteArray(), Base64.DEFAULT)
-                "base64://$base64Image"
+        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).setValue(bookModel.get()!!.toFirebaseEntry()).addOnCompleteListener {
+            sourceBookModel = bookModel.get()!!
+            progressDialog.dismiss()
+        }
+
+        sourceImages.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.forEach { photoModel ->
+            if (photoModel !in images) {
+                FirebaseDatabase.getInstance().getReference(photoModel.path.path).removeValue()
+                FirebaseStorage.getInstance().getReference(photoModel.path.path).delete()
             }
         }
 
-        val bookModel = BookModel(
-            bookId.get() ?: "",
-            title.get(),
-            author.get(),
-            edition.get(),
-            condition.get(),
-            isbn.get(),
-            info.get(),
-            imagesData,
-            UserData.Session.userId,
-            offerPrice.get(),
-            OfferType.getByFilters(isExchange.get(), isSell.get()),
-            0
+        images.filter { it?.type == ImageModel.EditablePhotoType.LOCAL }.forEach { photoModel ->
+            FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path).addOnCompleteListener {
+                FirebaseDatabase.getInstance().getReference("images/books/${bookModel.get()!!.id}").push().setValue(it.result.metadata?.path)
+                if (photoModel == mainImage) {
+                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("image").setValue(it.result.metadata?.path)
+                }
+            }
+        }
+    }
+
+    fun deleteBook() {
+        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).removeValue()
+    }
+
+    fun sendRequest(view: View) {
+        val requestData = mapOf(
+            "requestedBookOwnerId" to bookModel.get()?.userId,
+            "requestedBookTitle" to bookModel.get()?.title?.get(),
+            "requestedBookId" to bookModel.get()?.id,
+
+            "requesterAlias" to FirebaseAuth.getInstance().currentUser?.displayName,
+            "requesterId" to FirebaseAuth.getInstance().currentUser?.uid,
+
+            "tradeType" to tradeChoice.get()?.name,
+            "tradeBookId" to checkedBook.get()?.id,
+            "tradeBookTitle" to checkedBook.get()?.title?.get()
         )
 
-        (if (bookModel.id.isEmpty()) Book::bookAdd else Book::bookUpdate).invoke(bookModel) {
-            it?.let {
-                bindBookModel(it)
-                view.context.toast("updating complete")
-                //TODO: Update library
-            } ?: view.context.toast("updating failed")
-        }
-    }
-
-    fun deleteBook(view: View) {
-        val bookId = bookId.get()?.takeNotBlank ?: run {
-            //TODO: Close book view
-            return
+        FirebaseFunctions.getInstance().getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
+            view.context.toast(if (it.isSuccessful) "Request sent!" else "Failed to send your request")
         }
 
-        Book.bookDelete(bookId) {
-            it?.message?.let(view.context::toast) ?: view.context.toast("deleting failed")
-        }
-    }
-
-    fun postRequest(view: View) {
-        Chat.postRequest(bookId.get() ?: "", tradeChoice.get()?.name ?: "", checkedBook.get()?.id ?: "") {
+/*
+        Chat.sendRequest(id.single() ?: "", tradeChoice.single()?.name ?: "", checkedBook.single()?.id ?: "") {
             it?.message?.let(view.context::toast) ?: view.context.toast("requesting failed")
         }
+*/
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -205,8 +232,7 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             }
 
             if (images.find { it?.path == imageUri } == null) {
-                val photoModel = EditablePhotoModel(EditablePhotoModel.EditablePhotoType.LOCAL_URI, imageUri)
-                images.add(images.indexOf(null).coerceAtLeast(0), photoModel)
+                images.add(images.indexOf(null).coerceAtLeast(0), ImageModel(null, ImageModel.EditablePhotoType.LOCAL, imageUri))
             }
         }
     }

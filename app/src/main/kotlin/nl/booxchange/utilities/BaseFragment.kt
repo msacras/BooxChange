@@ -10,10 +10,7 @@ import android.view.ViewGroup
 import com.vcristian.combus.dismiss
 import com.vcristian.combus.expect
 import nl.booxchange.BR
-import nl.booxchange.R
 import nl.booxchange.model.StartActivity
-import nl.booxchange.widget.CustomRefreshLayout
-import org.jetbrains.anko.findOptional
 
 abstract class BaseFragment: Fragment() {
     abstract val contentViewResourceId: Int
@@ -31,15 +28,6 @@ abstract class BaseFragment: Fragment() {
             setVariable(BR.viewModel, viewModel)
         }
 
-/*
-        val swipeRefreshLayout = view.findOptional<CustomRefreshLayout>(R.id.swipe_refresh_layout)
-
-        swipeRefreshLayout?.setOnDownRefreshListener { viewModel.onRefresh() }
-        viewModel.isLoading.observe(::getLifecycle) {
-            swipeRefreshLayout?.isRefreshing = it ?: false
-        }
-*/
-
         expect(StartActivity::class.java) { (intent, requestCode, targetFragmentClass) ->
             if (this::class.java == targetFragmentClass) {
                 requestCode?.let {
@@ -50,17 +38,15 @@ abstract class BaseFragment: Fragment() {
             }
         }
 
-        onFragmentReady()
+        onFragmentReady(view)
     }
 
-    open fun onFragmentReady() {
-
-    }
+    open fun onFragmentReady(view: View) {}
 
     override fun onDestroy() {
         dismiss()
         super.onDestroy()
     }
 
-    open fun onBackPressed(): Boolean { return true }
+    open fun onBackPressed() = true
 }

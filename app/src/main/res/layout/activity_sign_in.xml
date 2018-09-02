@@ -139,8 +139,7 @@
         android:tint="@color/lightGray"
         app:layout_constraintBottom_toBottomOf="@+id/phone_number_field"
         app:layout_constraintLeft_toLeftOf="@+id/phone_number_field"
-        app:layout_constraintTop_toTopOf="@+id/phone_number_field"
-        app:srcCompat="@drawable/ic_phone" />
+        app:layout_constraintTop_toTopOf="@+id/phone_number_field"/>
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/country_code_field"

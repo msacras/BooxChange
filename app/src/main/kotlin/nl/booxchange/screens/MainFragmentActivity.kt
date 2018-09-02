@@ -2,7 +2,6 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
@@ -13,14 +12,12 @@ import com.vcristian.combus.post
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.model.ChatOpenedEvent
 import nl.booxchange.model.MessageReceivedEvent
-import nl.booxchange.model.OverlayFragment
+import nl.booxchange.screens.messages.ChatsStateChangeEvent
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.UserData
 
 class MainFragmentActivity: AppCompatActivity() {
     val screens by lazy {listOf (
@@ -58,10 +55,14 @@ class MainFragmentActivity: AppCompatActivity() {
         }
 
         expect(MessageReceivedEvent::class.java) { (messageModel) ->
-            if (messageModel.userId == UserData.Session.userId) return@expect
+            //            if (messageModel.id == UserData.Session.id) return@expect
             //TODO: unread messages counter icon
 
             messageModel.content
+        }
+
+        expect(ChatsStateChangeEvent::class.java) { (count) ->
+
         }
     }
 
@@ -92,13 +93,14 @@ class MainFragmentActivity: AppCompatActivity() {
     }
 
     fun hideFragment(targetTag: String) {
-        val fragment = supportFragmentManager.findFragmentByTag(targetTag)
+        val fragment = supportFragmentManager.findFragmentByTag(targetTag)!!
         supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).hide(fragment).commit()
     }
 
     override fun onResume() {
         super.onResume()
         BooxchangeApp.isInForeground = true
+
     }
 
     override fun onPause() {
@@ -106,10 +108,9 @@ class MainFragmentActivity: AppCompatActivity() {
         BooxchangeApp.isInForeground = false
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onBackPressed() {
-        if (supportFragmentManager.fragments.all {
-                (it as? BaseFragment)?.onBackPressed() != false
-            }) {
+        if (supportFragmentManager.fragments.all { (it as? BaseFragment)?.onBackPressed() != false }) {
             super.onBackPressed()
         }
     }

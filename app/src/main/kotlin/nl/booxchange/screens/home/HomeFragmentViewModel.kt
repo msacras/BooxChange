@@ -1,59 +1,40 @@
 package nl.booxchange.screens.home
 
-import android.databinding.Observable
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Transformations
 import android.databinding.ObservableField
 import android.view.View
+import com.google.firebase.database.FirebaseDatabase
 import com.vcristian.combus.post
-import nl.booxchange.api.APIClient.Book
-import nl.booxchange.model.*
+import nl.booxchange.R
+import nl.booxchange.model.BookItemHandler
+import nl.booxchange.model.BookModel
+import nl.booxchange.model.BookOpenedEvent
 import nl.booxchange.utilities.BaseViewModel
-import kotlin.properties.Delegates
+import nl.booxchange.utilities.ViewHolderConfig
+
 
 class HomeFragmentViewModel: BaseViewModel(), BookItemHandler {
     //Not used
     override val checkedBook = ObservableField<BookModel>()
 
-    private var requestsSemaphore by Delegates.observable(0) { _, _, completionCount ->
-        if (completionCount == 0) {
-            onLoadingStarted()
-        } else {
-            currentListType?.let { if (completionCount == 3) onLoadingFinished() } ?: onLoadingFinished()
-        }
-    }
-    private val requestsCompletionListener = object: Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-            requestsSemaphore++
-        }
-    }
+    val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
+        ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
+    )
 
-    val topBooksList = ObservableField<List<BookModel>>()
-    val latestExchangeList = ObservableField<List<BookModel>>()
-    val latestSellList = ObservableField<List<BookModel>>()
-
-    var currentListType: OfferType? = null
+    val topBooksList: LiveData<List<BookModel>>
+    val latestExchangeList: LiveData<List<BookModel>>
+    val latestSellList: LiveData<List<BookModel>>
 
     init {
-        listOf(topBooksList, latestExchangeList, latestSellList).forEach { it.addOnPropertyChangedCallback(requestsCompletionListener) }
-
-        onRefresh()
+        val booksFirebaseReference = FirebaseDatabase.getInstance().getReference("books")
+        latestSellList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("sell").equalTo(true).limitToLast(15)), ::parseBooks)
+        latestExchangeList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("exchange").equalTo(true).limitToLast(15)), ::parseBooks)
+        topBooksList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("views").limitToLast(15)), ::parseBooks)
     }
 
-    override fun onRefresh() {
-        requestsSemaphore = 0
-        when (currentListType) {
-            OfferType.BOTH -> fetchBooksByCriteria("", OfferType.BOTH, 0, SortingField.VIEWS, topBooksList)
-            OfferType.EXCHANGE -> fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.BOOK_ID, latestExchangeList)
-            OfferType.SELL -> fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.BOOK_ID, latestSellList)
-            else -> {
-                fetchBooksByCriteria("", OfferType.BOTH, 0, SortingField.VIEWS, topBooksList)
-                fetchBooksByCriteria("", OfferType.EXCHANGE, 0, SortingField.BOOK_ID, latestExchangeList)
-                fetchBooksByCriteria("", OfferType.SELL, 0, SortingField.BOOK_ID, latestSellList)
-            }
-        }
-    }
-
-    private fun fetchBooksByCriteria(queryKeyword: String, offerType: OfferType, startIndex: Int, sortingField: SortingField, receiver: ObservableField<List<BookModel>>) {
-        Book.fetchAvailableBooks(queryKeyword, offerType, startIndex, sortingField, receiver::set)
+    private fun parseBooks(list: Map<String, Map<String, Any>>): List<BookModel> {
+        return list.map { BookModel.fromFirebaseEntry(it) }.reversed()
     }
 
     override fun onBookItemClick(view: View, bookModel: BookModel) {

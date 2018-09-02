@@ -1,53 +1,35 @@
 package nl.booxchange.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import android.arch.persistence.room.TypeConverter
-import com.google.gson.annotations.SerializedName
+import android.databinding.BaseObservable
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.FirebaseDatabase
 import nl.booxchange.utilities.MessageUtilities
 import org.joda.time.DateTime
-import java.io.Serializable
 
-@Entity(tableName = "messages")
-data class MessageModel(
+class MessageModel(@Exclude override val id: String = FirebaseDatabase.getInstance().getReference("books").push().key!!, val userId: String = FirebaseAuth.getInstance().currentUser?.uid!!, val content: String, val type: String, val timestamp: DateTime = DateTime(id.toLong())): BaseObservable(), FirebaseObject {
 
-    @PrimaryKey
-    @ColumnInfo(name = "message_id")
-    @SerializedName("message_id")
-    override val id: String,
+    val formattedContent
+        get() = MessageUtilities.getFormattedMessage(this, isOwnMessage)
 
-    @ColumnInfo(name = "chat_id")
-    @SerializedName("chat_id")
-    val chatId: String,
+    val formattedDateTime
+        get() = timestamp.toString("HH:mm.ss dd MMM ''yy")
 
-    @ColumnInfo(name = "user_id")
-    @SerializedName("user_id")
-    val userId: String,
+    val isOwnMessage
+        get() = userId == FirebaseAuth.getInstance().currentUser?.uid
 
-    @ColumnInfo(name = "content")
-    @SerializedName("content")
-    val content: String,
+    val image
+        get() = if (type == "IMAGE") "" else null
 
-    @ColumnInfo(name = "type")
-    @SerializedName("type")
-    val type: MessageType,
-
-    @ColumnInfo(name = "created_at")
-    @SerializedName("created_at")
-    val createdAt: DateTime
-
-): Serializable, Distinctive {
-
-    fun getFormattedDateTime(): String {
-        return createdAt.toString("HH:mm d MMM")
-    }
-
-    fun getFormattedContent(): CharSequence {
-        return MessageUtilities.getFormattedMessage(this)
-    }
-
-    fun getImage(): String? {
-        return content.takeIf { type == MessageType.IMAGE }
+    companion object {
+        fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): MessageModel {
+            val (key, value) = entry
+            return MessageModel(
+                key,
+                value["user"] as? String ?: "",
+                value["content"] as? String ?: "",
+                value["type"] as? String ?: ""
+            )
+        }
     }
 }

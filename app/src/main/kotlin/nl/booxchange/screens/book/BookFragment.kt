@@ -13,7 +13,6 @@ import nl.booxchange.extension.toVisible
 import nl.booxchange.model.BookOpenedEvent
 import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
-import org.jetbrains.anko.dip
 
 class BookFragment: BaseFragment() {
     override val contentViewResourceId = R.layout.fragment_book
@@ -29,16 +28,16 @@ class BookFragment: BaseFragment() {
             (activity as? MainFragmentActivity)?.showFragment("book_view", false)
         }
 
-        val `56dp` = context!!.dip(56)
-        view.app_bar_layout.addOnOffsetChangedListener { _, verticalOffset ->
-            view.image_pager.translationY = -verticalOffset.toFloat() - `56dp`
-        }
-
         view.image_pager.offscreenPageLimit = 5
         view.book_image.setOnClickListener {
             view.image_pager.setCurrentItem(0, false)
             view.image_pager.toVisible()
             view.app_bar_layout.animate().alpha(0.5f).start()
+        }
+
+        view.delete_book_button.setOnClickListener {
+            viewModel.deleteBook()
+            onBackPressed()
         }
     }
 
@@ -49,6 +48,9 @@ class BookFragment: BaseFragment() {
             view.image_pager.toGone()
             view.app_bar_layout.animate().alpha(1f).start()
         } else {
+            if (viewModel.isEditModeEnabled.get()) {
+                viewModel.toggleEditMode(null)
+            }
             (activity as? MainFragmentActivity)?.hideFragment("book_view")
         }
 

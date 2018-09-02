@@ -6,10 +6,10 @@ import android.view.View
 interface PhotoItemHandler {
     val isEditModeEnabled: ObservableBoolean
 
-    fun onRemovePhotoClick(photoModel: EditablePhotoModel)
+    fun onRemovePhotoClick(photoModel: ImageModel)
     fun onAddPhotoFromCameraClick(view: View)
     fun onAddPhotoFromGalleryClick(view: View)
 
-    fun setMainPhoto(photoModel: EditablePhotoModel)
-    fun isMainPhoto(photoModel: EditablePhotoModel): Boolean
+    fun setMainPhoto(photoModel: ImageModel)
+    fun isMainPhoto(photoModel: ImageModel): Boolean
 }
