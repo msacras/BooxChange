@@ -73,7 +73,7 @@ class MessagingService: FirebaseMessagingService()
             }
 
         val notification = NotificationCompat.Builder(this@MessagingService, "booxchange.channel.messaging")
-                .setSmallIcon(R.mipmap.ic_logo_48dp)
+                .setSmallIcon(R.drawable.ic_logo)
                 .setStyle(notificationStyle)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)

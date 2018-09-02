@@ -1,6 +1,5 @@
 package nl.booxchange.screens
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,20 +7,14 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialogFragment
 import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog.*
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_library.*
 import nl.booxchange.R
-import nl.booxchange.model.UserModel
-import nl.booxchange.screens.profile.ProfileFragment
 import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.Tools
-import nl.booxchange.utilities.UserData
 import java.io.ByteArrayOutputStream
-import java.io.File
 
 class BottomSheetDialog : BottomSheetDialogFragment() {
 
@@ -75,7 +68,7 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
                 //ByteArrayOutputStream().apply {
                 // bitmap.copyTo(this)
                 //bitmap = Base64.encodeToString(this.toByteArray(), Base64.DEFAULT)
-                UserData.Session.userModel?.photo = imageEncode
+//                UserData.Session.userModel?.photo = imageEncode
                 //(activity as MainFragmentActivity).progress_bar?.setText(imageEncode)
 
                 var imageAsBytes = Base64.decode(imageEncode, Base64.DEFAULT)
