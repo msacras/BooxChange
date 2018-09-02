@@ -1,40 +1,77 @@
 package nl.booxchange.model
 
-import com.google.gson.annotations.SerializedName
-import nl.booxchange.extension.hashCode
-import nl.booxchange.utilities.UserData
-import java.io.Serializable
+import android.databinding.BaseObservable
+import android.databinding.ObservableBoolean
+import android.databinding.ObservableField
+import android.databinding.ObservableInt
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.FirebaseDatabase
+import nl.booxchange.extension.takeNotBlank
 
 /**
  * Created by Cristian Velinciuc on 3/8/18.
  */
+
 data class BookModel(
-    @SerializedName("book_id") override val id: String = "",
-    @SerializedName("title") var title: String? = null,
-    @SerializedName("author") var author: String? = null,
-    @SerializedName("edition") var edition: String? = null,
-    @SerializedName("state") var condition: Int? = null,
-    @SerializedName("isbn") var isbn: String? = null,
-    @SerializedName("info") var info: String? = null,
-    @SerializedName("images") var images: List<String>? = null,
-    @SerializedName("user_id") var userId: String? = null,
-    @SerializedName("offer_price") var offerPrice: String? = null,
-    @SerializedName("offer_type") var offerType: OfferType? = null
-): Distinctive, Serializable {
-    override fun equals(other: Any?) = (other as? Distinctive)?.id == id
-    override fun hashCode() = hashCode
+    @Exclude override val id: String = FirebaseDatabase.getInstance().getReference("books").push().key!!,
+    var userId: String = FirebaseAuth.getInstance().currentUser?.uid!!,
 
-    fun getFirstImage() = (images ?: emptyList<String>().also(::images::set)).firstOrNull()
+    var title: ObservableField<String> = ObservableField(""),
+    var author: ObservableField<String> = ObservableField(""),
+    var condition: ObservableInt = ObservableInt(0),
+    var info: ObservableField<String> = ObservableField(""),
+    var edition: ObservableField<String> = ObservableField(""),
+    var isbn: ObservableField<String> = ObservableField(""),
+    var price: ObservableField<String> = ObservableField(""),
+    var forSale: ObservableBoolean = ObservableBoolean(),
+    var forExchange: ObservableBoolean = ObservableBoolean(),
 
-    fun getHasImages() = (images ?: emptyList<String>().also(::images::set)).isNotEmpty()
+    var mainImage: String = "",
+    var views: Long = 0L
+): BaseObservable(), FirebaseObject {
 
-    fun equalsConditionLevel(level: Int) = level == condition
+    val hasImages
+        get() = mainImage.isBlank()
 
-    fun isSell() = offerType?.isSell ?: false
+    fun equalsConditionLevel(level: Int): Boolean {
+        return level == condition.get()
+    }
 
-    fun isExchange() = offerType?.isExchange ?: false
+    fun toFirebaseEntry(): Map<String, Any?> {
+        return mapOf(
+            "title" to title.get()!!.trim(),
+            "author" to author.get()!!.trim(),
+            "condition" to condition.get(),
+            "info" to info.get()!!.trim(),
+            "user" to userId,
+            "edition" to edition.get()!!.toIntOrNull(),
+            "isbn" to isbn.get()!!.replace("-", "").toLongOrNull(),
+            "price" to price.get()!!.toFloatOrNull(),
+            "sell" to forSale.get(),
+            "exchange" to forExchange.get(),
+            "views" to views
+        )
+    }
 
-    fun setIsSell(value: Boolean) = ::offerType.set(OfferType.getByFilters(isExchange(), value))
-
-    fun setIsExchange(value: Boolean) = ::offerType.set(OfferType.getByFilters(value, isSell()))
+    companion object {
+        fun fromFirebaseEntry(entry: Map.Entry<String, Map<String, Any>>): BookModel {
+            val (key, value) = entry
+            return BookModel(
+                key,
+                value["user"] as? String ?: "",
+                ObservableField(value["title"] as? String ?: ""),
+                ObservableField(value["author"] as? String ?: ""),
+                ObservableInt((value["condition"] as? Long)?.toInt() ?: 0),
+                ObservableField(value["info"] as? String ?: ""),
+                ObservableField((value["edition"] as? Long)?.toString() ?: ""),
+                ObservableField((value["isbn"] as? Long)?.toString() ?: ""),
+                ObservableField((value["price"] as? Long)?.toString() ?: (value["edition"] as? Double)?.let { "%.2f".format(it) } ?: ""),
+                ObservableBoolean(value["sell"] as? Boolean ?: false),
+                ObservableBoolean(value["exchange"] as? Boolean ?: false),
+                (value["image"] as? String)?.takeNotBlank?.let { "books/$key/$it" } ?: "",
+                value["views"] as? Long ?: 0L
+            )
+        }
+    }
 }

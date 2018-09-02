@@ -7,79 +7,72 @@
     android:layout_height="match_parent"
     tools:context="nl.booxchange.screens.MainFragmentActivity">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/pages_container"
-        android:layout_width="match_parent"
+    <fragment
+        android:name="nl.booxchange.screens.home.HomeFragment"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:tag="home_page"
         app:layout_constraintBottom_toTopOf="@id/button_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+
+    <fragment
+        android:name="nl.booxchange.screens.library.LibraryFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:tag="library_page"
+        app:layout_constraintBottom_toTopOf="@id/button_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+
+    <fragment
+        android:name="nl.booxchange.screens.messages.MessagesFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:tag="message_page"
+        app:layout_constraintBottom_toTopOf="@id/button_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+
+    <fragment
+        android:name="nl.booxchange.screens.profile.ProfileFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:tag="profile_page"
+        app:layout_constraintBottom_toTopOf="@id/button_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <fragment
-            android:name="nl.booxchange.screens.home.HomeFragment"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:tag="home_page"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            app:layout_scrollFlags="snap|enterAlways|scroll">
 
-        <fragment
-            android:name="nl.booxchange.screens.library.LibraryFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:tag="library_page"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <fragment
-            android:name="nl.booxchange.screens.messages.MessagesFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:tag="message_page"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <fragment
-            android:name="nl.booxchange.screens.profile.ProfileFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:tag="profile_page"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/fragment_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingEnd="16dp">
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                tools:text="Message"/>
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/fragment_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/tuna"
-                    android:gravity="center_horizontal"
-                    android:textSize="20dp"
-                    tools:text="Message"/>
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/log_out"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="center|right"
-                    app:srcCompat="@drawable/logout1"/>
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/add_book"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="right"
-                    app:srcCompat="@drawable/plus_add"/>
-
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
-    </android.support.design.widget.CoordinatorLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:id="@+id/button_panel"
@@ -88,49 +81,37 @@
         android:background="@drawable/bottom_bar_style"
         android:orientation="horizontal"
         android:paddingTop="2dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/home_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            app:srcCompat="@drawable/house" />
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/message_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            app:srcCompat="@drawable/chat" />
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/library_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            app:srcCompat="@drawable/books_library"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/profile_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            app:srcCompat="@drawable/user" />
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 
@@ -138,7 +119,7 @@
         android:id="@+id/focused_button_highlight"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:background="@color/mountainMeadow"
+        android:background="#000"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_weight="0.25"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -147,27 +128,25 @@
         app:layout_constraintWidth_percent="0.25"/>
 
     <fragment
-        android:tag="chat_view"
         android:name="nl.booxchange.screens.chat.ChatFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        android:tag="chat_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:visibility="gone"/>
 
     <fragment
-        android:tag="book_view"
         android:name="nl.booxchange.screens.book.BookFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        android:tag="book_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
+        tools:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

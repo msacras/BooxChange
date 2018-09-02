@@ -2,12 +2,11 @@ package nl.booxchange.screens.library
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.widget.AppCompatCheckedTextView
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
-import kotlinx.android.synthetic.main.activity_main_fragment.*
 import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.fragment_library.view.*
 import nl.booxchange.R
@@ -23,19 +22,25 @@ class LibraryFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.user_books_list.addItemDecoration(object: RecyclerView.ItemDecoration() {
-            val `8dp` = view.dip(8)
+            val bookSpacing = view.dip(8)
 
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                view.layoutParams = view.layoutParams.apply { width = ViewGroup.LayoutParams.MATCH_PARENT }
-                outRect.set(`8dp`, `8dp`, `8dp`, `8dp`)
+                outRect.set(bookSpacing, bookSpacing, bookSpacing, bookSpacing)
             }
         })
 
-        view.postDelayed({
-            val `56dp` = context!!.dip(56)
-            activity?.app_bar_layout?.addOnOffsetChangedListener { _, verticalOffset ->
-                view.add_book_button.translationY = -verticalOffset.toFloat() - `56dp`
-            }
-        }, 56)
+        listOf(facebook_checkbox, google_checkbox, phone_checkbox).forEach(::buildBookCheckbox)
+    }
+
+    private fun buildBookCheckbox(checkbox: AppCompatCheckedTextView) = with(checkbox) {
+        val openingAnimatedDrawable = DrawableCompat.wrap(AnimatedVectorDrawableCompat.create(checkbox.context, R.drawable.checkbox_book_opening)!!)
+        val closingAnimatedDrawable = DrawableCompat.wrap(AnimatedVectorDrawableCompat.create(checkbox.context, R.drawable.checkbox_book_closing)!!)
+
+        checkMarkDrawable = if (isChecked) openingAnimatedDrawable else closingAnimatedDrawable
+        (checkMarkDrawable as? AnimatedVectorDrawableCompat)?.start()
+
+        checkbox.setOnClickListener {
+            isChecked = !isChecked
+        }
     }
 }

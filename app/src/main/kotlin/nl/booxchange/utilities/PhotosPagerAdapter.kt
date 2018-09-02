@@ -9,19 +9,20 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.*
 import com.android.databinding.library.baseAdapters.BR
 import nl.booxchange.R
-import nl.booxchange.R.id.root
-import nl.booxchange.model.EditablePhotoModel
+import nl.booxchange.model.ImageModel
 import java.lang.ref.WeakReference
 
 class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
-    private val items = ArrayList<EditablePhotoModel?>()
 
+    private val items = ArrayList<ImageModel?>()
     private var viewPager = WeakReference<ViewPager>(null)
 
-    fun swapItems(items: List<EditablePhotoModel?>) {
+    fun swapItems(items: List<ImageModel?>) {
+/*
         val viewPager = viewPager.get() ?: run {
             this.items.clear()
             this.items.addAll(items)
+            notifyDataSetChanged()
             return
         }
 
@@ -40,14 +41,10 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
             else -> 0
         }
 
-//        viewPager.postDelayed({
-            this.items.clear()
-            this.items.addAll(items)
-
-            notifyDataSetChanged()
-
-            viewPager.postDelayed({ viewPager.setCurrentItem(newItemPosition, false) }, 10)
-//        }, 200)
+*/
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -58,18 +55,23 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
         binding.setVariable(BR.itemModel, item)
         binding.setVariable(BR.itemHandler, handler)
 
-        viewPager.get() ?: run { viewPager = WeakReference(container as ViewPager) }
+//        viewPager.get() ?: run { viewPager = WeakReference(container as ViewPager) }
 //        PhotoScalingUtility.setupScaleGestureForView(root.image_view, root)
 
         return binding.root
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-
         container.removeView(`object` as View)
     }
-    override fun isViewFromObject(view: View, `object`: Any) = view == `object`
-    override fun getCount() = items.size
+
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view == `object`
+    }
+
+    override fun getCount(): Int {
+        return items.size
+    }
 
     private object PhotoScalingUtility {
 

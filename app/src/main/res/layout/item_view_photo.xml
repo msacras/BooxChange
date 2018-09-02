@@ -6,7 +6,7 @@
     <data>
         <variable
             name="itemModel"
-            type="nl.booxchange.model.EditablePhotoModel"/>
+            type="nl.booxchange.model.ImageModel"/>
         <variable
             name="itemHandler"
             type="nl.booxchange.model.PhotoItemHandler"/>

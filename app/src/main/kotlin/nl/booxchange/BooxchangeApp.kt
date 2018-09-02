@@ -5,7 +5,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import com.facebook.appevents.AppEventsLogger
-import nl.booxchange.api.APIClient
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import java.lang.ref.WeakReference
 
 
 /**
@@ -15,25 +17,38 @@ class BooxchangeApp: Application() {
   override fun onCreate() {
     super.onCreate()
 
+      FirebaseRemoteConfig.getInstance().apply {
+          setDefaults(mapOf(
+              "KEY_SUBSCRIPTION_SYSTEM_ENABLED" to false
+          ))
+          fetch(60).addOnCompleteListener {
+              FirebaseRemoteConfig.getInstance().activateFetched()
+          }
+      }
+
 /*
     if (LeakCanary.isInAnalyzerProcess(this)) return
     LeakCanary.install(this)
 */
 
-    APIClient
-    delegate = this
+      _delegate = WeakReference(this)
 
+      FirebaseDatabase.getInstance().setPersistenceEnabled(true)
     AppEventsLogger.activateApp(this)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val notificationManager = getSystemService(NotificationManager::class.java)
-      notificationManager.createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+        getSystemService(NotificationManager::class.java).apply {
+            createNotificationChannel(NotificationChannel("booxchange.channel.messaging", "Messages", NotificationManager.IMPORTANCE_HIGH))
+            createNotificationChannel(NotificationChannel("booxchange.channel.requesting", "Requests", NotificationManager.IMPORTANCE_HIGH))
+        }
     }
-//    Fabric.with(this, Crashlytics())
   }
 
   companion object {
-    lateinit var delegate: BooxchangeApp
+      private var _delegate = WeakReference<BooxchangeApp>(null)
+      val delegate: BooxchangeApp?
+          get() = _delegate.get()
+
     var isInForeground = false
   }
 }

@@ -8,10 +8,6 @@
             name="viewModel"
             type="nl.booxchange.screens.home.HomeFragmentViewModel"/>
     </data>
-<nl.booxchange.widget.CustomRefreshLayout
-    android:id="@+id/swipe_refresh_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_view"
@@ -29,12 +25,6 @@
             android:id="@+id/constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <android.support.constraint.Group
-                android:id="@+id/most_viewed_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="most_viewed_label, most_viewed_more, most_viewed_list"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/most_viewed_label"
@@ -63,9 +53,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/most_viewed_list"
-                adapterHandler="@{viewModel}"
-                adapterItems="@{viewModel.topBooksList}"
-                adapterLayout="@{@layout/list_item_book_offer}"
+                recyclerHandler="@{viewModel}"
+                recyclerItems="@{viewModel.topBooksList}"
+                recyclerLayout="@{viewModel.booksViewsConfigurations}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
@@ -76,25 +66,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/most_viewed_label"
-                tools:listitem="@layout/list_item_book_offer"/>
-
-            <android.support.constraint.Group
-                android:id="@+id/latest_exchange_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="latest_exchange_label, latest_exchange_more, latest_exchange_list"/>
+                tools:listitem="@layout/list_item_book"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/latest_exchange_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:padding="8dp"
                 android:text="Latest for exchange"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                app:layout_goneMarginTop="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/most_viewed_list"/>
 
@@ -113,9 +96,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/latest_exchange_list"
-                adapterHandler="@{viewModel}"
-                adapterItems="@{viewModel.latestExchangeList}"
-                adapterLayout="@{@layout/list_item_book_offer}"
+                recyclerHandler="@{viewModel}"
+                recyclerItems="@{viewModel.latestExchangeList}"
+                recyclerLayout="@{viewModel.booksViewsConfigurations}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
@@ -126,27 +109,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/latest_exchange_label"
-                tools:listitem="@layout/list_item_book_offer"/>
-
-            <android.support.constraint.Group
-                android:id="@+id/latest_sell_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="latest_sell_label, latest_sell_more, latest_sell_list"/>
+                tools:listitem="@layout/list_item_book"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/latest_sell_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:padding="8dp"
                 android:text="Latest for sale"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                app:layout_goneMarginTop="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/latest_exchange_list"/>
+                app:layout_constraintTop_toBottomOf="@id/latest_exchange_list"
+                app:layout_goneMarginTop="0dp"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/latest_sell_more"
@@ -163,9 +140,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/latest_sell_list"
-                adapterHandler="@{viewModel}"
-                adapterItems="@{viewModel.latestSellList}"
-                adapterLayout="@{@layout/list_item_book_offer}"
+                recyclerHandler="@{viewModel}"
+                recyclerItems="@{viewModel.latestSellList}"
+                recyclerLayout="@{viewModel.booksViewsConfigurations}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
@@ -176,9 +153,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/latest_sell_label"
-                tools:listitem="@layout/list_item_book_offer"/>
+                tools:listitem="@layout/list_item_book"/>
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
-</nl.booxchange.widget.CustomRefreshLayout>
 </layout>

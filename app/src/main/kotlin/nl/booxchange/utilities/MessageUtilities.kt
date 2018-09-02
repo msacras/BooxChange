@@ -5,19 +5,18 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.*
 import android.view.View
-import nl.booxchange.BooxchangeApp
+import com.vcristian.combus.post
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
-import nl.booxchange.extension.string
+import nl.booxchange.model.BookOpenedEvent
 import nl.booxchange.model.MessageModel
-import nl.booxchange.model.MessageType
-import nl.booxchange.model.UserModel
 
 object MessageUtilities {
-    fun getActionCommentary(message: MessageModel, talkersList: List<UserModel>): String {
-        val talkerName = when (message.userId) {
-            UserData.Session.userId -> "You"
-            else -> talkersList.find { it.id == message.userId }?.getFormattedName() ?: "Anonymous"
+/*
+    fun getActionCommentary(message: MessageModel, talkersList: List<String>): String {
+        val talkerName = when (message.id) {
+//            UserData.Session.id -> "You"
+            else -> ""//talkersList.find { it.id == message.id }?.getFormattedName() ?: "Anonymous"
         }
         val contentInfo = when (message.type) {
             MessageType.IMAGE -> "$talkerName sent an image"
@@ -27,16 +26,28 @@ object MessageUtilities {
 
         return contentInfo.string
     }
+*/
 
-    fun getFormattedMessage(message: MessageModel): CharSequence {
+    fun getFormattedMessage(message: MessageModel, isOwnMessage: Boolean): Spannable? {
         return when (message.type) {
-            MessageType.IMAGE -> ""
-            MessageType.TEXT -> message.content
-            MessageType.REQUEST -> message.content
+            "REQUEST" -> {
+                if (isOwnMessage) {
+                    formatRequest(message.content)
+                } else {
+                    SpannableString("You've sent a book request!").apply {
+                        setSpan(StyleSpan(Typeface.BOLD), 0, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                    }
+                }
+            }
+            "TEXT" -> SpannableString(message.content)
+            "IMAGE" -> SpannableString(if (isOwnMessage) "You've sent an image" else "You've received an image").apply {
+                setSpan(StyleSpan(Typeface.BOLD), 0, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+            else -> null
         }
     }
 
-    fun formatRequest(content: String, talkersList: List<UserModel>): Spannable {
+    fun formatRequest(content: String): Spannable {
         val spansList = ArrayList<SpanConfig>()
         val formattablePattern = "\\[\\[([^#]*)#([^#]*)#([^#]*)]]".toRegex()
         var formattedString = content
@@ -45,25 +56,25 @@ object MessageUtilities {
             val (source, text, type, value) = it.groupValues
 
             when (type) {
-                "USERMODELID" -> {
-                    val talkerName = talkersList.find { it.id == value }?.getFormattedName() ?: "Anonymous"
+                "USERID" -> {
                     val startPosition = formattedString.indexOf(source)
-                    val endPosition = startPosition + talkerName.length
-                    formattedString = formattedString.replace(source, talkerName)
+                    val endPosition = startPosition + text.length
+
+                    formattedString = formattedString.replace(source, text)
                     spansList.add(SpanConfig(StyleSpan(Typeface.BOLD), startPosition..endPosition))
+                    spansList.add(SpanConfig(ForegroundColorSpan(Tools.safeContext.getColorCompat(R.color.themeBlueDark)), startPosition..endPosition))
                 }
-                "BOOKMODELID" -> {
+                "BOOKID" -> {
                     val startPosition = formattedString.indexOf(source)
                     val endPosition = startPosition + text.length
                     formattedString = formattedString.replace(source, text)
                     spansList.add(SpanConfig(object: ClickableSpan() {
                         override fun onClick(widget: View?) {
-//                            post(BookOpenedEvent(bookId = value))
-//                            widget?.context?.startActivity<BookInfoActivity>(Constants.EXTRA_PARAM_BOOK_ID to value)
+                            post(BookOpenedEvent(bookId = value))
                         }
                     }, startPosition..endPosition))
                     spansList.add(SpanConfig(UnderlineSpan(), startPosition..endPosition))
-                    spansList.add(SpanConfig(ForegroundColorSpan(BooxchangeApp.delegate.baseContext.getColorCompat(R.color.jetGray)), startPosition..endPosition))
+                    spansList.add(SpanConfig(ForegroundColorSpan(Tools.safeContext.getColorCompat(R.color.themeGreenDark)), startPosition..endPosition))
                 }
             }
         }

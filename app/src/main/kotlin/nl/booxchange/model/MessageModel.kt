@@ -1,27 +1,35 @@
 package nl.booxchange.model
 
-import com.google.gson.annotations.SerializedName
+import android.databinding.BaseObservable
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.Exclude
+import com.google.firebase.database.FirebaseDatabase
 import nl.booxchange.utilities.MessageUtilities
 import org.joda.time.DateTime
-import java.io.Serializable
 
-data class MessageModel(
-    @SerializedName("message_id") override val id: String,
-    @SerializedName("chat_id") val chatId: String,
-    @SerializedName("user_id") val userId: String,
-    @SerializedName("content") val content: String,
-    @SerializedName("type") val type: MessageType,
-    @SerializedName("created_at") val createdAt: DateTime
-): Serializable, Distinctive {
-    fun getFormattedDateTime(): String {
-        return createdAt.toString("HH:mm d MMM")
-    }
+class MessageModel(@Exclude override val id: String = FirebaseDatabase.getInstance().getReference("books").push().key!!, val userId: String = FirebaseAuth.getInstance().currentUser?.uid!!, val content: String, val type: String, val timestamp: DateTime = DateTime(id.toLong())): BaseObservable(), FirebaseObject {
 
-    fun getFormattedContent(): CharSequence {
-        return MessageUtilities.getFormattedMessage(this)
-    }
+    val formattedContent
+        get() = MessageUtilities.getFormattedMessage(this, isOwnMessage)
 
-    fun getImage(): String? {
-        return content.takeIf { type == MessageType.IMAGE }
+    val formattedDateTime
+        get() = timestamp.toString("HH:mm.ss dd MMM ''yy")
+
+    val isOwnMessage
+        get() = userId == FirebaseAuth.getInstance().currentUser?.uid
+
+    val image
+        get() = if (type == "IMAGE") "" else null
+
+    companion object {
+        fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): MessageModel {
+            val (key, value) = entry
+            return MessageModel(
+                key,
+                value["user"] as? String ?: "",
+                value["content"] as? String ?: "",
+                value["type"] as? String ?: ""
+            )
+        }
     }
 }
