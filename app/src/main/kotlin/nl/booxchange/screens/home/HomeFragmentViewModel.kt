@@ -19,7 +19,7 @@ class HomeFragmentViewModel: BaseViewModel(), BookItemHandler {
     override val checkedBook = ObservableField<BookModel>()
 
     val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
-        ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
+            ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
     )
 
     val topBooksList: LiveData<List<BookModel>>
@@ -34,7 +34,7 @@ class HomeFragmentViewModel: BaseViewModel(), BookItemHandler {
     }
 
     private fun parseBooks(list: Map<String, Map<String, Any>>): List<BookModel> {
-        return list.map { BookModel.fromFirebaseEntry(it) }.reversed()
+        return list.toList().map(BookModel.Companion::fromFirebaseEntry).reversed()
     }
 
     override fun onBookItemClick(view: View, bookModel: BookModel) {

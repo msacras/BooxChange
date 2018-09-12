@@ -1,16 +1,107 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nl.booxchange.screens.home.MoreFragment">
+
     <data>
+
         <variable
             name="viewModel"
-            type="nl.booxchange.screens.library.LibraryFragmentViewModel"/>
+            type="nl.booxchange.screens.home.MoreFragmentViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:animateLayoutChanges="true"
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="2dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/tool"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navigationIcon="@drawable/close_3" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/filter_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="right|center"
+                android:layout_marginEnd="15dp"
+                android:padding="4dp"
+                android:tint="@color/dustyGray"
+                app:srcCompat="@drawable/filter_2" />
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:animateLayoutChanges="true"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/card">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/txt_price_tange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="16dp"
+                android:layout_marginEnd="10dp"
+                android:text="Price Range"/>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/txt_price_tange"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/search_background"
+            android:drawableLeft="@drawable/ic_search_icon"
+            android:drawablePadding="10dp"
+            android:inputType="textCapSentences"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:drawableTint="@color/dustyGray"
+            android:fontFamily="@font/pt_sans"
+            android:hint="Search"
+            android:paddingLeft="10dp"
+            android:textColorHint="@color/dustyGray"
+            android:textSize="15dp"
+            app:layout_constraintTop_toBottomOf="@id/filter" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/search">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list"
+                recyclerItems="@{viewModel.booksList}"
+                recyclerHandler="@{viewModel}"
+                recyclerLayout="@{viewModel.booksViewsConfigurations}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:listitem="@layout/list_item_book" />
+
+        </android.support.v4.widget.NestedScrollView>
 
 
     </android.support.constraint.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.view.View
 import com.vcristian.combus.expect
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import kotlinx.android.synthetic.main.fragment_book.view.*
+import kotlinx.android.synthetic.main.fragment_chat.view.*
 import kotlinx.android.synthetic.main.fragment_library.*
 import nl.booxchange.R
 import nl.booxchange.extension.isVisible
@@ -23,19 +24,19 @@ class BookFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
-        view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+        toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
 
         expect(BookOpenedEvent::class.java) {
             (activity as? MainFragmentActivity)?.showFragment("book_view", false)
         }
 
-        view.image_pager.offscreenPageLimit = 5
+/*        view.image_pager.offscreenPageLimit = 5
         view.book_image.setOnClickListener {
             view.image_pager.setCurrentItem(0, false)
             view.image_pager.toVisible()
             view.app_bar_layout.animate().alpha(0.5f).start()
-        }
+        }*/
 
         view.delete_book_button.setOnClickListener {
             viewModel.deleteBook()
@@ -44,7 +45,7 @@ class BookFragment: BaseFragment() {
     }
 
     override fun onBackPressed(): Boolean {
-        val view = view ?: return true
+/*        val view = view ?: return true
 
         if (view.image_pager.isVisible) {
             view.image_pager.toGone()
@@ -54,7 +55,8 @@ class BookFragment: BaseFragment() {
                 viewModel.toggleEditMode(null)
             }
             (activity as? MainFragmentActivity)?.hideFragment("book_view")
-        }
+        }*/
+        (activity as? MainFragmentActivity)?.hideFragment("book_view")
         return isHidden
     }
 

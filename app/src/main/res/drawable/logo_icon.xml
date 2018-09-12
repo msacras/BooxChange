@@ -2,8 +2,8 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:viewportWidth="552.1325"
     android:viewportHeight="433.3925"
-    android:width="552.13251dp"
-    android:height="433.39249dp">
+    android:width="50dp"
+    android:height="38dp">
     <group
         android:scaleX="1.25"
         android:scaleY="-1.25"
@@ -13,63 +13,63 @@
             android:translateY="346.7142">
             <path
                 android:pathData="M0 0l-220.853 -132.131 77.146 -46.154 -0.436 -82.192L0 -346.714l144.109 86.216 0.028 82.471 76.716 45.896L0 0ZM-179.124 -132.131L0 -24.965 179.124 -132.131 0 -239.296 -179.124 -132.131Zm301.833 -58.717l-0.02 -57.499L0 -321.749l-122.654 73.381 0.304 57.306 26.037 -15.577 -0.01 -40.506 15.993 11.883 18.031 -32.245 0 40.518 62.299 -37.272 122.709 73.413z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="108.4478"
             android:translateY="223.8428">
             <path
                 android:pathData="M0 0L-18.655 -11.43 35.039 -43.694 53.844 -32.291 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="161.8312"
             android:translateY="169.1311">
             <path
                 android:pathData="M0 0L59.002 -35.451 77.748 -23.936 18.682 11.489 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="199.8751"
             android:translateY="214.3305">
             <path
                 android:pathData="M0 0L-54.112 32.452 -72.772 21.028 -18.805 -11.398 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="199.1413"
             android:translateY="192.0762">
             <path
                 android:pathData="M0 0L59.007 -35.451 77.753 -23.936 18.687 11.489 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="237.6832"
             android:translateY="237.2543">
             <path
                 android:pathData="M0 0L-54.294 32.559 -72.954 21.135 -18.805 -11.398 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="236.6815"
             android:translateY="215.1607">
             <path
                 android:pathData="M0 0L59.093 -35.505 77.839 -23.99 18.687 11.483 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="275.3466"
             android:translateY="260.0869">
             <path
                 android:pathData="M0 0L-54.465 32.666 -73.126 21.242 -18.8 -11.397 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
         <group
             android:translateX="292.7644"
             android:translateY="249.6427">
             <path
                 android:pathData="M0 0L-18.682 -11.489 40.502 -47.047 59.248 -35.532 0 0Z"
-                android:fillColor="#000000" />
+                android:fillColor="@color/whiteGray" />
         </group>
     </group>
 </vector>

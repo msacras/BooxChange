@@ -7,11 +7,7 @@
 
     <item
         android:gravity="center"
-        android:width="55dp"
-        android:height="55dp">
-        <bitmap
-            android:src="@drawable/ic_logo"
-            android:tint="@color/whiteGray"/>
+        android:drawable="@drawable/ic_booxchange_icon">
     </item>
 
 </layer-list>

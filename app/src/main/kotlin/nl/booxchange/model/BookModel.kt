@@ -55,7 +55,7 @@ data class BookModel(
     }
 
     companion object {
-        fun fromFirebaseEntry(entry: Map.Entry<String, Map<String, Any>>): BookModel {
+        fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): BookModel {
             val (key, value) = entry
             return BookModel(
                 key,

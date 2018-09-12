@@ -21,7 +21,7 @@ class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
     override val checkedBook = ObservableField<BookModel>()
 
     val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
-        ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
+            ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
     )
 
     val userBooksList = Transformations.map(FirebaseListQueryLiveData(FirebaseDatabase.getInstance().getReference("books").orderByChild("user").equalTo(FirebaseAuth.getInstance().currentUser?.uid)), ::parseBooks)
@@ -46,6 +46,6 @@ class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
 
         FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().currentUser?.uid!!).child("books").setValue(list.size)
 
-        return list.map(BookModel.Companion::fromFirebaseEntry).reversed()
+        return list.toList().map(BookModel.Companion::fromFirebaseEntry).reversed()
     }
 }
