@@ -1,17 +1,71 @@
 <resources>
 
-    <style name="AppThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/caramel</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="colorControlActivated">@color/caramel</item>
-    <item name="android:windowBackground">@color/white</item>
-    <item name="android:screenOrientation">portrait</item>
-  </style>
+    <style name="AppThemeBase" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">#085431</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorHint">@color/lightGray</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+    </style>
 
-  <style name="AppTheme" parent="AppThemeBase"/>
+    <style name="AppTheme" parent="AppThemeBase">
 
-  <style name="SplashTheme" parent="AppTheme">
-    <item name="android:windowBackground">@drawable/background_splash</item>
-  </style>
+    </style>
+
+    <style name="StatusBarTransparent" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlActivated">@color/white</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorHint">@color/lightGray</item>
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="CustomSwitch">
+        <item name="android:track">@drawable/switch_track</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/dustyGray</item>
+        <item name="colorControlActivated">@color/dustyGray</item>
+    </style>
+
+    <style name="MyHintText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="MySwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
+    </style>
+
+    <style name="TextAppearance.Design.Hint" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">?attr/colorControlActivated</item>
+    </style>
+
+    <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
+
+    <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">
+        <item name="android:fontFamily">@font/pt_sans</item>
+    </style>
+
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/pt_sans</item>
+    </style>
+
 </resources>
