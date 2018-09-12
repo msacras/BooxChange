@@ -2,9 +2,7 @@ package nl.booxchange.extension
 
 import android.view.View
 
-/**
- * Created by Cristian Velinciuc on 3/10/18.
- */
+
 fun View.toVisible() {
   this.visibility = View.VISIBLE
 }

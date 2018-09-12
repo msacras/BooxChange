@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
-/**
- * Created by Cristian Velinciuc on 3/12/18.
- */
 class LaunchActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

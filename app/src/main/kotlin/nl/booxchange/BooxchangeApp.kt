@@ -3,6 +3,7 @@ package nl.booxchange
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import com.facebook.appevents.AppEventsLogger
 import com.google.firebase.database.FirebaseDatabase
@@ -10,9 +11,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import java.lang.ref.WeakReference
 
 
-/**
- * Created by Cristian Velinciuc on 3/10/18.
- */
 class BooxchangeApp: Application() {
   override fun onCreate() {
     super.onCreate()
@@ -46,8 +44,10 @@ class BooxchangeApp: Application() {
 
   companion object {
       private var _delegate = WeakReference<BooxchangeApp>(null)
-      val delegate: BooxchangeApp?
-          get() = _delegate.get()
+      val delegate: BooxchangeApp
+          get() = _delegate.get() ?: throw Exception("App not available")
+      val context: Context
+          get() = delegate.applicationContext
 
     var isInForeground = false
   }

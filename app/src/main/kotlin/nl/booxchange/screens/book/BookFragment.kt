@@ -10,7 +10,7 @@ import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.setTintCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
-import nl.booxchange.model.BookOpenedEvent
+import nl.booxchange.model.events.BookOpenedEvent
 import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
 

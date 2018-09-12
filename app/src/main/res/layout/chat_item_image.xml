@@ -11,7 +11,7 @@
 
         <variable
             name="itemModel"
-            type="nl.booxchange.model.MessageModel"/>
+            type="nl.booxchange.model.entities.MessageModel"/>
     </data>
 
     <FrameLayout

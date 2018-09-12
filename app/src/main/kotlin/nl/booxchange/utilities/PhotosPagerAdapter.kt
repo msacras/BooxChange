@@ -8,8 +8,9 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.view.*
 import com.android.databinding.library.baseAdapters.BR
+import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.model.ImageModel
+import nl.booxchange.model.entities.ImageModel
 import java.lang.ref.WeakReference
 
 class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
@@ -96,7 +97,7 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
                 }
             }
 
-            val scaleGestureDetector = ScaleGestureDetector(Tools.safeContext, scaleGestureListener)
+            val scaleGestureDetector = ScaleGestureDetector(BooxchangeApp.context, scaleGestureListener)
 
             val touchPointLast = PointF()
 

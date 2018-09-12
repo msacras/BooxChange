@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import com.vcristian.combus.dismiss
 import com.vcristian.combus.expect
 import nl.booxchange.BR
-import nl.booxchange.model.StartActivity
+import nl.booxchange.model.events.StartActivity
 
 abstract class BaseFragment: Fragment() {
     abstract val contentViewResourceId: Int

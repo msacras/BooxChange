@@ -12,9 +12,6 @@ import nl.booxchange.extension.toVisible
 import kotlin.properties.Delegates
 
 
-/**
- * Created by Cristian Velinciuc on 3/24/18.
- */
 class RetryView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0): FrameLayout(context, attrs, defStyleAttr) {
 
     var message: String by Delegates.observable("") { _, _, _ -> info_message?.text = message }
@@ -24,7 +21,7 @@ class RetryView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         View.inflate(context, R.layout.retry_view_layout, this)
         setBackgroundColor(Color.WHITE)
         alpha = 0f
-        id = R.id.retry_view
+//        id = R.id.retry_view
         toGone()
     }
 

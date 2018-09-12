@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/chat_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_solid_gray_8dp"
+        android:padding="8dp"
+        android:text="@{itemModel.formattedContent}"
+        android:textColor="@color/pitchGray"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ipsum orci, fringilla ut quam id, dignissim laoreet est. Curabitur lectus felis, elementum id tincidunt at, eleifend non ipsum. Nulla a ante quis metus imperdiet feugiat. Fusce iaculis neque vel condimentum viverra. Nullam vel velit accumsan, luctus enim a, dictum dolor. Phasellus non est dui. Vestibulum vitae eleifend metus, a dictum nisi. Duis at porttitor nulla. Cras mattis nec quam eu vestibulum."/>
+</FrameLayout>

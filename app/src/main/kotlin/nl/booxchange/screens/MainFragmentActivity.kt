@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
-import nl.booxchange.model.ChatOpenedEvent
-import nl.booxchange.model.MessageReceivedEvent
-import nl.booxchange.screens.messages.ChatsStateChangeEvent
+import nl.booxchange.model.events.ChatOpenedEvent
+import nl.booxchange.model.events.MessageReceivedEvent
+import nl.booxchange.model.events.ChatsStateChangeEvent
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
 

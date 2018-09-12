@@ -2,6 +2,7 @@ package nl.booxchange.model
 
 import android.databinding.ObservableBoolean
 import android.view.View
+import nl.booxchange.model.entities.ImageModel
 
 interface PhotoItemHandler {
     val isEditModeEnabled: ObservableBoolean

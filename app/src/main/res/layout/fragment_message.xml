@@ -45,7 +45,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/requests_list"
-        recyclerLayout="@{viewModel.chatsViewsConfigurations}"
+        recyclerLayout="@{viewModel.requestsViewsConfigurations}"
         visibleIf="@{viewModel.requestCount &gt; 0}"
         recyclerHandler="@{viewModel}"
         recyclerItems="@{viewModel.requestsList}"

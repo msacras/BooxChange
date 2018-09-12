@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        tools:visibility="gone"/>
 
     <fragment
         android:name="nl.booxchange.screens.library.LibraryFragment"
@@ -25,7 +26,8 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        tools:visibility="gone"/>
 
     <fragment
         android:name="nl.booxchange.screens.messages.MessagesFragment"
@@ -35,17 +37,8 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
-
-    <fragment
-        android:name="nl.booxchange.screens.profile.ProfileFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tag="profile_page"
-        app:layout_constraintBottom_toTopOf="@id/button_panel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        tools:visibility="gone"/>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -53,7 +46,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:elevation="20dp"
+        tools:layout_height="56dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

@@ -20,12 +20,17 @@ import com.vcristian.combus.expect
 import com.vcristian.combus.post
 import nl.booxchange.R
 import nl.booxchange.extension.takeNotBlank
-import nl.booxchange.model.*
-import nl.booxchange.screens.messages.single
-import nl.booxchange.utilities.BaseViewModel
-import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.Tools
-import nl.booxchange.utilities.ViewHolderConfig
+import nl.booxchange.extension.single
+import nl.booxchange.model.entities.ChatModel
+import nl.booxchange.model.entities.ImageModel
+import nl.booxchange.model.entities.MessageModel
+import nl.booxchange.model.events.ChatOpenedEvent
+import nl.booxchange.model.events.StartActivity
+import nl.booxchange.utilities.*
+import nl.booxchange.utilities.database.FirebasePagingDataSource
+import nl.booxchange.utilities.database.ListLiveData
+import nl.booxchange.utilities.recycler.ViewHolderConfig
+import nl.booxchange.utilities.recycler.ViewHolderConfig.ViewType
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
 
@@ -34,9 +39,10 @@ class ChatFragmentViewModel: BaseViewModel() {
 
     val chatModel = ObservableField<ChatModel>()
     val messagesViewsConfigurations = listOf<ViewHolderConfig<MessageModel>>(
-        ViewHolderConfig(R.layout.chat_item_message, "TEXT".hashCode()) { _, messageModel -> messageModel.type == "TEXT" },
-        ViewHolderConfig(R.layout.chat_item_request, "REQUEST".hashCode()) { _, messageModel -> messageModel.type == "REQUEST" },
-        ViewHolderConfig(R.layout.chat_item_image, "IMAGE".hashCode()) { _, messageModel -> messageModel.type == "IMAGE" }
+        ViewHolderConfig(R.layout.chat_item_message, ViewType.MESSAGE_TEXT) { _, messageModel -> messageModel?.type == "TEXT" },
+        ViewHolderConfig(R.layout.chat_item_request, ViewType.MESSAGE_REQUEST) { _, messageModel -> messageModel?.type == "REQUEST" },
+        ViewHolderConfig(R.layout.chat_item_image, ViewType.MESSAGE_IMAGE) { _, messageModel -> messageModel?.type == "IMAGE" },
+        ViewHolderConfig(R.layout.chat_item_placeholder, ViewType.PLACEHOLDER) { _, _ -> true }
     )
 
     private var currentChatDatabaseReference = FirebaseDatabase.getInstance().getReference("messages/0")
@@ -61,7 +67,7 @@ class ChatFragmentViewModel: BaseViewModel() {
             println("Item ${dataSnapshot.key} added")
 
             if ((messagesList as ListLiveData).value.isNotEmpty()) {
-                dataSource.loadAfter(messagesList.value.last().id, messagesList::plusAssign)
+                dataSource.loadAfter(messagesList.value.last()?.id ?: return, messagesList::plusAssign)
 
                 sendMessageReceivedStatus()
             }
@@ -71,7 +77,7 @@ class ChatFragmentViewModel: BaseViewModel() {
             println("Item ${dataSnapshot.key} removed")
 
             if ((messagesList as ListLiveData).value.isNotEmpty()) {
-                messagesList.value.find { it.id == dataSnapshot.key }?.let(messagesList::minusAssign)
+                messagesList.value.find { it?.id == dataSnapshot.key }?.let(messagesList::minusAssign)
             }
         }
     }
@@ -80,7 +86,7 @@ class ChatFragmentViewModel: BaseViewModel() {
 
     val imageInput = ObservableField<ImageModel>()
     val messageInput = ObservableField<CharSequence>()
-    val messagesList: LiveData<List<MessageModel>> = ListLiveData()
+    val messagesList: LiveData<List<MessageModel?>> = ListLiveData()
 
     init {
         expect(ChatOpenedEvent::class.java) { event ->
@@ -96,7 +102,7 @@ class ChatFragmentViewModel: BaseViewModel() {
         currentChatDatabaseReference = FirebaseDatabase.getInstance().getReference("messages/${chatModel.id}")
         currentChatDatabaseReference.addChildEventListener(messageListChangeListener)
         dataSource.baseQuery = currentChatDatabaseReference
-        (messagesList as ListLiveData).postValue(null)
+        (messagesList as ListLiveData).initWithPlaceholders()
         dataSource.loadInitial(messagesList::postValue)
         sendMessageReceivedStatus()
     }

@@ -6,10 +6,11 @@ import android.text.SpannableString
 import android.text.style.*
 import android.view.View
 import com.vcristian.combus.post
+import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
-import nl.booxchange.model.BookOpenedEvent
-import nl.booxchange.model.MessageModel
+import nl.booxchange.model.events.BookOpenedEvent
+import nl.booxchange.model.entities.MessageModel
 
 object MessageUtilities {
 /*
@@ -62,7 +63,7 @@ object MessageUtilities {
 
                     formattedString = formattedString.replace(source, text)
                     spansList.add(SpanConfig(StyleSpan(Typeface.BOLD), startPosition..endPosition))
-                    spansList.add(SpanConfig(ForegroundColorSpan(Tools.safeContext.getColorCompat(R.color.themeBlueDark)), startPosition..endPosition))
+                    spansList.add(SpanConfig(ForegroundColorSpan(BooxchangeApp.context.getColorCompat(R.color.themeBlueDark)), startPosition..endPosition))
                 }
                 "BOOKID" -> {
                     val startPosition = formattedString.indexOf(source)
@@ -74,7 +75,7 @@ object MessageUtilities {
                         }
                     }, startPosition..endPosition))
                     spansList.add(SpanConfig(UnderlineSpan(), startPosition..endPosition))
-                    spansList.add(SpanConfig(ForegroundColorSpan(Tools.safeContext.getColorCompat(R.color.themeGreenDark)), startPosition..endPosition))
+                    spansList.add(SpanConfig(ForegroundColorSpan(BooxchangeApp.context.getColorCompat(R.color.themeGreenDark)), startPosition..endPosition))
                 }
             }
         }

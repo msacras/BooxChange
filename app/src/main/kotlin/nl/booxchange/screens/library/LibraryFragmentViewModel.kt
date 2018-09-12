@@ -9,19 +9,21 @@ import com.google.firebase.database.FirebaseDatabase
 import com.vcristian.combus.post
 import nl.booxchange.R
 import nl.booxchange.model.BookItemHandler
-import nl.booxchange.model.BookModel
-import nl.booxchange.model.BookOpenedEvent
-import nl.booxchange.screens.home.FirebaseItemQueryLiveData
-import nl.booxchange.screens.home.FirebaseListQueryLiveData
+import nl.booxchange.model.entities.BookModel
+import nl.booxchange.model.entities.UserModel
+import nl.booxchange.model.events.BookOpenedEvent
+import nl.booxchange.utilities.database.FirebaseItemQueryLiveData
+import nl.booxchange.utilities.database.FirebaseListQueryLiveData
 import nl.booxchange.utilities.BaseViewModel
-import nl.booxchange.utilities.ViewHolderConfig
+import nl.booxchange.utilities.recycler.ViewHolderConfig
+import nl.booxchange.utilities.recycler.ViewHolderConfig.ViewType
 
 class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
     //Not used
     override val checkedBook = ObservableField<BookModel>()
 
     val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
-        ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
+        ViewHolderConfig(R.layout.list_item_book, ViewType.BOOK)
     )
 
     val userBooksList = Transformations.map(FirebaseListQueryLiveData(FirebaseDatabase.getInstance().getReference("books").orderByChild("user").equalTo(FirebaseAuth.getInstance().currentUser?.uid)), ::parseBooks)

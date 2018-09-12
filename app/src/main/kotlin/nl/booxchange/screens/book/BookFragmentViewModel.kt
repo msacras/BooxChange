@@ -21,6 +21,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.vcristian.combus.expect
 import com.vcristian.combus.post
 import nl.booxchange.model.*
+import nl.booxchange.model.entities.BookModel
+import nl.booxchange.model.entities.BookModel.OfferType
+import nl.booxchange.model.entities.ImageModel
+import nl.booxchange.model.events.BookOpenedEvent
+import nl.booxchange.model.events.StartActivity
 import nl.booxchange.utilities.BaseViewModel
 import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.Tools

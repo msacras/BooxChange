@@ -6,7 +6,7 @@
 
     <data>
 
-        <import type="nl.booxchange.model.OfferType"/>
+        <import type="nl.booxchange.model.entities.BookModel.OfferType"/>
 
         <import type="android.text.TextUtils"/>
 

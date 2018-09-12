@@ -19,7 +19,7 @@ import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.setTintCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
-import nl.booxchange.model.ChatOpenedEvent
+import nl.booxchange.model.events.ChatOpenedEvent
 import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="itemModel"
-            type="nl.booxchange.model.BookModel"/>
+            type="nl.booxchange.model.entities.BookModel"/>
         <variable
             name="itemHandler"
             type="nl.booxchange.model.BookItemHandler"/>

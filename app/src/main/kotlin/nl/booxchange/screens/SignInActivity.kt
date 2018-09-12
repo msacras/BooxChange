@@ -35,10 +35,6 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
 
-
-/**
- * Created by Cristian Velinciuc on 3/12/18.
- */
 class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
   private val facebookCallbackManager = CallbackManager.Factory.create()
 

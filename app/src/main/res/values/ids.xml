@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="tint_view" type="id">tint_view</item>
-    <item name="retry_view" type="id">retry_view</item>
-    <item name="loading_view" type="id">loading_view</item>
+    <!--<item name="tint_view" type="id">tint_view</item>-->
+    <!--<item name="retry_view" type="id">retry_view</item>-->
+    <!--<item name="loading_view" type="id">loading_view</item>-->
 </resources>

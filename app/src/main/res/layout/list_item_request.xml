@@ -9,7 +9,7 @@
             type="nl.booxchange.screens.messages.MessagesFragmentViewModel"/>
         <variable
             name="itemModel"
-            type="nl.booxchange.model.ChatModel"/>
+            type="nl.booxchange.model.entities.ChatModel"/>
     </data>
 <android.support.constraint.ConstraintLayout
     android:layout_width="wrap_content"

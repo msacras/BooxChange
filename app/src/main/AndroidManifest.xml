@@ -16,7 +16,8 @@
         <activity
             android:name=".screens.LaunchActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -25,11 +26,13 @@
 
         <activity
             android:name=".screens.MainFragmentActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name=".screens.SignInActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -72,7 +75,7 @@
         </provider>
 
         <service
-            android:name=".MessagingService"
+            android:name=".services.MessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -80,7 +83,7 @@
         </service>
 
         <receiver
-            android:name=".InlineReplyService"
+            android:name=".services.InlineReplyService"
             android:enabled="true"
             android:exported="false"/>
 
