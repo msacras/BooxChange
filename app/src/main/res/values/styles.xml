@@ -15,6 +15,18 @@
 
     </style>
 
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/dialog_design</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="android:windowMinWidthMajor">95%</item>
+        <item name="android:windowMinWidthMinor">95%</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+
     <style name="StatusBarTransparent" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlActivated">@color/white</item>
         <item name="android:screenOrientation">portrait</item>
@@ -58,6 +70,16 @@
 
     <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
+    
+    <style name="mainPage">
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="restPage">
+        <item name="android:fontFamily">@font/pt_sans</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">

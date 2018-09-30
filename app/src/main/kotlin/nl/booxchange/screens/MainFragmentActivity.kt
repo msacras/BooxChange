@@ -2,10 +2,14 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
 import com.vcristian.combus.expect
@@ -46,7 +50,7 @@ class MainFragmentActivity: AppCompatActivity() {
             startActivity(setting)
         }
 
-        screens.forEachIndexed { currentSelectedIndex, (button, tag) ->
+        screens.forEachIndexed { _, (button, tag) ->
             button.setOnClickListener {
                 showFragment(tag)
 
@@ -54,14 +58,15 @@ class MainFragmentActivity: AppCompatActivity() {
 
                 if (tag == "home_page") {
                     fragment_title.text = "booxchange"
+                    fragment_title.setTextAppearance(this, R.style.mainPage)
                 } else {
                     fragment_title.text = tag.split("_").first().capitalize()
+                    fragment_title.setTextAppearance(this, R.style.restPage)
                 }
 
                 screens.forEach { (otherButton, _) ->
-                    val color = if (otherButton == button) greenColor else whiteColor
-                    updateColor(otherButton as AppCompatImageButton, color)
-                    //app_bar_layout.setExpanded(true, true)
+                    val colorButton = if (otherButton == button) greenColor else whiteColor
+                    updateColor(otherButton as AppCompatImageButton, colorButton)
                 }
 /*                val targetPositionX = (currentSelectedIndex * focused_button_highlight.width).toFloat()
                 val transitionDuration = (Math.abs(focused_button_highlight.translationX - targetPositionX) / (focused_button_highlight.width * 3)) * 450
@@ -105,6 +110,7 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CommitTransaction")
     fun showFragment(tag: String, exclusive: Boolean = true) {
         supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).apply {
             supportFragmentManager.fragments.forEach { fragment ->

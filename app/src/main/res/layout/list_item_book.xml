@@ -27,6 +27,7 @@
                 android:layout_height="130dp"
                 android:background="@drawable/rounded_corner_solid_light_8dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                scaledImageId="@{itemModel.mainImage}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@drawable/ic_no_image"/>

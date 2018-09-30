@@ -25,7 +25,7 @@
     <string name="fb_login_protocol_scheme">fb541516282914515</string>
     <string name="google_web_client_id">1025961224603-amrs43d2vaurq6ilhutq9c8g7a9sm8hp.apps.googleusercontent.com</string>
     <string name="enter_phone">Phone number</string>
-    <string name="sign_in_phone">Sign in with phone number</string>
+    <string name="sign_in_phone">Sign in with phone</string>
     <string name="sign_in_alternative">or connect with</string>
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
@@ -44,8 +44,8 @@
     <string name="gallery">Gallery</string>
     <string name="profile_photo_txt">Profile Photo</string>
     <string name="camera">Camera</string>
-    <string name="termsConditions"> <u> Terms &amp; Conditions</u> </string>
-    <string name="privacyPolicy"> <u>Privacy Policy</u> </string>
+    <string name="termsConditions">Terms &amp; Conditions</string>
+    <string name="privacyPolicy">By signing up, I accept the\n<u>Terms of Service</u> and <u>Privacy Policy</u></string>
 
     <string name="netherlands_country_code" translatable="false">+31</string>
 

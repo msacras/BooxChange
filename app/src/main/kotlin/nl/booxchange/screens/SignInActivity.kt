@@ -45,10 +45,6 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         initializePhoneAuthorizationLayout()
     }
 
-    private fun initializeLayout() {
-        progress_bar.indeterminateDrawable.setColorFilter(getColorCompat(R.color.lightGray), PorterDuff.Mode.SRC_IN);
-    }
-
     private fun initializeFacebookAuthorization() {
         facebook_sign_in_button.setOnClickListener {
             LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile", "email"))

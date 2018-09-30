@@ -129,8 +129,6 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         initializePhoneAuthorizationLayout()
         initializeFacebookAuthorization()
         initializeGoogleAuthorization()
-*/
-/*
         take_photo_button.setOnClickListener {
             val intent = Intent()
             val outputUri = Tools.getCacheFile("camera_output")
@@ -140,14 +138,11 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         }
         upload_photo_button.setOnClickListener {
             val intent = Intent()
-            intent.type = "image*//*
-
-*/
-/*"
+            intent.type = "image"
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constants.REQUEST_GALLERY)
         }
-*//*
+
 
         chevron.setOnClickListener {
             if (see_more.isVisible) {
@@ -178,8 +173,8 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
         userModel.studyYear = study_year.text.toString().takeIf { it.isNotBlank() }?.toInt()
     }
 
-    private fun uploadUser() {}*/
-/*{
+    private fun uploadUser() {}
+{
         loading_v.show()
         loading_v.message = "Uploading"
         APIClient.User.userUpdate(userModel) { response ->
@@ -203,7 +198,7 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
                 //TODO: Show connection failure message
             }
         }
-    }*//*
+    }
 
 
     private fun initializeFacebookAuthorization() {
@@ -258,7 +253,8 @@ class ProfileActivity : BaseActivity(), OnCompleteListener<AuthResult> {
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential) {
                         toast("succeeded Phone auth")
-                        FirebaseAuth.getInstance().currentUser?.linkWithCredential(phoneAuthCredential)?.addOnCompleteListener(this@ProfileActivity)
+                        FirebaseAuth.getInstance().currentUser?.linkWithCredential(phoneAuthCredential
+                        )?.addOnCompleteListener(this@ProfileActivity)
                     }
 
                     override fun onVerificationFailed(firebaseException: FirebaseException?) {
