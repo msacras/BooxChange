@@ -116,15 +116,13 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
     private fun getUserCountryCode(): String {
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
 
-        return (Constants.IDDC[telephonyManager?.simCountryIso?.toUpperCase()]
-                ?: Constants.IDDC["NL"]!!).withExitSymbol
+        return (Constants.IDDC[telephonyManager?.simCountryIso?.toUpperCase()] ?: Constants.IDDC["NL"]!!).withExitSymbol
     }
 
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
             FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid
-                        ?: return@addOnSuccessListener)
+                FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
             }
             if (task.result.additionalUserInfo.isNewUser) {
                 startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)

@@ -44,7 +44,7 @@ class MessagingService: FirebaseMessagingService() {
 
                 val messageModel = MessageModel(messageId, messageSenderId, messageBody, messageType)
 
-                showMessageNotification(messageModel, messageSenderName, chatId, true)
+                showMessageNotification(messageModel, messageSenderName, chatId, remoteMessage.data["type"] == "MESSAGE")
             }
         }
     }
@@ -74,12 +74,11 @@ class MessagingService: FirebaseMessagingService() {
         }
         val notification = NotificationCompat.Builder(this@MessagingService, "booxchange.channel.messaging")
             .setLargeIcon(senderProfileImageBitmap)
-            .setSmallIcon(R.mipmap.ic_logo_48dp)
+            .setSmallIcon(R.drawable.logo_icon)
             .setStyle(notificationStyle)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .addAction(replyAction)
-            .setColor(getColorCompat(R.color.caramel))
+            .setColor(getColorCompat(R.color.springGreen))
             .setAutoCancel(true)
             .setWhen(messageModel.timestamp.millis)
             .setLights(0xFFDBA77F.toInt(), 500, 5000)
@@ -87,6 +86,11 @@ class MessagingService: FirebaseMessagingService() {
             .setContentTitle(senderName)
             .setContentText(messageModel.content)
             .setContentIntent(openChatIntent)
+            .also { notification ->
+                if (includeReplyAction) {
+                    notification.addAction(replyAction)
+                }
+            }
             .build()
 
         NotificationManagerCompat.from(this@MessagingService).notify(chatId.hashCode(), notification)

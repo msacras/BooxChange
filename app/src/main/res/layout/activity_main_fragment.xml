@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="nl.booxchange.screens.MainFragmentActivity">
 
-
     <fragment
         android:name="nl.booxchange.screens.home.HomeFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:tag="home_page"
-        app:layout_constraintBottom_toTopOf="@id/button_panel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-    <fragment
-        android:name="nl.booxchange.screens.library.LibraryFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tag="library_page"
+        android:tag="booxchange"
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +21,17 @@
         android:name="nl.booxchange.screens.messages.MessagesFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:tag="message_page"
+        android:tag="Messages"
+        app:layout_constraintBottom_toTopOf="@id/button_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <fragment
+        android:name="nl.booxchange.screens.library.LibraryFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:tag="Library"
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
             android:tint="@color/white"
-            app:srcCompat="@drawable/ic_settings_icon" />
+            app:srcCompat="@drawable/ic_settings_icon"/>
 
     </android.support.v7.widget.Toolbar>
 
@@ -112,38 +112,4 @@
             android:background="?attr/selectableItemBackgroundBorderless" />
 
     </LinearLayout>
-
-    <fragment
-        android:name="nl.booxchange.screens.chat.ChatFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tag="chat_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
-    <fragment
-        android:name="nl.booxchange.screens.book.BookFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tag="book_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
-    <fragment
-        android:name="nl.booxchange.screens.home.MoreFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tag="more_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
 </android.support.constraint.ConstraintLayout>

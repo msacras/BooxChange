@@ -7,12 +7,11 @@
     <data>
 
         <import type="nl.booxchange.model.entities.BookModel.OfferType"/>
-
         <import type="android.text.TextUtils"/>
 
         <variable
             name="viewModel"
-            type="nl.booxchange.screens.book.BookFragmentViewModel"/>
+            type="nl.booxchange.screens.book.BookDetailsViewModel"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -235,7 +234,6 @@
                 android:id="@+id/book_condition_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Book Condition: "
                 android:textColor="@color/darkGreen"
@@ -425,7 +423,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/rounded_corner_solid_light_8dp"
                 android:enabled="@{viewModel.isEditModeEnabled}"
-                android:hint="Aditional info"
+                android:hint="Additional info"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
@@ -606,14 +604,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:navigationIcon="@drawable/close_3">
 
-            <android.support.v7.widget.AppCompatTextView
+            <android.support.v7.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:textColor="@color/darkGreen"
-                android:text="Settings"
-                android:textSize="22dp" />
+                app:srcCompat="@drawable/logo_icon"/>
 
         </android.support.v7.widget.Toolbar>
     </android.support.constraint.ConstraintLayout>

@@ -8,7 +8,7 @@ val String.digitsOnly
     get() = replace("[^\\d]".toRegex(), "")
 
 val String.takeNotBlank
-    get() = this.takeIf { it.isNotBlank() }
+    get() = takeIf { isNotBlank() }
 
 val String.firebaseStoragePath
     get() = "gs://booxchange-nl.appspot.com/images/$this"

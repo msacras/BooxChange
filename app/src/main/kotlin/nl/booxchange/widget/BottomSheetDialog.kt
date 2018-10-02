@@ -1,14 +1,11 @@
-package nl.booxchange.screens
+package nl.booxchange.widget
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.BottomSheetDialogFragment
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +18,9 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.dialog.*
 import nl.booxchange.R
-import nl.booxchange.model.StartActivity
-import nl.booxchange.screens.book.BookFragment
-import nl.booxchange.screens.library.SettingsActivity
+import nl.booxchange.screens.settings.SettingsActivity
 import nl.booxchange.utilities.Constants
-import nl.booxchange.utilities.Tools
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 class BottomSheetDialog : BottomSheetDialogFragment() {
 

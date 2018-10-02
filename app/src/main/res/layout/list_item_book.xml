@@ -1,76 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="itemModel"
             type="nl.booxchange.model.entities.BookModel"/>
+
         <variable
             name="itemHandler"
             type="nl.booxchange.model.BookItemHandler"/>
     </data>
 
-    <android.support.v7.widget.CardView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}">
+        android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:padding="8dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/book_image"
+            android:layout_width="96dp"
+            android:layout_height="128dp"
+            android:background="@drawable/rounded_corner_solid_light_8dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/ic_no_image"/>
 
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/book_image"
-                android:layout_width="105dp"
-                android:layout_height="130dp"
-                android:background="@drawable/rounded_corner_solid_light_8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/ic_no_image"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/book_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:layout_marginTop="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:background="@drawable/rounded_corner_solid_gray_4dp"
+            android:text="@{itemModel.title}"
+            android:textColor="@color/jetGray"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/book_author"
+            app:layout_constraintEnd_toEndOf="@id/book_image"
+            app:layout_constraintStart_toStartOf="@id/book_image"
+            app:layout_constraintTop_toBottomOf="@id/book_image"
+            tools:text="The Lord of My Ring"/>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/book_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:maxLines="2"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:text="@{itemModel.title}"
-                android:textColor="@color/jetGray"
-                android:textStyle="bold"
-                android:ellipsize="end"
-                android:textSize="14dp"
-                app:layout_constraintEnd_toEndOf="@id/book_image"
-                app:layout_constraintStart_toStartOf="@id/book_image"
-                app:layout_constraintTop_toBottomOf="@id/book_image"
-                app:layout_constraintBottom_toTopOf="@id/book_author"
-                tools:text="The Lord "/>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/book_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:text="@{itemModel.author}"
+            android:textColor="@color/darkGray"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/book_image"
+            app:layout_constraintStart_toStartOf="@id/book_image"
+            app:layout_constraintTop_toBottomOf="@id/book_title"
+            tools:text="John Ronald Reuel Tolkien"/>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/book_author"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:lines="1"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:text="@{itemModel.author}"
-                android:textColor="@color/darkGray"
-                android:textSize="11dp"
-                app:layout_constraintEnd_toEndOf="@id/book_image"
-                app:layout_constraintStart_toStartOf="@id/book_image"
-                app:layout_constraintTop_toBottomOf="@id/book_title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:text="John Ronald Reuel Tolkien"/>
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v7.widget.CardView>
-
-
+    </android.support.constraint.ConstraintLayout>
 </layout>

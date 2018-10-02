@@ -20,6 +20,7 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
 import com.vcristian.combus.expect
 import com.vcristian.combus.post
+import nl.booxchange.extension.takeNotBlank
 import nl.booxchange.model.*
 import nl.booxchange.model.entities.BookModel
 import nl.booxchange.model.entities.BookModel.OfferType
@@ -34,8 +35,9 @@ import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
 
-class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler {
+class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItemHandler {
     override val isEditModeEnabled = ObservableBoolean(false)
+
     val isBookUserOwned = ObservableBoolean(false)
     val userOwnedBooks = ObservableArrayList<BookModel>()
 
@@ -53,15 +55,9 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             images.addAll(value)
         }
 
-    init {
-        expect(BookOpenedEvent::class.java) { event ->
-            isEditModeEnabled.set(event.bookId.isBlank())
-            if (event.bookId.isBlank()) {
-                bindBookModel(BookModel())
-            } else {
-                event.bookModel?.let(::bindBookModel) ?: fetchBook(event.bookId)
-            }
-        }
+    fun initializeWithConfig(initializationConfig: BookOpenedEvent) {
+        isEditModeEnabled.set(initializationConfig.bookId.isBlank())
+        initializationConfig.bookModel?.let(::bindBookModel) ?: initializationConfig.bookId.takeNotBlank?.let(::fetchBook) ?: bindBookModel(BookModel())
     }
 
     private fun fetchBook(bookId: String) {
@@ -150,11 +146,11 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             view.context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, temporaryImageUri)
-        post(StartActivity(intent, Constants.REQUEST_CAMERA, BookFragment::class.java))
+//        post(StartActivity(intent, Constants.REQUEST_CAMERA, BookFragment::class.java))
     }
 
     override fun onAddPhotoFromGalleryClick(view: View) {
-        post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookFragment::class.java))
+//        post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookFragment::class.java))
     }
 
     override fun onRemovePhotoClick(photoModel: ImageModel) {
@@ -220,12 +216,6 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
         FirebaseFunctions.getInstance().getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
             view.context.toast(if (it.isSuccessful) "Request sent!" else "Failed to send your request")
         }
-
-/*
-        Chat.sendRequest(id.single() ?: "", tradeChoice.single()?.name ?: "", checkedBook.single()?.id ?: "") {
-            it?.message?.let(view.context::toast) ?: view.context.toast("requesting failed")
-        }
-*/
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

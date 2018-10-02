@@ -1,17 +1,12 @@
 package nl.booxchange.screens.home
 
-import android.graphics.Rect
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.ViewGroup
-import com.vcristian.combus.post
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import nl.booxchange.R
-import nl.booxchange.model.BooksListOpenedEvent
+import nl.booxchange.screens.more.MoreBooksActivity
 import nl.booxchange.utilities.BaseFragment
-import org.jetbrains.anko.dip
+import org.jetbrains.anko.startActivity
 
 class HomeFragment: BaseFragment() {
 
@@ -27,18 +22,10 @@ class HomeFragment: BaseFragment() {
             Triple(view.latest_sell_more, view.latest_sell_list, "VIEWS")
         )
 
-        listGroups.forEach { (button, list, type) ->
+        listGroups.forEach { (button, _, type) ->
             button.setOnClickListener {
-                post(BooksListOpenedEvent(type))
+                view.context.startActivity<MoreBooksActivity>(MoreBooksActivity.KEY_BOOK_LIST_TYPE to type)
             }
-
-            list.addItemDecoration(object: RecyclerView.ItemDecoration() {
-                val `8dp` = view.dip(8)
-
-                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                    outRect.set(`8dp`, `8dp`, `8dp`, `8dp`)
-                }
-            })
 
 /*
             button.setOnClickListener {
