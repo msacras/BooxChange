@@ -1,0 +1,42 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/remove"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/textOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textOut"
+        app:srcCompat="@drawable/close_2" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textOut"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/remove"
+        android:paddingStart="8dp"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@id/view"
+        app:layout_constraintEnd_toStartOf="@id/remove"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/midGray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textOut" />
+
+</android.support.constraint.ConstraintLayout>

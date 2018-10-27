@@ -7,11 +7,13 @@ import com.google.firebase.database.Exclude
 import com.google.firebase.database.FirebaseDatabase
 import nl.booxchange.BR
 import nl.booxchange.extension.single
+import nl.booxchange.model.entities.MessageModel
+import nl.booxchange.extension.single
 import nl.booxchange.model.FirebaseObject
 
 
 class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObject {
-    class ChatUserDataModel(val id: String, val unread: Int, val name: String?, val photo: String?)
+    class ChatUserDataModel(val id: String, val unread: Int, val firstName: String?, val lastName: String?, val photo: String?)
 
     val users = ObservableArrayMap<String, ChatUserDataModel>()
     val message = ObservableField<MessageModel>()
@@ -28,7 +30,7 @@ class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObj
 
     @Bindable
     fun getTitle(): String? {
-        return getUserOther()?.name
+        return getUserOther()?.firstName + " " + getUserOther()?.lastName
     }
 
     @Bindable
@@ -71,7 +73,7 @@ class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObj
                 }
                 FirebaseDatabase.getInstance().getReference("users").child(userId).single {
                     it?.let { (_, userData) ->
-                        chatModel.users[userType] = ChatUserDataModel(userId, (userUnreadMessages as Long).toInt(), userData["alias"] as? String, userData["imageUrl"] as? String)
+                        chatModel.users[userType] = ChatModel.ChatUserDataModel(userId, (userUnreadMessages as Long).toInt(), userData["first_name"] as? String, userData["last_name"] as? String, userData["imageUrl"] as? String)
                     }
                 }
             }

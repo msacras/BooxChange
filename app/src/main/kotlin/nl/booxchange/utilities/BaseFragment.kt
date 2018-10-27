@@ -28,7 +28,7 @@ abstract class BaseFragment: Fragment() {
             setVariable(BR.viewModel, viewModel)
         }
 
-        expect(StartActivity::class.java) { (intent, requestCode, targetFragmentClass) ->
+/*        expect(StartActivity::class.java) { (intent, requestCode, targetFragmentClass) ->
             if (this::class.java == targetFragmentClass) {
                 requestCode?.let {
                     startActivityForResult(intent, requestCode)
@@ -36,7 +36,7 @@ abstract class BaseFragment: Fragment() {
                     startActivity(intent)
                 }
             }
-        }
+        }*/
 
         onFragmentReady(view)
     }

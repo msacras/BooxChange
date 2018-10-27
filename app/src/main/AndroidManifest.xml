@@ -3,7 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="nl.booxchange">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".BooxchangeApp"
@@ -24,15 +27,18 @@
         </activity>
 
         <activity
-            android:name=".screens.SignInActivity"
-            android:theme="@style/StatusBarTransparent"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask"/>
+            android:name=".screens.MainFragmentActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity
-            android:name=".screens.MainFragmentActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask"/>
+            android:name=".screens.SignInActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/StatusBarTransparent"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
 
         <activity
             android:name=".screens.book.BookDetailsActivity"

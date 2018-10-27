@@ -6,10 +6,13 @@ import android.databinding.ViewDataBinding
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.vcristian.combus.expect
+import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import nl.booxchange.R
 import nl.booxchange.databinding.ChatItemImageBinding
@@ -19,7 +22,7 @@ import nl.booxchange.extension.isVisible
 import nl.booxchange.extension.setTintCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible
-import nl.booxchange.model.events.ChatOpenedEvent
+import nl.booxchange.model.ChatOpenedEvent
 import nl.booxchange.screens.MainFragmentActivity
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
@@ -34,8 +37,26 @@ class ChatFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
-//        view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
+        send_message.isEnabled = false
+
+        view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
+        view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
+
+        message_input.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                send_message.isEnabled = !s.toString().trim().isEmpty()
+            }
+        })
+
+        expect(ChatOpenedEvent::class.java) {
+            (activity as? MainFragmentActivity)?.showFragment("chat_view", false)
+        }
 
         val `40dp` = view.dip(40).toFloat()
 
@@ -95,6 +116,24 @@ class ChatFragment: BaseFragment() {
                 }
             }
         })
+    }
+
+    override fun onBackPressed(): Boolean {
+/*
+        val view = view ?: return true
+
+        if (view.image_pager.isVisible) {
+            view.image_pager.toGone()
+            view.app_bar_layout.animate().alpha(1f).start()
+        } else {
+        viewModel.chatModel = null
+*/
+        (activity as? MainFragmentActivity)?.hideFragment("chat_view")
+/*
+        }
+*/
+
+        return isHidden
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

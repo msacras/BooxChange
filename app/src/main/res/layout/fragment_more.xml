@@ -4,7 +4,6 @@
     tools:context="nl.booxchange.screens.more.MoreBooksActivity">
 
     <data>
-
         <variable
             name="viewModel"
             type="nl.booxchange.screens.more.MoreBooksViewModel" />
@@ -12,97 +11,76 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:animateLayoutChanges="true"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/white">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="2dp">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/tool"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:navigationIcon="@drawable/close_3" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:elevation="1dp">
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/filter_btn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="right|center"
-                android:layout_marginEnd="15dp"
-                android:padding="4dp"
-                android:tint="@color/dustyGray"
-                app:srcCompat="@drawable/filter_2" />
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:animateLayoutChanges="true"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/card">
+                android:id="@+id/back"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:tint="@color/darkGreen"
+                app:srcCompat="@drawable/arrow_left" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/txt_price_tange"
-                android:layout_width="match_parent"
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:textSize="16dp"
-                android:layout_marginEnd="10dp"
-                android:text="Price Range"/>
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/darkGreen"
+                android:textSize="22dp" />
 
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_price_tange"/>
-
-        </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.Toolbar>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/search_background"
             android:drawableLeft="@drawable/ic_search_icon"
             android:drawablePadding="10dp"
-            android:inputType="textCapSentences"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
             android:drawableTint="@color/dustyGray"
             android:fontFamily="@font/pt_sans"
             android:hint="Search"
-            android:paddingLeft="10dp"
+            android:inputType="textCapSentences"
+            android:paddingLeft="12dp"
             android:textColorHint="@color/dustyGray"
-            android:textSize="15dp"
-            app:layout_constraintTop_toBottomOf="@id/filter" />
+            android:textSize="14dp"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar" />
 
-        <android.support.v4.widget.NestedScrollView
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/search">
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/midGray"
+            app:layout_constraintTop_toBottomOf="@id/search"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                recyclerItems="@{viewModel.booksList}"
-                recyclerHandler="@{viewModel}"
-                recyclerLayout="@{viewModel.booksViewsConfigurations}"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/list_item_book" />
-
-        </android.support.v4.widget.NestedScrollView>
-
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            recyclerHandler="@{viewModel}"
+            android:overScrollMode="never"
+            recyclerItems="@{viewModel.booksList}"
+            recyclerLayout="@{viewModel.booksViewsConfigurations}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view"
+            app:spanCount="1"
+            tools:listitem="@layout/more_list_item_book" />
 
     </android.support.constraint.ConstraintLayout>
 
