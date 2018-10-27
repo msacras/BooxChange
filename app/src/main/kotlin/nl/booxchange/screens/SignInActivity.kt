@@ -27,6 +27,8 @@ import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.withExitSymbol
+import nl.booxchange.screens.library.LibraryFragment
+import nl.booxchange.screens.library.SettingsActivity
 import nl.booxchange.utilities.Constants
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.startActivity
@@ -123,7 +125,7 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
                         ?: return@addOnSuccessListener)
             }
             if (task.result.additionalUserInfo.isNewUser) {
-                startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
+                startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_LIBRARY)
             } else {
                 startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
             }

@@ -20,7 +20,7 @@ class MessagesFragmentViewModel: BaseViewModel() {
     val requestsList = MutableLiveData<List<ChatModel>>()
 
     val chatsViewsConfigurations = listOf<ViewHolderConfig<ChatModel>>(
-        ViewHolderConfig(R.layout.list_item_chat, "REQUEST".hashCode()) { _, chatModel -> chatModel.isRequest },
+        ViewHolderConfig(R.layout.list_item_request, "REQUEST".hashCode()) { _, chatModel -> chatModel.isRequest },
         ViewHolderConfig(R.layout.list_item_chat, "CHAT".hashCode()) { _, chatModel -> !chatModel.isRequest }
     )
 

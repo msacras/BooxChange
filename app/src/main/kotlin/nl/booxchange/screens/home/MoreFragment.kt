@@ -1,46 +1,43 @@
 package nl.booxchange.screens.home
 
 
+import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.MotionEvent
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import com.vcristian.combus.expect
 import kotlinx.android.synthetic.main.fragment_more.*
+import nl.booxchange.BR
 import nl.booxchange.R
-import nl.booxchange.extension.*
-import nl.booxchange.model.BooksListOpenedEvent
-import nl.booxchange.screens.MainFragmentActivity
-import nl.booxchange.utilities.BaseFragment
+import org.jetbrains.anko.dip
 
-class MoreFragment: BaseFragment() {
+class MoreFragment: AppCompatActivity() {
+    private val viewModel = MoreFragmentViewModel()
 
-    override val contentViewResourceId = R.layout.fragment_more
-    override val viewModel = MoreFragmentViewModel()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        tool.setNavigationOnClickListener { onBackPressed() }
-        tool.navigationIcon?.setTintCompat(R.color.darkGray)
-
-        expect(BooksListOpenedEvent::class.java) {
-            (activity as? MainFragmentActivity)?.showFragment("more_view", false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DataBindingUtil.setContentView<ViewDataBinding>(this, R.layout.fragment_more).apply {
+            executePendingBindings()
+            setVariable(BR.viewModel, viewModel)
         }
 
-        filter_btn.setOnClickListener {
-            filter.setVisible(!filter.isVisible)
-        }
+        list.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val `8dp` = view.dip(16)
+            val `0dp` = view.dip(0)
 
-        filter_btn.setOnTouchListener { _, motionEvent ->
-//            motionEvent.action == MotionEvent.ACTION_UP
-            false
-        }
-    }
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                outRect.set(`8dp`, `8dp`, `0dp`, `0dp`)
+            }
+        })
 
-    override fun onBackPressed(): Boolean {
-        (activity as? MainFragmentActivity)?.hideFragment("more_view")
-        return isHidden
+        back.setOnClickListener{ onBackPressed() }
+//        tool.navigationIcon?.setTintCompat(R.color.darkGray)
+
+/*        expect(MoreFragment::class.java) {
+            startActivity(Intent(this, MoreFragment::class.java))
+//            (activity as? MainFragmentActivity)?.showFragment("more_view", false)
+        }*/
     }
 }

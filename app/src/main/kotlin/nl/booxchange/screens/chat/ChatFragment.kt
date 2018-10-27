@@ -6,10 +6,13 @@ import android.databinding.ViewDataBinding
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.vcristian.combus.expect
+import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat.view.*
 import nl.booxchange.R
 import nl.booxchange.databinding.ChatItemImageBinding
@@ -34,8 +37,22 @@ class ChatFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        send_message.isEnabled = false
+
         view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
         view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
+
+        message_input.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                send_message.isEnabled = !s.toString().trim().isEmpty()
+            }
+        })
 
         expect(ChatOpenedEvent::class.java) {
             (activity as? MainFragmentActivity)?.showFragment("chat_view", false)

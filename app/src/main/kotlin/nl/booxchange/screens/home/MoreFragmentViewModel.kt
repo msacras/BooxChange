@@ -32,7 +32,7 @@ class MoreFragmentViewModel: BaseViewModel(), BookItemHandler {
     val booksList: LiveData<List<BookModel>> = ListLiveData()
 
     val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
-            ViewHolderConfig(R.layout.list_item_book, 0) { _, _ -> true }
+            ViewHolderConfig(R.layout.more_list_item_book, 0) { _, _ -> true }
     )
 
     init {

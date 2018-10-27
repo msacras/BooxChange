@@ -18,14 +18,26 @@
     android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
     android:padding="8dp">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/chat_image"
-        roundedImageId="@{itemModel.image}"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_image"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_marginTop="1dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="2dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/account_circle"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/chat_image"
+            roundedImageId="@{itemModel.image}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:srcCompat="@drawable/account_circle"/>
+
+    </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/requests_counter"
@@ -34,12 +46,13 @@
         android:layout_height="20dp"
         android:background="@drawable/rounded_corner_solid_red_20dp"
         android:gravity="center"
+        android:elevation="3dp"
         android:text="@{Integer.toString(itemModel.unreadCount)}"
         android:textColor="@color/white"
         app:autoSizeMinTextSize="10sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="@+id/chat_image"
-        app:layout_constraintStart_toStartOf="@+id/chat_image"
+        app:layout_constraintBottom_toBottomOf="@+id/card_image"
+        app:layout_constraintStart_toStartOf="@+id/card_image"
         tools:text="5"/>
 
     <android.support.v7.widget.AppCompatTextView
@@ -51,11 +64,12 @@
         android:lines="1"
         android:text="@{itemModel.title, default=`Anonymous`}"
         android:textColor="@color/jetGray"
-        android:textSize="18sp"
+        android:textSize="16dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/last_message"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chat_image"
-        app:layout_constraintTop_toTopOf="@+id/chat_image"
+        app:layout_constraintStart_toEndOf="@+id/card_image"
+        app:layout_constraintTop_toTopOf="@+id/card_image"
         tools:text="Dakota"/>
 
     <android.support.v7.widget.AppCompatTextView
@@ -64,12 +78,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:ellipsize="end"
-        android:lines="2"
+        android:gravity="center|left"
+        android:lines="1"
         android:text="@{itemModel.formattedLastMessage}"
         android:textColor="@color/darkGray"
-        android:textSize="12sp"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/chat_image"
+        app:layout_constraintStart_toEndOf="@+id/card_image"
         app:layout_constraintTop_toBottomOf="@+id/chat_title"
         tools:text="lorem ipsum"/>
 

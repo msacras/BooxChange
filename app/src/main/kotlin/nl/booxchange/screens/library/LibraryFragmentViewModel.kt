@@ -1,8 +1,13 @@
 package nl.booxchange.screens.library
 
+import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.arch.lifecycle.Transformations
+import android.content.Context
+import android.content.Intent
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -11,6 +16,9 @@ import nl.booxchange.R
 import nl.booxchange.model.BookItemHandler
 import nl.booxchange.model.BookModel
 import nl.booxchange.model.BookOpenedEvent
+import nl.booxchange.model.StartActivity
+import nl.booxchange.screens.MainFragmentActivity
+import nl.booxchange.screens.book.BookActivity
 import nl.booxchange.screens.home.FirebaseItemQueryLiveData
 import nl.booxchange.screens.home.FirebaseListQueryLiveData
 import nl.booxchange.utilities.BaseViewModel

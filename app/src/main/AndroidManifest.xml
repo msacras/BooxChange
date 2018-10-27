@@ -3,8 +3,7 @@
     package="nl.booxchange">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".BooxchangeApp"
@@ -25,10 +24,12 @@
         <activity
             android:name=".screens.MainFragmentActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".screens.SignInActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/StatusBarTransparent"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
@@ -38,7 +39,8 @@
         <activity
             android:name=".screens.library.SettingsActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateHidden"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -88,6 +90,16 @@
             android:enabled="true"
             android:exported="false" />
 
+        <activity android:name=".screens.book.BookActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity android:name=".screens.home.MoreFragment"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
     </application>
 
 </manifest>

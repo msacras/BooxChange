@@ -25,7 +25,7 @@
                 android:id="@+id/book_image"
                 android:layout_width="105dp"
                 android:layout_height="130dp"
-                android:background="@drawable/rounded_corner_solid_light_8dp"
+                android:background="@drawable/bottom_rounder_4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 scaledImageId="@{itemModel.mainImage}"
                 app:layout_constraintStart_toStartOf="parent"

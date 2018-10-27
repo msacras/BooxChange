@@ -1,5 +1,6 @@
 package nl.booxchange.screens.home
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -30,7 +31,8 @@ class HomeFragment: BaseFragment() {
 
         listGroups.forEach { (button, list, type) ->
             button.setOnClickListener {
-                post(BooksListOpenedEvent(type))
+//                post(BooksListOpenedEvent(type))
+                startActivity(Intent(activity, MoreFragment::class.java))
             }
 
             list.addItemDecoration(object: RecyclerView.ItemDecoration() {

@@ -20,6 +20,7 @@ data class BookModel(
     var title: ObservableField<String> = ObservableField(""),
     var author: ObservableField<String> = ObservableField(""),
     var condition: ObservableInt = ObservableInt(0),
+    var booksTrade: ObservableField<String> = ObservableField(""),
     var info: ObservableField<String> = ObservableField(""),
     var edition: ObservableField<String> = ObservableField(""),
     var isbn: ObservableField<String> = ObservableField(""),
@@ -40,17 +41,18 @@ data class BookModel(
 
     fun toFirebaseEntry(): Map<String, Any?> {
         return mapOf(
-            "title" to title.get()!!.trim(),
-            "author" to author.get()!!.trim(),
-            "condition" to condition.get(),
-            "info" to info.get()!!.trim(),
-            "user" to userId,
-            "edition" to edition.get()!!.toIntOrNull(),
-            "isbn" to isbn.get()!!.replace("-", "").toLongOrNull(),
-            "price" to price.get()!!.toFloatOrNull(),
-            "sell" to forSale.get(),
-            "exchange" to forExchange.get(),
-            "views" to views
+                "title" to title.get()!!.trim(),
+                "author" to author.get()!!.trim(),
+                "condition" to condition.get(),
+                "booksTrade" to booksTrade.get()!!.trim(),
+                "info" to info.get()!!.trim(),
+                "user" to userId,
+                "edition" to edition.get()!!.toIntOrNull(),
+                "isbn" to isbn.get()!!.replace("-", "").trim(),
+                "price" to price.get()!!.toFloatOrNull(),
+                "sell" to forSale.get(),
+                "exchange" to forExchange.get(),
+                "views" to views
         )
     }
 
@@ -58,19 +60,21 @@ data class BookModel(
         fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): BookModel {
             val (key, value) = entry
             return BookModel(
-                key,
-                value["user"] as? String ?: "",
-                ObservableField(value["title"] as? String ?: ""),
-                ObservableField(value["author"] as? String ?: ""),
-                ObservableInt((value["condition"] as? Long)?.toInt() ?: 0),
-                ObservableField(value["info"] as? String ?: ""),
-                ObservableField((value["edition"] as? Long)?.toString() ?: ""),
-                ObservableField((value["isbn"] as? Long)?.toString() ?: ""),
-                ObservableField((value["price"] as? Long)?.toString() ?: (value["edition"] as? Double)?.let { "%.2f".format(it) } ?: ""),
-                ObservableBoolean(value["sell"] as? Boolean ?: false),
-                ObservableBoolean(value["exchange"] as? Boolean ?: false),
-                (value["image"] as? String)?.takeNotBlank?.let { "books/$key/$it" } ?: "",
-                value["views"] as? Long ?: 0L
+                    key,
+                    value["user"] as? String ?: "",
+                    ObservableField(value["title"] as? String ?: ""),
+                    ObservableField(value["author"] as? String ?: ""),
+                    ObservableInt((value["condition"] as? Long)?.toInt() ?: 0),
+                    ObservableField(value["booksTrade"] as? String ?: ""),
+                    ObservableField(value["info"] as? String ?: ""),
+                    ObservableField((value["edition"] as? Long)?.toString() ?: ""),
+                    ObservableField(value["isbn"] as? String ?: ""),
+                    ObservableField((value["price"] as? Long)?.toString()
+                            ?: (value["edition"] as? Double)?.let { "%.2f".format(it) } ?: ""),
+                    ObservableBoolean(value["sell"] as? Boolean ?: false),
+                    ObservableBoolean(value["exchange"] as? Boolean ?: false),
+                    (value["image"] as? String)?.takeNotBlank?.let { "books/$key/$it" } ?: "",
+                    value["views"] as? Long ?: 0L
             )
         }
     }

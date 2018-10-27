@@ -42,7 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/midGreen"
-        android:elevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -76,7 +75,6 @@
     <LinearLayout
         android:id="@+id/button_panel"
         android:layout_width="0dp"
-        android:elevation="16dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/bottom_bar_style"
         android:orientation="horizontal"
@@ -135,7 +133,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
-    <fragment
+<!--    <fragment
         android:name="nl.booxchange.screens.home.MoreFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -144,6 +142,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="gone" />-->
 
 </android.support.constraint.ConstraintLayout>

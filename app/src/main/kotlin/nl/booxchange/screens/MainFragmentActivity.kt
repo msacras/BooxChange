@@ -3,6 +3,7 @@ package nl.booxchange.screens
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.PorterDuff
@@ -19,19 +20,26 @@ import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.setVisible
+import nl.booxchange.model.BookOpenedEvent
+import nl.booxchange.model.BooksListOpenedEvent
 import nl.booxchange.model.ChatOpenedEvent
 import nl.booxchange.model.MessageReceivedEvent
+import nl.booxchange.screens.book.BookActivity
+import nl.booxchange.screens.home.MoreFragment
 import nl.booxchange.screens.library.SettingsActivity
 import nl.booxchange.screens.messages.ChatsStateChangeEvent
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
 
-class MainFragmentActivity: AppCompatActivity() {
-    val screens by lazy {listOf (
-        home_page to "home_page",
-        message_page to "message_page",
-        library_page to "library_page"
-    )}
+@Suppress("DEPRECATION")
+class MainFragmentActivity : AppCompatActivity() {
+    val screens by lazy {
+        listOf(
+                home_page to "home_page",
+                message_page to "message_page",
+                library_page to "library_page"
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +54,7 @@ class MainFragmentActivity: AppCompatActivity() {
         toolbar.subtitle = ""
 
         settings.setOnClickListener {
-            val setting = Intent(this, SettingsActivity::class.java)
-            startActivity(setting)
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         screens.forEachIndexed { _, (button, tag) ->
@@ -56,18 +63,38 @@ class MainFragmentActivity: AppCompatActivity() {
 
                 settings.setVisible(tag == "library_page")
 
+                if (tag == "message_page") {
+                    message_page.setColorFilter(whiteColor)
+                    message_page.setBackgroundColor(greenColor)
+                } else {
+                    message_page.setColorFilter(darkGreenColor)
+                    message_page.setBackgroundColor(whiteColor)
+                }
+
+                if (tag == "library_page") {
+                    library_page.setColorFilter(whiteColor)
+                    library_page.setBackgroundColor(greenColor)
+                } else {
+                    library_page.setColorFilter(darkGreenColor)
+                    library_page.setBackgroundColor(whiteColor)
+                }
+
                 if (tag == "home_page") {
                     fragment_title.text = "booxchange"
+                    home_page.setColorFilter(whiteColor)
+                    home_page.setBackgroundColor(greenColor)
                     fragment_title.setTextAppearance(this, R.style.mainPage)
                 } else {
+                    home_page.setColorFilter(darkGreenColor)
+                    home_page.setBackgroundColor(whiteColor)
                     fragment_title.text = tag.split("_").first().capitalize()
                     fragment_title.setTextAppearance(this, R.style.restPage)
                 }
 
-                screens.forEach { (otherButton, _) ->
+/*                screens.forEach { (otherButton, _) ->
                     val colorButton = if (otherButton == button) greenColor else whiteColor
                     updateColor(otherButton as AppCompatImageButton, colorButton)
-                }
+                }*/
 /*                val targetPositionX = (currentSelectedIndex * focused_button_highlight.width).toFloat()
                 val transitionDuration = (Math.abs(focused_button_highlight.translationX - targetPositionX) / (focused_button_highlight.width * 3)) * 450
                 focused_button_highlight.animate().translationX(targetPositionX).setDuration(transitionDuration.toLong()).start()*/
@@ -75,21 +102,25 @@ class MainFragmentActivity: AppCompatActivity() {
         }
 
         when (intent.getStringExtra(Constants.EXTRA_PARAM_TARGET_VIEW)) {
-//            Constants.FRAGMENT_PROFILE -> profile_page.performClick()
+//            Constants.FRAGMENT_LIBRARY -> library_page.performClick()
+            Constants.FRAGMENT_LIBRARY -> {
+                library_page.performClick()
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
             Constants.FRAGMENT_CHAT -> post(ChatOpenedEvent(chatId = intent.getStringExtra(Constants.EXTRA_PARAM_CHAT_ID)))
             else -> home_page.performClick()
         }
 
         expect(MessageReceivedEvent::class.java) { (messageModel) ->
-//                        if (messageModel.id == UserData.Session.id) return@expect
+            //                        if (messageModel.id == UserData.Session.id) return@expect
             //TODO: unread messages counter icon
 
             messageModel.content
         }
 
-        expect(ChatsStateChangeEvent::class.java) { (count) ->
+/*        expect(ChatsStateChangeEvent::class.java) { (count) ->
 
-        }
+        }*/
     }
 
     private val greenColor by lazy { getColorCompat(R.color.springGreen) }

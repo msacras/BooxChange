@@ -1,7 +1,11 @@
 package nl.booxchange
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -78,13 +82,14 @@ class MessagingService: FirebaseMessagingService()
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .addAction(replyAction)
+//                .setSound(Uri.parse("android.resource://" + packageName + "/" + R.raw.notification))
+//                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setColor(getColorCompat(R.color.springGreen))
                 .setAutoCancel(true)
             .setWhen(messageModel.timestamp.millis)
                 .setLights(0xDBA77F, 250, 150)
                 .setContentIntent(openChatIntent)
                 .build()
-
         NotificationManagerCompat.from(this@MessagingService).notify(chatId.hashCode(), notification)
     }
 

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import android.databinding.adapters.NumberPickerBindingAdapter.setValue
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v7.widget.AppCompatRadioButton
@@ -145,11 +146,11 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             view.context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, temporaryImageUri)
-        post(StartActivity(intent, Constants.REQUEST_CAMERA, BookFragment::class.java))
+        post(StartActivity(intent, Constants.REQUEST_CAMERA, BookActivity::class.java))
     }
 
     override fun onAddPhotoFromGalleryClick(view: View) {
-        post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookFragment::class.java))
+        post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookActivity::class.java))
     }
 
     override fun onRemovePhotoClick(photoModel: ImageModel) {
@@ -188,7 +189,8 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path).addOnCompleteListener {
                 FirebaseDatabase.getInstance().getReference("images/books/${bookModel.get()!!.id}").push().setValue(it.result.metadata?.path)
                 if (photoModel == mainImage) {
-                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("image").setValue(it.result.metadata?.path)
+                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("" +
+                            "").setValue(it.result.metadata?.path)
                 }
             }
         }
@@ -212,7 +214,7 @@ class BookFragmentViewModel: BaseViewModel(), BookItemHandler, PhotoItemHandler 
             "tradeBookTitle" to checkedBook.get()?.title?.get()
         )
 
-        FirebaseFunctions.getInstance().getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
+        FirebaseFunctions.getInstance("europe-west1").getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
             view.context.toast(if (it.isSuccessful) "Request sent!" else "Failed to send your request")
         }
 
