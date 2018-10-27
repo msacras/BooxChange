@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.loading_view_layout.view.*
 import nl.booxchange.R
-import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.toGone
 import nl.booxchange.extension.toVisible

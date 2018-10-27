@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/dialog_design"
+    android:gravity="bottom">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pt_sans"
+        android:text="User Phone number"
+        android:textColor="@color/dustyGray"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/change_phone"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/dialog_label"
+        android:fontFamily="@font/pt_sans"
+        android:hint="Phone number"
+        android:inputType="phone|textNoSuggestions"
+        android:paddingStart="58dp"
+        android:textAllCaps="false"
+        android:textColor="@color/darkGreen"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toStartOf="@id/change_last_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/country_code_field"
+        android:layout_width="50dp"
+        android:layout_height="36dp"
+        android:background="#00000000"
+        android:fontFamily="@font/pt_sans"
+        android:gravity="center"
+        android:inputType="phone|textNoSuggestions"
+        android:textColor="@color/darkGreen"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/change_phone"
+        app:layout_constraintStart_toStartOf="@id/change_phone"
+        app:layout_constraintTop_toTopOf="@+id/change_phone"
+        tools:text="+373" />
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="36dp"
+        android:background="@color/midGray"
+        app:layout_constraintStart_toEndOf="@id/country_code_field"
+        app:layout_constraintTop_toTopOf="@id/change_phone"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/save_phone"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_cancel_background"
+        android:stateListAnimator="@animator/button_elevation_animator"
+        android:fontFamily="@font/pt_sans"
+        android:text="Save"
+        android:textAllCaps="false"
+        android:textColor="@color/darkGray"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="@id/change_phone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/change_phone"
+        app:layout_constraintTop_toBottomOf="@id/change_phone" />
+
+</android.support.constraint.ConstraintLayout>

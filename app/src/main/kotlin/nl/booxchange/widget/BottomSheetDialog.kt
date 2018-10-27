@@ -1,4 +1,5 @@
-package nl.booxchange.widget
+/*
+package nl.booxchange.screens
 
 import android.app.Activity
 import android.content.Intent
@@ -16,9 +17,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_settings.*
-import kotlinx.android.synthetic.main.dialog.*
 import nl.booxchange.R
-import nl.booxchange.screens.settings.SettingsActivity
+import nl.booxchange.screens.library.SettingsActivity
 import nl.booxchange.utilities.Constants
 import java.io.ByteArrayOutputStream
 
@@ -26,11 +26,13 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
     private var filePath:Uri?=null
 
+    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+
     internal var storage:FirebaseStorage?=null
     internal var storageRef:StorageReference?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog, container, false)
+        return inflater.inflate(R.layout.dialog_image, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +40,8 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
         storage = FirebaseStorage.getInstance()
         storageRef = storage?.reference
 
-        take_photo_button.setOnClickListener {
+*/
+/*        take_photo_button.setOnClickListener {
             val intent = Intent()
 //            val outputUri = Tools.getCacheUri("camera_output")
             intent.action = android.provider.MediaStore.ACTION_IMAGE_CAPTURE
@@ -48,10 +51,13 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
         upload_photo_button.setOnClickListener {
             val intent = Intent()
-            intent.type = "image/*"
+            intent.type = "image*//*
+*/
+/*"
             intent.action = Intent.ACTION_PICK
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), Constants.REQUEST_GALLERY)
-        }
+        }*//*
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -82,3 +88,4 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
         }
     }
 }
+*/

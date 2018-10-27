@@ -2,10 +2,14 @@ package nl.booxchange.screens
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Resources
+import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatImageButton
 import com.vcristian.combus.expect
@@ -13,28 +17,27 @@ import com.vcristian.combus.post
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
-import nl.booxchange.R.id.*
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.setVisible
-import nl.booxchange.model.events.ChatOpenedEvent
-import nl.booxchange.model.events.ChatsStateChangeEvent
-import nl.booxchange.model.events.MessageReceivedEvent
-import nl.booxchange.screens.settings.SettingsActivity
+import nl.booxchange.model.ChatOpenedEvent
+import nl.booxchange.model.MessageReceivedEvent
+import nl.booxchange.screens.library.SettingsActivity
+import nl.booxchange.screens.messages.ChatsStateChangeEvent
 import nl.booxchange.utilities.BaseFragment
 import nl.booxchange.utilities.Constants
 
 class MainFragmentActivity: AppCompatActivity() {
     val screens by lazy {listOf (
-        home_page to "booxchange",
-        message_page to "Messages",
-        library_page to "Library"
+        home_page to "home_page",
+        message_page to "message_page",
+        library_page to "library_page"
     )}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_fragment)
 
-//        settings.setImageResource(R.drawable.ic_settings_icon)
+        settings.setImageResource(R.drawable.ic_settings_icon)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -47,17 +50,27 @@ class MainFragmentActivity: AppCompatActivity() {
             startActivity(setting)
         }
 
-        screens.forEach { (button, tag) ->
+        screens.forEachIndexed { _, (button, tag) ->
             button.setOnClickListener {
                 showFragment(tag)
 
-                settings.setVisible(tag == "Library")
-                fragment_title.text = tag
+                settings.setVisible(tag == "library_page")
+
+                if (tag == "home_page") {
+                    fragment_title.text = "booxchange"
+                    fragment_title.setTextAppearance(this, R.style.mainPage)
+                } else {
+                    fragment_title.text = tag.split("_").first().capitalize()
+                    fragment_title.setTextAppearance(this, R.style.restPage)
+                }
 
                 screens.forEach { (otherButton, _) ->
-                    val color = if (otherButton == button) greenColor else whiteColor
-                    updateColor(otherButton as AppCompatImageButton, color)
+                    val colorButton = if (otherButton == button) greenColor else whiteColor
+                    updateColor(otherButton as AppCompatImageButton, colorButton)
                 }
+/*                val targetPositionX = (currentSelectedIndex * focused_button_highlight.width).toFloat()
+                val transitionDuration = (Math.abs(focused_button_highlight.translationX - targetPositionX) / (focused_button_highlight.width * 3)) * 450
+                focused_button_highlight.animate().translationX(targetPositionX).setDuration(transitionDuration.toLong()).start()*/
             }
         }
 
@@ -68,6 +81,7 @@ class MainFragmentActivity: AppCompatActivity() {
         }
 
         expect(MessageReceivedEvent::class.java) { (messageModel) ->
+//                        if (messageModel.id == UserData.Session.id) return@expect
             //TODO: unread messages counter icon
 
             messageModel.content
@@ -80,7 +94,7 @@ class MainFragmentActivity: AppCompatActivity() {
 
     private val greenColor by lazy { getColorCompat(R.color.springGreen) }
     private val whiteColor by lazy { getColorCompat(R.color.whiteGray) }
-//    private val darkGreenColor by lazy { getColorCompat(R.color.darkGreen) }
+    private val darkGreenColor by lazy { getColorCompat(R.color.darkGreen) }
     private val colorEvaluator = ArgbEvaluator()
 
     private fun updateColor(button: AppCompatImageButton, toColor: Int) {
@@ -96,6 +110,7 @@ class MainFragmentActivity: AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CommitTransaction")
     fun showFragment(tag: String, exclusive: Boolean = true) {
         supportFragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).apply {
             supportFragmentManager.fragments.forEach { fragment ->
@@ -118,5 +133,12 @@ class MainFragmentActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         BooxchangeApp.isInForeground = false
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun onBackPressed() {
+        if (supportFragmentManager.fragments.all { (it as? BaseFragment)?.onBackPressed() != false }) {
+            super.onBackPressed()
+        }
     }
 }
