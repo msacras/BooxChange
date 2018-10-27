@@ -1,27 +1,17 @@
-package nl.booxchange.screens.library
+package nl.booxchange.screens.settings
 
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.databinding.adapters.TextViewBindingAdapter.setText
-import android.graphics.Color
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.annotation.NonNull
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatCheckedTextView
 import android.telephony.TelephonyManager
-import android.text.Editable
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.facebook.CallbackManager
@@ -29,18 +19,12 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -53,7 +37,6 @@ import kotlinx.android.synthetic.main.dialog_name.*
 import kotlinx.android.synthetic.main.dialog_phone.*
 import nl.booxchange.BuildConfig
 import nl.booxchange.R
-import nl.booxchange.R.id.*
 import nl.booxchange.extension.string
 import nl.booxchange.extension.withExitSymbol
 import nl.booxchange.screens.SignInActivity
@@ -62,7 +45,7 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
 
-class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
+class SettingsActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
 
     private val userUid = FirebaseAuth.getInstance().currentUser?.uid!!.string
     private val dbRef = FirebaseDatabase.getInstance().reference.child("users/").child(userUid)
@@ -72,7 +55,6 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
 
 /*        userModel.phone = providers?.find { it.providerId == "phone" }?.phoneNumber
         userModel.facebookId = providers?.find { it.providerId == "facebook.com" }?.uid*/
@@ -356,7 +338,7 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
             try {
                 val account = task.getResult(ApiException::class.java)
                 toast("succeeded Google auth")
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 FirebaseAuth.getInstance().currentUser?.linkWithCredential(credential)?.addOnCompleteListener(this)
             } catch (e: ApiException) {
                 toast("failed Google auth")

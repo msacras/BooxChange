@@ -74,12 +74,10 @@
     
     <style name="mainPage">
         <item name="android:fontFamily">@font/montserrat</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="restPage">
         <item name="android:fontFamily">@font/pt_sans</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">

@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     <fragment
         android:name="nl.booxchange.screens.messages.MessagesFragment"
@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     <fragment
         android:name="nl.booxchange.screens.library.LibraryFragment"
@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toTopOf="@id/button_panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -50,7 +50,7 @@
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="34dp"
             android:layout_height="34dp"
-            app:srcCompat="@drawable/ic_booxchange_icon" />
+            app:srcCompat="@drawable/ic_booxchange_icon"/>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/fragment_title"
@@ -60,7 +60,7 @@
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"
-            tools:text="Message" />
+            tools:text="Messages"/>
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/settings"
@@ -76,9 +76,9 @@
     <LinearLayout
         android:id="@+id/button_panel"
         android:layout_width="0dp"
-        android:elevation="16dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/bottom_bar_style"
+        android:elevation="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,27 +89,27 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:tint="@color/darkGreen"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_home_icon"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:tint="@color/darkGreen"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/message_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:tint="@color/darkGreen"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_messages_icon"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:tint="@color/darkGreen"/>
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/library_page"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:tint="@color/darkGreen"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_library_icon"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:tint="@color/darkGreen"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -28,13 +28,14 @@ class HomeFragmentViewModel: BaseViewModel(), BookItemHandler {
 
     init {
         val booksFirebaseReference = FirebaseDatabase.getInstance().getReference("books")
+
         latestSellList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("sell").equalTo(true).limitToLast(15)), ::parseBooks)
         latestExchangeList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("exchange").equalTo(true).limitToLast(15)), ::parseBooks)
         topBooksList = Transformations.map(FirebaseListQueryLiveData(booksFirebaseReference.orderByChild("views").limitToLast(15)), ::parseBooks)
     }
 
     private fun parseBooks(list: Map<String, Map<String, Any>>): List<BookModel> {
-        return list.toList().map { BookModel.fromFirebaseEntry(it) }.reversed()
+        return list.toList().map(BookModel.Companion::fromFirebaseEntry).reversed()
     }
 
     override fun View.onBookItemClick(bookModel: BookModel) {

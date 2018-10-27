@@ -5,7 +5,7 @@ import nl.booxchange.utilities.BaseFragment
 
 class MessagesFragment: BaseFragment() {
 
-    override val contentViewResourceId = R.layout.fragment_message
+    override val contentViewResourceId = R.layout.fragment_messages
     override val viewModel = MessagesFragmentViewModel()
 
 }

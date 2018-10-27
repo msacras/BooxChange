@@ -1,49 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="itemHandler"
             type="nl.booxchange.screens.messages.MessagesFragmentViewModel"/>
+
         <variable
             name="itemModel"
             type="nl.booxchange.model.entities.ChatModel"/>
     </data>
-<android.support.constraint.ConstraintLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/user_photo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        roundedImageId="@{itemModel.image}"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@drawable/account_circle"/>
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/user_name"
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:lines="1"
-        android:gravity="center_horizontal"
-        android:ellipsize="end"
-        android:textColor="@color/darkGray"
-        android:text="@{itemModel.title}"
-        app:layout_constraintTop_toBottomOf="@id/user_photo"
-        app:layout_constraintStart_toStartOf="@id/user_photo"
-        app:layout_constraintEnd_toEndOf="@id/user_photo"
-        tools:text="John Doe"/>
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
+        android:padding="8dp">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/user_photo"
+            roundedImageId="@{itemModel.image}"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/account_circle"
+            tools:tint="@color/midGray"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/user_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lines="1"
+            android:text="@{itemModel.title}"
+            android:textColor="@color/darkGray"
+            app:layout_constraintEnd_toEndOf="@id/user_photo"
+            app:layout_constraintStart_toStartOf="@id/user_photo"
+            app:layout_constraintTop_toBottomOf="@id/user_photo"
+            tools:text="John Doe"/>
+
+    </android.support.constraint.ConstraintLayout>
 </layout>

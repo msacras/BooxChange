@@ -34,12 +34,8 @@ class ChatFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
-        view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
-
-        expect(ChatOpenedEvent::class.java) {
-            (activity as? MainFragmentActivity)?.showFragment("chat_view", false)
-        }
+//        view.app_bar_layout.toolbar.setNavigationOnClickListener { onBackPressed() }
+//        view.app_bar_layout.toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
 
         val `40dp` = view.dip(40).toFloat()
 
@@ -99,24 +95,6 @@ class ChatFragment: BaseFragment() {
                 }
             }
         })
-    }
-
-    override fun onBackPressed(): Boolean {
-/*
-        val view = view ?: return true
-
-        if (view.image_pager.isVisible) {
-            view.image_pager.toGone()
-            view.app_bar_layout.animate().alpha(1f).start()
-        } else {
-        viewModel.chatModel = null
-*/
-        (activity as? MainFragmentActivity)?.hideFragment("chat_view")
-/*
-        }
-*/
-
-        return isHidden
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

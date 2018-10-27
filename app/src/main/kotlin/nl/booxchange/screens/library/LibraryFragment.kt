@@ -18,7 +18,7 @@ import nl.booxchange.extension.string
 import nl.booxchange.utilities.BaseFragment
 import org.jetbrains.anko.dip
 
-class LibraryFragment : BaseFragment() {
+class LibraryFragment: BaseFragment() {
 
     override val contentViewResourceId = R.layout.fragment_library
     override val viewModel = LibraryFragmentViewModel()
@@ -39,7 +39,7 @@ class LibraryFragment : BaseFragment() {
                 val lastName = dataSnapshot.child("last_name").value.toString()
                 val userPhoto = dataSnapshot.child("image_url").value.toString()
                 Glide.with(this@LibraryFragment).load(userPhoto).apply(RequestOptions().circleCrop()).into(profile_image)
-                userName.text = ("$firstName $lastName")
+//                userName.text = ("$firstName $lastName")
             }
         })
 

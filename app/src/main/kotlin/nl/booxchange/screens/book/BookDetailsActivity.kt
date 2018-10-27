@@ -6,8 +6,12 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_book_details.*
 import nl.booxchange.BR
 import nl.booxchange.R
+import nl.booxchange.extension.isVisible
+import nl.booxchange.extension.toGone
+import nl.booxchange.extension.toVisible
 import nl.booxchange.model.entities.BookModel
 import nl.booxchange.model.events.BookOpenedEvent
 
@@ -23,50 +27,30 @@ class BookDetailsActivity: AppCompatActivity() {
 
         viewModel.initializeWithConfig(BookOpenedEvent(bookModel, bookId))
         viewBinding.setVariable(BR.viewModel, viewModel)
+
+        setupViews()
     }
 
-/*
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setupViews() {
+        setSupportActionBar(toolbar)
+        toolbar?.setNavigationOnClickListener { onBackPressed() }
 
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-        toolbar.navigationIcon?.setTintCompat(R.color.darkGray)
-
-        expect(BookOpenedEvent::class.java) {
-            (activity as? MainFragmentActivity)?.showFragment("book_view", false)
-        }
-
-*/
-/*        view.image_pager.offscreenPageLimit = 5
-        view.book_image.setOnClickListener {
-            view.image_pager.setCurrentItem(0, false)
-            view.image_pager.toVisible()
-            view.app_bar_layout.animate().alpha(0.5f).start()
-        }*//*
-
-
-        view.delete_book_button.setOnClickListener {
-            viewModel.deleteBook()
-            onBackPressed()
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        val view = view ?: return true
-
-        if (view.image_pager.isVisible) {
-            view.image_pager.toGone()
-            view.app_bar_layout.animate().alpha(1f).start()
-        } else {
-            if (viewModel.isEditModeEnabled.get()) {
-                viewModel.toggleEditMode(null)
+        image_pager.offscreenPageLimit = 5
+        book_image.setOnClickListener {
+            if (viewModel.images.isNotEmpty() || viewModel.isEditModeEnabled.get()) {
+                image_pager.setCurrentItem(0, false)
+                image_pager.toVisible()
             }
-            (activity as? MainFragmentActivity)?.hideFragment("book_view")
         }
-        (activity as? MainFragmentActivity)?.hideFragment("book_view")
-        return isHidden
     }
-*/
+
+    override fun onBackPressed() {
+        when {
+            image_pager.isVisible -> image_pager.toGone()
+            viewModel.isEditModeEnabled.get() -> viewModel.toggleEditMode(null)
+            else -> super.onBackPressed()
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         viewModel.onActivityResult(requestCode, resultCode, data)

@@ -3,110 +3,135 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="nl.booxchange.screens.messages.MessagesFragmentViewModel"/>
     </data>
 
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:background="#EBEBEB"
-    android:layout_height="match_parent">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EBEBEB"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/requests_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
-        android:text="Requests"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        visibleIf="@{viewModel.requestCount &gt; 0}"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/requests_block"
+            visibleIf="@{viewModel.requestCount &gt; 0}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/requests_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        app:layout_constraintLeft_toRightOf="@id/requests_label"
-        app:layout_constraintTop_toTopOf="@id/requests_label"
-        app:layout_constraintBottom_toBottomOf="@id/requests_label"
-        visibleIf="@{viewModel.requestCount &gt; 0}"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:background="@drawable/rounded_corner_solid_red_20dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:text="@{Integer.toString(viewModel.requestCount)}"
-        tools:text="5"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/requests_label"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Requests"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/requests_list"
-        recyclerLayout="@{viewModel.requestsViewsConfigurations}"
-        visibleIf="@{viewModel.requestCount &gt; 0}"
-        recyclerHandler="@{viewModel}"
-        recyclerItems="@{viewModel.requestsList}"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        android:orientation="horizontal"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/requests_label"
-        tools:listitem="@layout/list_item_request"/>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/requests_counter"
+                android:layout_width="24dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_corner_solid_red_20dp"
+                android:gravity="center"
+                android:text="@{Integer.toString(viewModel.requestCount)}"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@id/requests_label"
+                app:layout_constraintStart_toEndOf="@id/requests_label"
+                app:layout_constraintTop_toTopOf="@id/requests_label"
+                tools:text="5"/>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/chats_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
-        android:text="Messages"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        visibleIf="@{viewModel.chatsCount &gt; 0}"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/requests_list"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/requests_list"
+                recyclerHandler="@{viewModel}"
+                recyclerItems="@{viewModel.requestsList}"
+                recyclerLayout="@{viewModel.requestsViewsConfigurations}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/requests_label"
+                tools:listitem="@layout/list_item_request"/>
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/unread_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        app:layout_constraintLeft_toRightOf="@id/chats_label"
-        app:layout_constraintTop_toTopOf="@id/chats_label"
-        app:layout_constraintBottom_toBottomOf="@id/chats_label"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:background="@drawable/rounded_corner_solid_red_20dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:text="@{Integer.toString(viewModel.unreadCount)}"
-        visibleIf="@{viewModel.unreadCount &gt; 0}"
-        tools:text="5"/>
+        </android.support.constraint.ConstraintLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chats_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        recyclerHandler="@{viewModel}"
-        recyclerItems="@{viewModel.activesList}"
-        recyclerLayout="@{viewModel.chatsViewsConfigurations}"
-        visibleIf="@{viewModel.chatsCount &gt; 0}"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/chats_label"
-        tools:listitem="@layout/list_item_chat"/>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/messages_block"
+            visibleIf="@{viewModel.chatsCount &gt; 0}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/requests_block">
 
-</android.support.constraint.ConstraintLayout>
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/chats_label"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Messages"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/unread_counter"
+                visibleIf="@{viewModel.unreadCount &gt; 0}"
+                android:layout_width="24dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_corner_solid_red_20dp"
+                android:gravity="center"
+                android:text="@{Integer.toString(viewModel.unreadCount)}"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="@id/chats_label"
+                app:layout_constraintLeft_toRightOf="@id/chats_label"
+                app:layout_constraintTop_toTopOf="@id/chats_label"
+                tools:text="5"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chats_list"
+                recyclerHandler="@{viewModel}"
+                recyclerItems="@{viewModel.activesList}"
+                recyclerLayout="@{viewModel.chatsViewsConfigurations}"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:padding="8dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chats_label"
+                tools:listitem="@layout/list_item_chat"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
 </layout>

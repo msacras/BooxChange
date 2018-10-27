@@ -8,8 +8,8 @@ interface PhotoItemHandler {
     val isEditModeEnabled: ObservableBoolean
 
     fun onRemovePhotoClick(photoModel: ImageModel)
-    fun onAddPhotoFromCameraClick(view: View)
-    fun onAddPhotoFromGalleryClick(view: View)
+    fun View.onAddPhotoFromCameraClick()
+    fun View.onAddPhotoFromGalleryClick()
 
     fun setMainPhoto(photoModel: ImageModel)
     fun isMainPhoto(photoModel: ImageModel): Boolean

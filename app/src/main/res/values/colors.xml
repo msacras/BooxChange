@@ -21,22 +21,23 @@
     <color name="jetGray">#464646</color>
     <color name="pitchGray">#252525</color>
     <color name="darkGreen">#20432E</color>
-    <color name="midGreen">#0d8c51</color>
+    <color name="midGreen">#0D8C51</color>
 
     <color name="springGreen">#7CB43A</color>
-    <color name="mountainMeadow">#17bd90</color>
-    <color name="salem">#0fa35f</color>
-    <color name="shamrock">#43cea2</color>
+    <color name="mountainMeadow">#17BD90</color>
+    <color name="salem">#0FA35F</color>
+    <color name="shamrock">#43CEA2</color>
     <color name="pelorous">#4BC0C8</color>
-    <color name="curiousBlue">#169de0</color>
+    <color name="curiousBlue">#169DE0</color>
     <color name="tuna">#353536</color>
     <color name="dustyGray">#9C9C9C</color>
-    <color name="alabaster">#fafafa</color>
+    <color name="alabaster">#FAFAFA</color>
 
-    <color name="themeGreen">#30c276</color>
+    <color name="themeGreen">#30C276</color>
     <color name="themeGreenDark">#2BAE6A</color>
     <color name="themeBlue">#5A85FF</color>
     <color name="themeBlueDark">#516CB8</color>
     <color name="themeRed">#FF5A62</color>
-    <color name="themeRedDark">#aa4845</color>
+    <!--<color name="themeRedDark">#AA4845</color>-->
+    <color name="themeRedDark">#B43A3A</color>
 </resources>

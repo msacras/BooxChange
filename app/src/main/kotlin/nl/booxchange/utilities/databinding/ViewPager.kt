@@ -11,6 +11,6 @@ fun ViewPager.setupPhotoViewPagerItems(handler: Any?) {
 }
 
 @BindingAdapter("photoItems")
-fun ViewPager.updatePhotoViewPagerItems(itemsList: List<ImageModel?>?) {
+fun ViewPager.updatePhotoViewPagerItems(itemsList: List<ImageModel>?) {
     (adapter as? PhotosPagerAdapter)?.swapItems(itemsList ?: emptyList())
 }

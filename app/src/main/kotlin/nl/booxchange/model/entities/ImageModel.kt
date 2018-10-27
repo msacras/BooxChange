@@ -15,10 +15,14 @@ class ImageModel(id: String?): Serializable, FirebaseObject {
         this.path = path
     }
 
-    var type: EditablePhotoType = EditablePhotoType.NULL
+    var type: EditablePhotoType = EditablePhotoType.ADD
     var path: Uri = Uri.EMPTY
 
+    companion object {
+        val addingItem = ImageModel(null, EditablePhotoType.ADD, Uri.EMPTY)
+    }
+
     enum class EditablePhotoType {
-        LOCAL, REMOTE, NULL, EDIT
+        LOCAL, REMOTE, ADD, EDIT
     }
 }

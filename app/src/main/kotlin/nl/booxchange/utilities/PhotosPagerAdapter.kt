@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.view.*
 import com.android.databinding.library.baseAdapters.BR
+import kotlinx.android.synthetic.main.item_view_photo.view.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.model.entities.ImageModel
@@ -15,10 +16,11 @@ import java.lang.ref.WeakReference
 
 class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
 
-    private val items = ArrayList<ImageModel?>()
+    private val items = ArrayList<ImageModel>()
     private var viewPager = WeakReference<ViewPager>(null)
 
-    fun swapItems(items: List<ImageModel?>) {
+    fun swapItems(items: List<ImageModel>) {
+        val viewPager = viewPager.get()
 /*
         val viewPager = viewPager.get() ?: run {
             this.items.clear()
@@ -43,21 +45,31 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
         }
 
 */
+
+        if ((items + this.items).distinct().size in this.items.size - 1 .. this.items.size + 1) {}
+
         this.items.clear()
         this.items.addAll(items)
+
         notifyDataSetChanged()
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        viewPager.get() ?: { viewPager = WeakReference(container as ViewPager) }()
+
         val item = items[position]
-        val layout = item?.let { R.layout.item_view_photo } ?: R.layout.item_add_photo
+        val layout = when (item.type) {
+            ImageModel.EditablePhotoType.ADD -> R.layout.item_add_photo
+            else -> R.layout.item_view_photo
+        }
         val binding = DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(container.context), layout, container, true)
 
         binding.setVariable(BR.itemModel, item)
         binding.setVariable(BR.itemHandler, handler)
 
-//        viewPager.get() ?: run { viewPager = WeakReference(container as ViewPager) }
-//        PhotoScalingUtility.setupScaleGestureForView(root.image_view, root)
+        if (item.type in listOf(ImageModel.EditablePhotoType.LOCAL, ImageModel.EditablePhotoType.REMOTE)) {
+//            PhotoScalingUtility.setupScaleGestureForView(binding.root.image_view, binding.root)
+        }
 
         return binding.root
     }
@@ -68,6 +80,10 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view == `object`
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
     }
 
     override fun getCount(): Int {

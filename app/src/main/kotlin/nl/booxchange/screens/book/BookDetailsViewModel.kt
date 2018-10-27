@@ -8,6 +8,7 @@ import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.net.Uri
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatRadioButton
 import android.view.View
 import android.widget.RadioGroup
@@ -16,6 +17,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
 import com.vcristian.combus.expect
@@ -112,10 +114,10 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     fun toggleEditMode(view: View?) {
         isEditModeEnabled.set(!isEditModeEnabled.get())
         if (isEditModeEnabled.get()) {
-            images.add(null)
+            images.add(ImageModel.addingItem)
         } else {
             bindBookModel(sourceBookModel)
-            images.remove(null)
+            images.remove(ImageModel.addingItem)
         }
     }
 
@@ -138,19 +140,22 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
         }
     }
 
-    override fun onAddPhotoFromCameraClick(view: View) {
+    override fun View.onAddPhotoFromCameraClick() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val temporaryImageUri = Tools.getCacheUri("camera_output.jpeg")
 
-        view.context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
-            view.context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
+            context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, temporaryImageUri)
-//        post(StartActivity(intent, Constants.REQUEST_CAMERA, BookFragment::class.java))
+
+        (context as? AppCompatActivity)?.startActivityForResult(intent, Constants.REQUEST_CAMERA)
     }
 
-    override fun onAddPhotoFromGalleryClick(view: View) {
-//        post(StartActivity(Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), Constants.REQUEST_GALLERY, BookFragment::class.java))
+    override fun View.onAddPhotoFromGalleryClick() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
+        (context as? AppCompatActivity)?.startActivityForResult(intent, Constants.REQUEST_GALLERY)
     }
 
     override fun onRemovePhotoClick(photoModel: ImageModel) {
@@ -173,30 +178,44 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
         val progressDialog = view.context.indeterminateProgressDialog("Saving")
         val mainImage = images.firstOrNull()
 
+        FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id).set(bookModel.get()!!.toFirebaseEntry())
+            .addOnSuccessListener {
+                sourceBookModel = bookModel.get()!!
+                progressDialog.dismiss()
+            }
+            .addOnFailureListener {
+
+            }
+/*
         FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).setValue(bookModel.get()!!.toFirebaseEntry()).addOnCompleteListener {
             sourceBookModel = bookModel.get()!!
             progressDialog.dismiss()
         }
+*/
 
         sourceImages.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.forEach { photoModel ->
-            if (photoModel !in images) {
-                FirebaseDatabase.getInstance().getReference(photoModel.path.path).removeValue()
-                FirebaseStorage.getInstance().getReference(photoModel.path.path).delete()
+            if (images.find { it.id == photoModel.id } == null) {
+//                FirebaseDatabase.getInstance().getReference(photoModel.path.path!!).removeValue()
+                FirebaseFirestore.getInstance().document(photoModel.path.path!!).delete()
+                FirebaseStorage.getInstance().getReference(photoModel.path.path!!).delete()
             }
         }
 
         images.filter { it?.type == ImageModel.EditablePhotoType.LOCAL }.forEach { photoModel ->
-            FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path).addOnCompleteListener {
-                FirebaseDatabase.getInstance().getReference("images/books/${bookModel.get()!!.id}").push().setValue(it.result.metadata?.path)
+            FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path).addOnSuccessListener {
+                FirebaseFirestore.getInstance().collection("images/books/${bookModel.get()!!.id}").document().set(it.metadata?.path!!)
+//                FirebaseDatabase.getInstance().getReference("images/books/${bookModel.get()!!.id}").push().setValue(it.metadata?.path)
                 if (photoModel == mainImage) {
-                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("image").setValue(it.result.metadata?.path)
+                    FirebaseFirestore.getInstance().document("books/${bookModel.get()!!.id}/image").set(it.metadata?.path!!)
+//                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("image").setValue(it.metadata?.path)
                 }
             }
         }
     }
 
     fun deleteBook() {
-        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).removeValue()
+        FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id).delete()
+//        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).removeValue()
     }
 
     fun sendRequest(view: View) {
@@ -213,21 +232,21 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
             "tradeBookTitle" to checkedBook.get()?.title?.get()
         )
 
-        FirebaseFunctions.getInstance().getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
+        FirebaseFunctions.getInstance("europe-west1").getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
             view.context.toast(if (it.isSuccessful) "Request sent!" else "Failed to send your request")
         }
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val imageUri = when (requestCode) {
                 Constants.REQUEST_CAMERA -> Tools.getCacheUri("camera_output.jpeg")
-                Constants.REQUEST_GALLERY -> data!!.data
+                Constants.REQUEST_GALLERY -> intent!!.data
                 else -> return
             }
 
             if (images.find { it?.path == imageUri } == null) {
-                images.add(images.indexOf(null).coerceAtLeast(0), ImageModel(null, ImageModel.EditablePhotoType.LOCAL, imageUri))
+                images.add(images.indexOf(ImageModel.addingItem).coerceAtLeast(0), ImageModel(null, ImageModel.EditablePhotoType.LOCAL, imageUri))
             }
         }
     }

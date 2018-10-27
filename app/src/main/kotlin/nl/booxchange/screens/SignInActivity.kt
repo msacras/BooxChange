@@ -1,14 +1,19 @@
 package nl.booxchange.screens
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatEditText
+import android.telecom.PhoneAccount
 import android.telephony.TelephonyManager
+import android.text.InputType
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -22,18 +27,20 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
+import com.vcristian.combus.dismiss
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.booxchange.R
-import nl.booxchange.extension.getColorCompat
 import nl.booxchange.extension.withExitSymbol
 import nl.booxchange.utilities.Constants
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.customView
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.concurrent.TimeUnit
 
-class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
+class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
     private val facebookCallbackManager = CallbackManager.Factory.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,23 +59,23 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         }
 
         LoginManager.getInstance().registerCallback(facebookCallbackManager,
-                object : FacebookCallback<LoginResult> {
-                    override fun onSuccess(loginResult: LoginResult) {
-                        toast("succeeded Facebook auth")
-                        FirebaseAuth.getInstance().signInWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token)).addOnCompleteListener(this@SignInActivity)
-                    }
+            object: FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    toast("succeeded Facebook auth")
+                    FirebaseAuth.getInstance().signInWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token)).addOnCompleteListener(this@SignInActivity)
+                }
 
-                    override fun onCancel() {
-                        toast("canceled Facebook auth")
-                        //TODO: Handle canceled Facebook auth!
-                    }
+                override fun onCancel() {
+                    toast("canceled Facebook auth")
+                    //TODO: Handle canceled Facebook auth!
+                }
 
-                    override fun onError(exception: FacebookException) {
-                        toast("failed Facebook auth")
-                        exception.printStackTrace()
-                        //TODO: Handle failed Facebook auth!
-                    }
-                })
+                override fun onError(exception: FacebookException) {
+                    toast("failed Facebook auth")
+                    exception.printStackTrace()
+                    //TODO: Handle failed Facebook auth!
+                }
+            })
     }
 
     private fun hideKeyboard(view: View) {
@@ -88,16 +95,37 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
     private fun initializePhoneAuthorizationLayout() {
         country_code_field.setText(getUserCountryCode())
         phone_sign_in_button.setOnClickListener {
-            val phoneNumber = ("${country_code_field.text} ${phone_number_field.text}").takeIf { it.isNotBlank() }
-                    ?: return@setOnClickListener
+            val phoneNumber = ("${country_code_field.text} ${phone_number_field.text}").takeIf(String::isNotBlank) ?: return@setOnClickListener
+            var codeVerificationId = ""
 
             (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(phone_number_field.windowToken, 0)
 
-            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onCodeSent(verificationId: String, resendToken: PhoneAuthProvider.ForceResendingToken) {
+                    codeVerificationId = verificationId
+
+                    alert {
+                        val codeInputView = AppCompatEditText(this@SignInActivity).apply {
+                            inputType = InputType.TYPE_CLASS_NUMBER
+                        }
+                        customView {
+                            addView(codeInputView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                        }
+                        positiveButton("Continue") {
+                            if (codeInputView.text.toString().length == 6) {
+                                FirebaseAuth.getInstance().signInWithCredential(PhoneAuthProvider.getCredential(codeVerificationId, codeInputView.text.toString())).addOnCompleteListener(this@SignInActivity)
+                            }
+                        }
+                        negativeButton("Cancel") {
+                            dismiss()
+                        }
+                        show()
+                    }
+                }
+
                 override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential?) {
                     toast("succeeded Phone auth")
-                    FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential
-                            ?: return).addOnCompleteListener(this@SignInActivity)
+                    FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential ?: return).addOnCompleteListener(this@SignInActivity)
                 }
 
                 override fun onVerificationFailed(firebaseException: FirebaseException?) {
@@ -117,10 +145,13 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
 
     override fun onComplete(task: Task<AuthResult>) {
         if (task.isSuccessful) {
+            val userData = task.result!!
+
             FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
+                FirebaseFirestore.getInstance().collection("instances").document(it.token).set(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
+//                FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
             }
-            if (task.result.additionalUserInfo.isNewUser) {
+            if (userData.additionalUserInfo.isNewUser) {
                 startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)
             } else {
                 startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_HOME)
@@ -139,7 +170,7 @@ class SignInActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
 
             try {
-                FirebaseAuth.getInstance().signInWithCredential(GoogleAuthProvider.getCredential(task.getResult(ApiException::class.java).idToken, null)).addOnCompleteListener(this)
+                FirebaseAuth.getInstance().signInWithCredential(GoogleAuthProvider.getCredential(task.getResult(ApiException::class.java)?.idToken, null)).addOnCompleteListener(this)
             } catch (e: ApiException) {
                 e.printStackTrace()
             }

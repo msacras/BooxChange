@@ -18,7 +18,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_settings.*
 import nl.booxchange.R
-import nl.booxchange.screens.library.SettingsActivity
+import nl.booxchange.screens.settings.SettingsActivity
 import nl.booxchange.utilities.Constants
 import java.io.ByteArrayOutputStream
 

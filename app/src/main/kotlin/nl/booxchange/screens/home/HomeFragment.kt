@@ -26,24 +26,6 @@ class HomeFragment: BaseFragment() {
             button.setOnClickListener {
                 view.context.startActivity<MoreBooksActivity>(MoreBooksActivity.KEY_BOOK_LIST_TYPE to type)
             }
-
-/*
-            button.setOnClickListener {
-                val previousLayoutManager = list.tag as? RecyclerView.LayoutManager ?: GridLayoutManager(list.context, 2)
-                val currentLayoutManager = list.layoutManager
-
-                list.layoutManager = previousLayoutManager
-                list.tag = currentLayoutManager
-
-                if (list.layoutManager is GridLayoutManager) {
-                    button.setText(R.string.less)
-                    listGroups.forEach { if (it.third != group) it.third.toGone() }
-                } else {
-                    button.setText(R.string.more)
-                    listGroups.forEach { if (it.third.isGone) it.third.toVisible() }
-                }
-            }
-*/
         }
     }
 }
