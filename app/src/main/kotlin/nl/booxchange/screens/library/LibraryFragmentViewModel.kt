@@ -1,22 +1,22 @@
 package nl.booxchange.screens.library
 
-import android.arch.lifecycle.Transformations
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
-import android.support.v7.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.vcristian.combus.post
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import nl.booxchange.R
 import nl.booxchange.model.BookItemHandler
 import nl.booxchange.model.entities.BookModel
 import nl.booxchange.model.entities.UserModel
-import nl.booxchange.model.events.BookOpenedEvent
 import nl.booxchange.screens.book.BookDetailsActivity
 import nl.booxchange.utilities.BaseViewModel
-import nl.booxchange.utilities.database.FirebaseItemQueryLiveData
-import nl.booxchange.utilities.database.FirebaseListQueryLiveData
+import nl.booxchange.utilities.database.FirestoreListQueryLiveData
+import nl.booxchange.utilities.database.LiveList
 import nl.booxchange.utilities.recycler.ViewHolderConfig
 import nl.booxchange.utilities.recycler.ViewHolderConfig.ViewType
 import org.jetbrains.anko.startActivity
@@ -24,28 +24,33 @@ import org.jetbrains.anko.startActivity
 class LibraryFragmentViewModel: BaseViewModel(), BookItemHandler {
     val booksViewsConfigurations = listOf<ViewHolderConfig<BookModel>>(
         ViewHolderConfig(R.layout.list_item_book, ViewType.BOOK)
+//        ViewHolderConfig(R.layout.list_item_book, ViewType.PLACEHOLDER)
     )
 
-    val userBooksList = Transformations.map(FirebaseListQueryLiveData(FirebaseDatabase.getInstance().getReference("books").orderByChild("user").equalTo(FirebaseAuth.getInstance().currentUser?.uid)), ::parseBooks)
+    val userBooksCount = ObservableField<String>("")
+    val userBooksList: LiveData<List<BookModel>>
     val userProfile = ObservableField<UserModel>()
 
     val libraryIsEmpty = ObservableBoolean()
 
     init {
-        Transformations.map(FirebaseItemQueryLiveData(FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().currentUser?.uid!!)), UserModel.Companion::fromFirebaseEntry).observeForever(userProfile::set)
+        userBooksList = Transformations.map(FirestoreListQueryLiveData(FirebaseFirestore.getInstance().collection("books").whereEqualTo("userID", FirebaseAuth.getInstance().currentUser?.uid)), ::parseBooks)
+        FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().currentUser?.uid!!).addSnapshotListener { documentSnapshot, _ ->
+            userProfile.set(UserModel.fromFirestoreEntry(documentSnapshot!!))
+        }
     }
 
     override fun View.onBookItemClick(bookModel: BookModel) {
-        (context as? AppCompatActivity)?.startActivity<BookDetailsActivity>(BookDetailsActivity.KEY_BOOK_MODEL to bookModel)
+        (context as? AppCompatActivity)?.startActivity<BookDetailsActivity>(BookDetailsActivity.KEY_BOOK_ID to bookModel.id)
     }
 
     fun View.addBook() {
         (context as? AppCompatActivity)?.startActivity<BookDetailsActivity>()
     }
 
-    private fun parseBooks(list: Map<String, Map<String, Any>>): List<BookModel> {
+    private fun parseBooks(list: List<DocumentSnapshot>): List<BookModel> {
         libraryIsEmpty.set(list.isEmpty())
-
-        return list.toList().map(BookModel.Companion::fromFirebaseEntry).reversed()
+        userBooksCount.set(list.size.toString())
+        return list.map(BookModel.Companion::fromFirestoreEntry).reversed()
     }
 }

@@ -1,14 +1,20 @@
 package nl.booxchange.utilities
 
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.extension.ARGB
 import nl.booxchange.extension.color
+import org.joda.time.DateTime
 import java.io.File
 
 object Tools {
     fun getCacheUri(filename: String) =
         FileProvider.getUriForFile(BooxchangeApp.context, BooxchangeApp.context.packageName + ".file_provider", File.createTempFile(filename, "", File(BooxchangeApp.context.cacheDir.path)))
+
+    lateinit var lastCameraImageId: String
+    fun generateCameraImageId() {
+        lastCameraImageId = DateTime.now().toString()
+    }
 
     fun interpolateColor(colorA: Int, colorB: Int, percentage: Float) =
         (colorA.ARGB to colorB.ARGB).let { (argbA, argbB) ->

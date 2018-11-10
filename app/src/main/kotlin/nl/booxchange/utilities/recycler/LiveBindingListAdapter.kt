@@ -1,14 +1,14 @@
 package nl.booxchange.utilities.recycler
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
-import android.support.v7.recyclerview.extensions.AsyncListDiffer
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.LinearSmoothScroller
-import android.support.v7.widget.RecyclerView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -35,7 +35,7 @@ class LiveBindingListAdapter<T>(private val viewConfigs: List<ViewHolderConfig<T
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 recyclerViewReference.get()?.run {
-                    postDelayed({
+                    if ((layoutManager as? LinearLayoutManager)?.stackFromEnd == true) postDelayed({
                         val smoothScroller = object: LinearSmoothScroller(context) {
                             init {
                                 setTargetPosition((positionStart + itemCount - 1).coerceAtLeast(0))
@@ -59,19 +59,27 @@ class LiveBindingListAdapter<T>(private val viewConfigs: List<ViewHolderConfig<T
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericBindingViewHolder<T> {
         val viewType = ViewHolderConfig.ViewType.values()[viewType]
-        return GenericBindingViewHolder(DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(parent.context), viewConfigs.first { it.viewType == viewType }.layoutId, parent, false))
+        val viewLayout = viewConfigs.first { it.viewType == viewType }.layoutId
+        val viewBinding = DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(parent.context), viewLayout, parent, false)
+
+        return GenericBindingViewHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: GenericBindingViewHolder<T>, position: Int) {
         holder.bind(getItem(position), handler)
+        getViewConfig(position).binding(holder.itemView, getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int {
-        return viewConfigs.first { it.matching(position, getItem(position)) }.viewType.ordinal
+        return getViewConfig(position).viewType.ordinal
     }
 
     override fun getItemCount(): Int {
         return itemsUpdater.currentList.size
+    }
+
+    private fun getViewConfig(position: Int): ViewHolderConfig<T> {
+        return viewConfigs.first { it.matching(position, getItem(position)) }
     }
 
     private fun getItem(position: Int): T? {

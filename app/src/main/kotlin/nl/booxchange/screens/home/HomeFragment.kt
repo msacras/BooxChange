@@ -17,9 +17,9 @@ class HomeFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val listGroups = listOf(
-            Triple(view.most_viewed_more, view.most_viewed_list, "SELL"),
+            Triple(view.most_viewed_more, view.most_viewed_list, "VIEWS"),
             Triple(view.latest_exchange_more, view.latest_exchange_list, "TRADE"),
-            Triple(view.latest_sell_more, view.latest_sell_list, "VIEWS")
+            Triple(view.latest_sell_more, view.latest_sell_list, "SELL")
         )
 
         listGroups.forEach { (button, _, type) ->

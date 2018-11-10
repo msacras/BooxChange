@@ -7,7 +7,7 @@
 
         <variable
             name="itemHandler"
-            type="nl.booxchange.screens.chat.ChatFragmentViewModel"/>
+            type="nl.booxchange.screens.chat.ChatActivityViewModel"/>
 
         <variable
             name="itemModel"
@@ -15,10 +15,10 @@
     </data>
 
     <FrameLayout
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/chat_item_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

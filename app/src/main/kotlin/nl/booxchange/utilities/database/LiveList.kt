@@ -1,9 +1,10 @@
 package nl.booxchange.utilities.database
 
-import android.arch.lifecycle.MutableLiveData
-import nl.booxchange.model.FirebaseObject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import nl.booxchange.model.FirestoreObject
 
-class ListLiveData<T: FirebaseObject>: MutableLiveData<List<T?>>() {
+class LiveList<T: Any>: MutableLiveData<List<T?>>() {
     fun initWithPlaceholders(size: Int = 15) {
         value = List(size) { null }
     }
@@ -32,13 +33,17 @@ class ListLiveData<T: FirebaseObject>: MutableLiveData<List<T?>>() {
 
     operator fun set(key: String, value: T) {
         setValue((getValue() as MutableList).apply {
-            find { it?.id == key }?.let(::indexOf)?.let { index ->
-                set(index, value)
-            }
+            find { (it as? FirestoreObject)?.id == key }
+            ?.let(::indexOf)
+            ?.let { index -> set(index, value) }
         })
     }
 
     fun prependItems(value: List<T>) {
         setValue(value + getValue())
+    }
+
+    fun isEmpty(): Boolean {
+        return value.isEmpty()
     }
 }

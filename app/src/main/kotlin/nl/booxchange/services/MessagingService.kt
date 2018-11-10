@@ -4,30 +4,42 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.app.RemoteInput
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
 import nl.booxchange.extension.firebaseStoragePath
 import nl.booxchange.extension.getColorCompat
+import nl.booxchange.extension.value
 import nl.booxchange.model.entities.MessageModel
 import nl.booxchange.model.entities.MessageModel.MessageType
 import nl.booxchange.screens.MainFragmentActivity
-import nl.booxchange.extension.value
 import nl.booxchange.utilities.Constants
 import org.jetbrains.anko.dip
 
 
 class MessagingService: FirebaseMessagingService() {
     override fun onNewToken(token: String?) {
-        FirebaseDatabase.getInstance().getReference("instances").child(token ?: return).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        token ?: return
+        userId ?: return
+
+        FirebaseFirestore.getInstance().collection("users").document(userId).get()
+            .addOnSuccessListener { user ->
+                val instances = (user.data?.get("instances") as? List<String>).orEmpty().toMutableSet().apply {
+                    add(token)
+                }
+
+                FirebaseFirestore.getInstance().collection("users").document(userId).update(mapOf("instances" to instances.toList()))
+            }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -39,10 +51,11 @@ class MessagingService: FirebaseMessagingService() {
                 val messageId = remoteMessage.data["messageId"] ?: return
                 val messageBody = remoteMessage.data["messageBody"] ?: return
                 val messageType = remoteMessage.data["messageType"] ?: return
+                val messageTime = remoteMessage.data["messageTime"]?.toLong() ?: return
                 val messageSenderId = remoteMessage.data["messageSenderId"] ?: return
                 val messageSenderName = if (remoteMessage.data["type"] == "MESSAGE") remoteMessage.data["messageSenderName"] ?: return else applicationContext.getString(R.string.app_name)
 
-                val messageModel = MessageModel(messageId, messageSenderId, messageBody, messageType)
+                val messageModel = MessageModel(messageId, messageSenderId, messageBody, messageType, messageTime)
 
                 showMessageNotification(messageModel, messageSenderName, chatId, remoteMessage.data["type"] == "MESSAGE")
             }
@@ -63,7 +76,7 @@ class MessagingService: FirebaseMessagingService() {
 
         val senderProfileImageDiameter = applicationContext.dip(32)
         val senderProfileImageStyling = RequestOptions.circleCropTransform()
-        val senderProfileImageUrl = (FirebaseDatabase.getInstance().getReference("users").child(messageModel.userId).child("image").value as? String)
+        val senderProfileImageUrl = (FirebaseDatabase.getInstance().getReference("users").child(messageModel.userId).child("isImage").value as? String)
         val senderProfileImageBitmap = Glide.with(this@MessagingService).asBitmap().load(senderProfileImageUrl).apply(senderProfileImageStyling).submit(senderProfileImageDiameter, senderProfileImageDiameter).get()
 
         val notificationStyle = if (messageModel.type == MessageType.IMAGE.name) {

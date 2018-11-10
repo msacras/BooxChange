@@ -46,7 +46,7 @@
     <string name="camera">Camera</string>
     <string name="termsConditions">Terms &amp; Conditions</string>
     <string name="edition">Edition: %s</string>
-    <string name="price">Price: %s$</string>
+    <string name="price">Price: €%s</string>
     <string name="privacyPolicy">By signing up, I accept the\n<u>Terms of Service</u> and <u>Privacy Policy</u></string>
 
     <string name="netherlands_country_code" translatable="false">+31</string>

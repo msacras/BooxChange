@@ -3,8 +3,8 @@ package nl.booxchange.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.app.RemoteInput
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import nl.booxchange.extension.takeNotBlank
@@ -16,7 +16,7 @@ class InlineReplyService: BroadcastReceiver() {
         val replyText = RemoteInput.getResultsFromIntent(intent)?.getCharSequence(Constants.KEY_RESPONSE_ID) ?: return
         val chatId = intent.getStringExtra(Constants.KEY_CHAT_ID) ?: return
         val message = mapOf(
-            "user" to (FirebaseAuth.getInstance().currentUser?.uid ?: return),
+            "senderID" to (FirebaseAuth.getInstance().currentUser?.uid ?: return),
             "content" to (replyText.toString().takeNotBlank?.trim() ?: return),
             "type" to "TEXT",
             "timestamp" to DateTime.now().toString()

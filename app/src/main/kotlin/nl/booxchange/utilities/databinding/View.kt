@@ -1,6 +1,6 @@
 package nl.booxchange.utilities.databinding
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import android.view.View
 import nl.booxchange.extension.setVisible
 

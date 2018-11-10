@@ -51,7 +51,7 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
         upload_photo_button.setOnClickListener {
             val intent = Intent()
-            intent.type = "image*//*
+            intent.type = "isImage*//*
 */
 /*"
             intent.action = Intent.ACTION_PICK

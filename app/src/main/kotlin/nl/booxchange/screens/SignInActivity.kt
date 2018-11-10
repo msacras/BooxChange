@@ -5,8 +5,8 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatEditText
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import android.telecom.PhoneAccount
 import android.telephony.TelephonyManager
 import android.text.InputType
@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.vcristian.combus.dismiss
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import nl.booxchange.BuildConfig
 import nl.booxchange.R
 import nl.booxchange.extension.withExitSymbol
 import nl.booxchange.utilities.Constants
@@ -104,7 +105,7 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
                 override fun onCodeSent(verificationId: String, resendToken: PhoneAuthProvider.ForceResendingToken) {
                     codeVerificationId = verificationId
 
-                    alert {
+                    if (BuildConfig.DEBUG) alert {
                         val codeInputView = AppCompatEditText(this@SignInActivity).apply {
                             inputType = InputType.TYPE_CLASS_NUMBER
                         }
@@ -147,9 +148,15 @@ class SignInActivity: AppCompatActivity(), OnCompleteListener<AuthResult> {
         if (task.isSuccessful) {
             val userData = task.result!!
 
-            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                FirebaseFirestore.getInstance().collection("instances").document(it.token).set(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
-//                FirebaseDatabase.getInstance().getReference("instances").child(it.token).setValue(FirebaseAuth.getInstance().currentUser?.uid ?: return@addOnSuccessListener)
+            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener { instance ->
+                FirebaseFirestore.getInstance().collection("users").document(userData.user.uid).get()
+                    .addOnSuccessListener { user ->
+                        val instances = (user.data?.get("instances") as? List<String>).orEmpty().toMutableSet().apply {
+                            add(instance.token)
+                        }
+
+                        FirebaseFirestore.getInstance().collection("users").document(userData.user.uid).update(mapOf("instances" to instances.toList()))
+                    }
             }
             if (userData.additionalUserInfo.isNewUser) {
                 startActivity<MainFragmentActivity>(Constants.EXTRA_PARAM_TARGET_VIEW to Constants.FRAGMENT_PROFILE)

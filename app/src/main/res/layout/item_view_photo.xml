@@ -15,13 +15,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         sourceImageId="@{itemModel}"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/set_main_photo_button"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -34,7 +34,6 @@
         android:background="@drawable/rounded_corner_solid_gray_8dp"
         android:visibility="gone"
         tools:visibility="visible"
-        visibleIf="@{itemHandler.isEditModeEnabled &amp;&amp; !itemHandler.isMainPhoto(itemModel)}"
         android:text="Use as main photo"
         android:onClick="@{() -> itemHandler.setMainPhoto(itemModel)}"
         app:backgroundTint="@color/lightGray"
@@ -42,7 +41,7 @@
         android:alpha="0.65"
         app:srcCompat="@drawable/delete"/>
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/delete_photo_button"
         android:onClick="@{() -> itemHandler.onRemovePhotoClick(itemModel)}"
         android:layout_width="48dp"

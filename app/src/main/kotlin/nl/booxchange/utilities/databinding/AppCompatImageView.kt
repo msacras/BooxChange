@@ -1,8 +1,8 @@
 package nl.booxchange.utilities.databinding
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import android.net.Uri
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -27,7 +27,7 @@ fun AppCompatImageView.setScaledImageFromUrl(imageId: String?) {
         .transforms(CenterCrop(), RoundedCorners(dip(4)))
 
     Glide.with(context)
-        .load(imageId?.takeNotBlank?.let(FirebaseStorage.getInstance()::getReference))
+        .load(imageId)
         .apply(requestOptions)
         .transition(DrawableTransitionOptions().crossFade())
         .into(this)
@@ -42,14 +42,18 @@ fun AppCompatImageView.setScaledImageFromUrl(imageModel: ImageModel?) {
         .placeholder(emptyDrawable)
         .transforms(CenterCrop(), RoundedCorners(dip(4)))
 
-    when (imageModel?.type) {
-        ImageModel.EditablePhotoType.LOCAL -> Glide.with(context).load(imageModel.path).apply(requestOptions).transition(DrawableTransitionOptions().crossFade()).into(this)
-        ImageModel.EditablePhotoType.REMOTE -> Glide.with(context)
-            .load(storagePath?.path?.let(FirebaseStorage.getInstance()::getReference))
+//    when (imageModel?.type) {
+//        ImageModel.EditablePhotoType.LOCAL -> Glide.with(context)
+//            .load(imageModel.path)
+//            .apply(requestOptions)
+//            .transition(DrawableTransitionOptions().crossFade())
+//            .into(this)
+        /*ImageModel.EditablePhotoType.REMOTE -> */Glide.with(context)
+            .load(storagePath)
             .apply(requestOptions)
             .transition(DrawableTransitionOptions().crossFade())
             .into(this)
-    }
+//    }
 }
 
 @BindingAdapter("sourceImageId")
@@ -65,7 +69,7 @@ fun AppCompatImageView.setFullSizeImageFromUrl(imageModel: ImageModel?) {
     when (imageModel?.type) {
         ImageModel.EditablePhotoType.LOCAL -> Glide.with(context).load(imageModel.path).apply(requestOptions).transition(DrawableTransitionOptions().crossFade()).into(this)
         ImageModel.EditablePhotoType.REMOTE -> Glide.with(context)
-            .load(storagePath?.path?.let(FirebaseStorage.getInstance()::getReference))
+            .load(storagePath)
             .apply(requestOptions)
             .transition(DrawableTransitionOptions().crossFade())
             .into(this)

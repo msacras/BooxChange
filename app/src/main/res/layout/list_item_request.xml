@@ -15,16 +15,16 @@
             type="nl.booxchange.model.entities.ChatModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
+        android:foreground="@drawable/selectable_item"
         android:onClick="@{(v) -> itemHandler.onChatItemClick(v, itemModel)}"
         android:padding="8dp">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/user_photo"
             roundedImageId="@{itemModel.image}"
             android:layout_width="64dp"
@@ -35,7 +35,7 @@
             tools:srcCompat="@drawable/account_circle"
             tools:tint="@color/midGray"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,5 +50,5 @@
             app:layout_constraintTop_toBottomOf="@id/user_photo"
             tools:text="John Doe"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -15,21 +15,23 @@
             type="nl.booxchange.model.BookItemHandler"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="112dp"
+        android:layout_height="220dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:foreground="@drawable/selectable_item"
+        android:clickable="true"
+        android:focusable="true"
         android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}"
         android:padding="8dp">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/book_image"
             android:layout_width="96dp"
             android:layout_height="128dp"
-            android:background="?attr/selectableItemBackground"
-            android:elevation="2dp"
-            scaledImageId="@{itemModel.mainImage, default=' '}"
+            scaledImageId="@{itemModel.images[0], default=' '}"
+            android:background="@drawable/rounded_corner_solid_gray_4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,14 +46,14 @@
             app:layout_constraintStart_toStartOf="@id/book_image"
             app:layout_constraintTop_toTopOf="@id/book_title"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxLines="2"
+            android:lines="2"
             android:paddingStart="4dp"
             android:paddingTop="4dp"
             android:paddingEnd="4dp"
@@ -66,18 +68,19 @@
             app:layout_constraintTop_toBottomOf="@id/book_image"
             tools:text="The Lord of My Ring"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:paddingStart="4dp"
             android:paddingTop="2dp"
             android:paddingEnd="4dp"
-            android:paddingBottom="4dp"
+            android:paddingBottom="8dp"
             android:text="@{itemModel.author}"
             android:textColor="@color/darkGray"
             android:textSize="10dp"
@@ -87,5 +90,5 @@
             app:layout_constraintTop_toBottomOf="@id/book_title"
             tools:text="John Ronald Reuel Tolkien"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

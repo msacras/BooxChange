@@ -4,10 +4,10 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.widget.TextViewCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatImageButton
+import androidx.fragment.app.FragmentTransaction
+import androidx.core.widget.TextViewCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageButton
 import com.vcristian.combus.expect
 import kotlinx.android.synthetic.main.activity_main_fragment.*
 import nl.booxchange.R

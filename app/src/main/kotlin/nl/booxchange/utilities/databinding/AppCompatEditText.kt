@@ -1,7 +1,7 @@
 package nl.booxchange.utilities.databinding
 
-import android.databinding.BindingAdapter
-import android.support.v7.widget.AppCompatEditText
+import androidx.databinding.BindingAdapter
+import androidx.appcompat.widget.AppCompatEditText
 import android.text.Editable
 import android.text.TextWatcher
 

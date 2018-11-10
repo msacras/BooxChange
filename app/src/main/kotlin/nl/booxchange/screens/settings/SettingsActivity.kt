@@ -1,24 +1,22 @@
-package nl.booxchange.screens.library
+package nl.booxchange.screens.settings
 
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatCheckedTextView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatCheckedTextView
 import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.facebook.CallbackManager
@@ -35,10 +33,9 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.vcristian.combus.dismiss
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.dialog_image.*
 import kotlinx.android.synthetic.main.dialog_name.*
@@ -58,8 +55,8 @@ import java.util.concurrent.TimeUnit
 
 class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
 
-    private val userUid = FirebaseAuth.getInstance().currentUser?.uid!!.string
-    private val dbRef = FirebaseDatabase.getInstance().reference.child("users/").child(userUid)
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid!!.string
+    private val userDatabaseReference = FirebaseFirestore.getInstance().collection("users").document(userId)
     private val facebookCallbackManager = CallbackManager.Factory.create()
     private val providers = FirebaseAuth.getInstance().currentUser?.providerData
 
@@ -69,7 +66,6 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
 
         var googleId = providers?.find { it.providerId == "google.com" }?.uid
         var facebookId = providers?.find { it.providerId == "facebook.com" }?.uid
-
 
         facebook_checkbox.isChecked = providers?.any { it.providerId == "facebook.com" } ?: false
         google_checkbox.isChecked = providers?.any { it.providerId == "google.com" } ?: false
@@ -83,19 +79,15 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
 
         version.text = ("v." + BuildConfig.VERSION_NAME)
 
-        dbRef.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(databaseError: DatabaseError) {
-                databaseError.toException().printStackTrace()
-            }
+        userDatabaseReference.addSnapshotListener { documentSnapshot, _ ->
+            val firstName = documentSnapshot?.get("first_name").toString()
+            val lastName = documentSnapshot?.get("last_name").toString()
+            val userPhoto = documentSnapshot?.get("image_url").toString()
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val firstName = dataSnapshot.child("first_name").value.toString()
-                val lastName = dataSnapshot.child("last_name").value.toString()
-                val userPhoto = dataSnapshot.child("imageUrl").value.toString()
-                Glide.with(applicationContext).load(userPhoto).apply(RequestOptions().circleCrop()).into(profile_image)
-                user_name.text = Editable.Factory.getInstance().newEditable("$firstName $lastName")
-            }
-        })
+            Glide.with(applicationContext).load(userPhoto).apply(RequestOptions().circleCrop()).into(profile_image)
+
+            user_name.setText("$firstName $lastName")
+        }
 
         profile_image.setOnClickListener {
             dialogImage()
@@ -195,13 +187,13 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
                 FirebaseAuth.getInstance().currentUser?.unlink("facebook.com")?.addOnSuccessListener {
                     updateSwitchesAvailability()
                     progressDialog.dismiss()
+                    LoginManager.getInstance().logOut()
                 }
-                LoginManager.getInstance().logOut()
-                FirebaseAuth.getInstance().signOut()
+//                FirebaseAuth.getInstance().signOut()
             }
         }
         LoginManager.getInstance().registerCallback(facebookCallbackManager,
-                object : FacebookCallback<LoginResult> {
+                object: FacebookCallback<LoginResult> {
                     override fun onSuccess(loginResult: LoginResult) {
                         toast("succeeded Facebook auth")
                         FirebaseAuth.getInstance().currentUser?.linkWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token))?.addOnCompleteListener(this@SettingsActivity)
@@ -275,6 +267,7 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         finishAffinity()
         LoginManager.getInstance().logOut()
         FirebaseAuth.getInstance().signOut()
+        GoogleSignIn.getClient(this@SettingsActivity, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
     }
 
     private fun dialogImage() {
@@ -297,35 +290,32 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         dialogName.setContentView(R.layout.dialog_name)
         dialogName.window.setGravity(Gravity.BOTTOM)
         dialogName.show()
-        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val firstName = dataSnapshot.child("first_name").value?.string
-                val lastName = dataSnapshot.child("last_name").value?.string
-                dialogName.change_first_name.setText(firstName)
-                dialogName.change_last_name.setText(lastName)
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
+        userDatabaseReference.get().addOnSuccessListener { dataSnapshot ->
+            val firstName = dataSnapshot?.get("first_name").toString()
+            val lastName = dataSnapshot?.get("last_name").toString()
+            dialogName.change_first_name.setText(firstName)
+            dialogName.change_last_name.setText(lastName)
+        }
         dialogName.upload_name.setOnClickListener {
                 if (dialogName.change_first_name.text.toString().trim() == "" || dialogName.change_last_name.text.toString().trim() == "") {
                     toast("Complete all labels")
                 } else {
                     val firstNameLabel = dialogName.change_first_name.text.toString()
                     val lastNameLabel = dialogName.change_last_name.text.toString()
-                    val uploadFirstName = dbRef.child("first_name")
-                    val uploadLastName = dbRef.child("last_name")
-                    uploadLastName.setValue(lastNameLabel)
-                    uploadFirstName.setValue(firstNameLabel, { databaseError, _ ->
-                        if (databaseError != null) {
-                            toast("Data could not be saved. " + databaseError.message)
+
+                    val userUpdates = mapOf(
+                        "first_name" to firstNameLabel,
+                        "last_name" to lastNameLabel
+                    )
+
+                    userDatabaseReference.update(userUpdates).addOnCompleteListener {
+                        if (!it.isSuccessful) {
+                            toast("Data could not be saved. " + it.exception?.localizedMessage)
                         } else {
                             toast("Success saved")
                             dialogName.dismiss()
                         }
-                    })
+                    }
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(dialogName.change_first_name.windowToken, 0)
                     dialogName.dismiss()
             }
@@ -338,8 +328,10 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
     }
 
     private fun onAddPhotoFromCameraClick() {
+        Tools.generateCameraImageId()
+
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val temporaryImageUri = Tools.getCacheUri("camera_output.jpeg")
+        val temporaryImageUri = Tools.getCacheUri(Tools.lastCameraImageId)
 
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
             grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -365,27 +357,26 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_GALLERY || requestCode == Constants.REQUEST_CAMERA) {
             val imageUri = when (requestCode) {
-                Constants.REQUEST_CAMERA -> Tools.getCacheUri("camera_output.jpeg")
+                Constants.REQUEST_CAMERA -> Tools.getCacheUri(Tools.lastCameraImageId)
                 Constants.REQUEST_GALLERY -> data?.data
                 else -> return
             }
             if (imageUri != null) {
                 Glide.with(this).load(imageUri).apply(RequestOptions().circleCrop()).into(profile_image)
-                val imgPath = FirebaseStorage.getInstance().reference.child("images/userphoto/").child(userUid)
-                imgPath.putFile(imageUri).addOnSuccessListener {
-                    imgPath.downloadUrl.addOnSuccessListener { uri ->
-                        val downloadUrl = uri
-                        dbRef.child("imageUrl").setValue(downloadUrl.string)
+                FirebaseStorage.getInstance().reference.child("images/users/").child(userId).putFile(imageUri).addOnSuccessListener {
+                    it.metadata?.reference?.downloadUrl?.addOnSuccessListener {
+                        userDatabaseReference.update(mapOf("image_url" to it.path))
                     }
                 }
             }
         }
+
         if (requestCode == 9001) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
                 toast("succeeded Google auth")
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 FirebaseAuth.getInstance().currentUser?.linkWithCredential(credential)?.addOnCompleteListener(this)
             } catch (e: ApiException) {
                 toast("failed Google auth")

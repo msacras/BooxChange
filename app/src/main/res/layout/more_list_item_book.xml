@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -7,110 +8,104 @@
 
         <variable
             name="itemModel"
-            type="nl.booxchange.model.BookModel" />
+            type="nl.booxchange.model.entities.BookModel"/>
 
         <variable
             name="itemHandler"
-            type="nl.booxchange.model.BookItemHandler" />
+            type="nl.booxchange.model.BookItemHandler"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{(v) -> itemHandler.onBookItemClick(v, itemModel)}">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/book_image"
-            scaledImageId="@{itemModel.mainImage}"
+            scaledImageId="@{itemModel.images[0], default=' '}"
             android:layout_width="100dp"
             android:layout_height="135dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/rounded_corner_solid_light_8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/ic_no_image" />
+            tools:srcCompat="@drawable/ic_no_image"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="1"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@{itemModel.title}"
             android:textColor="@color/darkGreen"
             android:textSize="14dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/book_author"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/book_image"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="The Lord " />
+            app:layout_constraintTop_toTopOf="@id/book_image"
+            tools:text="The Lord"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:lines="1"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@{itemModel.author}"
             android:textColor="@color/darkGreen"
             android:textSize="14dp"
-            app:layout_constraintBottom_toTopOf="@id/book_edition"
-            app:layout_constraintStart_toStartOf="@id/book_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/book_title"
             app:layout_constraintTop_toBottomOf="@id/book_title"
-            tools:text="John Ronald Reuel Tolkien" />
+            tools:text="John Ronald Reuel Tolkien"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_edition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="2"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@{@string/edition(itemModel.edition)}"
             android:textColor="@color/darkGreen"
             android:textSize="14dp"
-            app:layout_constraintBottom_toTopOf="@id/book_price"
             app:layout_constraintStart_toStartOf="@id/book_title"
             app:layout_constraintTop_toBottomOf="@id/book_author"
-            tools:text="2017" />
+            tools:text="Edition: 2017"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/book_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:maxLines="2"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@{@string/price(itemModel.price)}"
             android:textColor="@color/darkGreen"
             android:textSize="14dp"
-            app:layout_constraintBottom_toBottomOf="@id/book_image"
+            visibleIf="@{itemModel.isSell}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/book_title"
             app:layout_constraintTop_toBottomOf="@id/book_edition"
-            tools:text="666" />
+            app:layout_constraintVertical_bias="0"
+            tools:text="Price: €666"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/bottom_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:barrierAllowsGoneWidgets="true"
+            app:constraint_referenced_ids="book_price, book_image"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="16dp"
+            android:alpha="0.25"
             android:background="@color/midGray"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/book_image"/>
+            app:layout_constraintTop_toBottomOf="@id/bottom_barrier"/>
 
-    </android.support.constraint.ConstraintLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

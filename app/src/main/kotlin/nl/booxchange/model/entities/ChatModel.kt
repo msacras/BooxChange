@@ -1,21 +1,22 @@
 package nl.booxchange.model.entities
 
-import android.databinding.*
+import androidx.databinding.*
 import android.text.Spannable
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import nl.booxchange.BR
 import nl.booxchange.extension.single
-import nl.booxchange.model.entities.MessageModel
-import nl.booxchange.extension.single
-import nl.booxchange.model.FirebaseObject
+import nl.booxchange.extension.takeNotBlank
+import nl.booxchange.model.FirestoreObject
 
 
-class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObject {
+class ChatModel(@Exclude override val id: String): BaseObservable(), FirestoreObject {
     class ChatUserDataModel(val id: String, val unread: Int, val firstName: String?, val lastName: String?, val photo: String?)
 
-    val users = ObservableArrayMap<String, ChatUserDataModel>()
+    private val users = ObservableArrayMap<String, ChatUserDataModel>()
     val message = ObservableField<MessageModel>()
     var isRequest = false
 
@@ -30,7 +31,7 @@ class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObj
 
     @Bindable
     fun getTitle(): String? {
-        return getUserOther()?.firstName + " " + getUserOther()?.lastName
+        return (getUserOther()?.firstName ?: "Anonymous") + " " + (getUserOther()?.lastName ?: "")
     }
 
     @Bindable
@@ -43,11 +44,11 @@ class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObj
         return getUserSelf()?.unread ?: 0
     }
 
-    private fun getUserSelf(): ChatUserDataModel? {
+    fun getUserSelf(): ChatUserDataModel? {
         return users["self"]
     }
 
-    private fun getUserOther(): ChatUserDataModel? {
+    fun getUserOther(): ChatUserDataModel? {
         return users["other"]
     }
 
@@ -56,32 +57,29 @@ class ChatModel(@Exclude override val id: String): BaseObservable(), FirebaseObj
     }
 
     companion object {
-        fun fromFirebaseEntry(entry: Pair<String, Map<String, Any>>): ChatModel {
-            val (key, value) = entry
-            val lastMessageId = value["lastMessageId"] as String
-            val usersList = value.filter { it.key !in listOf("isRequest", "lastMessageId") }
+        fun fromFirebaseEntry(entry: DocumentSnapshot): ChatModel {
+            val key = entry.id
+            val data = entry.data.orEmpty()
+
+            val lastMessageId = data["lastMessageId"] as String
+            val usersList = (data["counters"] as? Map<String, Long>).orEmpty()
             val chatModel = ChatModel(key)
 
             usersList.forEach { (userId, userUnreadMessages) ->
-                val userType: String
-
                 if (userId == FirebaseAuth.getInstance().currentUser?.uid) {
-                    userType = "self"
+                    chatModel.users["self"] = ChatModel.ChatUserDataModel(userId, userUnreadMessages.toInt(), "", "", "")
                 } else {
                     chatModel.isRequest = userUnreadMessages == -1L
-                    userType = "other"
-                }
-                FirebaseDatabase.getInstance().getReference("users").child(userId).single {
-                    it?.let { (_, userData) ->
-                        chatModel.users[userType] = ChatModel.ChatUserDataModel(userId, (userUnreadMessages as Long).toInt(), userData["first_name"] as? String, userData["last_name"] as? String, userData["imageUrl"] as? String)
+
+                    FirebaseFirestore.getInstance().collection("users").document(userId).get().addOnSuccessListener {
+                        val userData = it.data ?: return@addOnSuccessListener
+                        chatModel.users["other"] = ChatModel.ChatUserDataModel(userId, userUnreadMessages.toInt(), userData["first_name"] as? String, userData["last_name"] as? String, userData["image_url"] as? String)
                     }
                 }
             }
 
-            FirebaseDatabase.getInstance().getReference("messages/$key").child(lastMessageId).single {
-                it?.let { messageData ->
-                    chatModel.message.set(MessageModel.fromFirebaseEntry(messageData))
-                }
+            FirebaseFirestore.getInstance().collection("chats").document(key).collection("messages").document(lastMessageId).get().addOnSuccessListener {
+                chatModel.message.set(MessageModel.fromFirebaseEntry(it))
             }
 
             return chatModel

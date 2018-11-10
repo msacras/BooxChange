@@ -1,14 +1,15 @@
 package nl.booxchange.screens.more
 
 
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_more.*
 import nl.booxchange.BR
 import nl.booxchange.R
-import nl.booxchange.model.events.BooksListOpenedEvent
 
 class MoreBooksActivity: AppCompatActivity() {
 
@@ -17,11 +18,21 @@ class MoreBooksActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewBinding = DataBindingUtil.setContentView<ViewDataBinding>(this, R.layout.fragment_more)
+        val viewBinding = DataBindingUtil.setContentView<ViewDataBinding>(this, R.layout.activity_more)
         val bookListType = intent.getStringExtra(KEY_BOOK_LIST_TYPE)
 
-        viewModel.initializeWithConfig(BooksListOpenedEvent(bookListType))
+        viewModel.initializeWithConfig(bookListType)
         viewBinding.setVariable(BR.viewModel, viewModel)
+
+        books_list.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (recyclerView.computeVerticalScrollOffset() == recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollExtent()) {
+                        viewModel.fetchMoreBooks()
+                    }
+                }
+            }
+        })
     }
 
     companion object {

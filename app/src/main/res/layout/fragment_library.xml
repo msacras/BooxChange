@@ -11,7 +11,7 @@
             type="nl.booxchange.screens.library.LibraryFragmentViewModel"/>
     </data>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +29,7 @@
             android:clipChildren="false"
             android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profile_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:elevation="2dp"
                 android:padding="16dp">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/profile_image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -46,7 +46,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:srcCompat="@drawable/ic_no_image"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/first_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     app:layout_constraintTop_toBottomOf="@id/profile_image"
                     tools:text="Djoni"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/last_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,9 +73,9 @@
                     app:layout_constraintTop_toBottomOf="@id/profile_image"
                     tools:text="Deep"/>
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/user_books"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profile_info">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/collection_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,12 +109,13 @@
                     app:layout_constraintStart_toEndOf="@id/collection_label"
                     app:layout_constraintTop_toTopOf="@id/books_count"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/books_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="4dp"
+                    android:text="@{viewModel.userBooksCount}"
                     android:textSize="14dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/books_label"
@@ -123,7 +124,7 @@
                     app:layout_constraintTop_toTopOf="@id/books_label"
                     tools:text="3"/>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/books_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,7 +136,7 @@
                     app:layout_constraintStart_toEndOf="@id/books_count"
                     app:layout_constraintTop_toTopOf="@id/collection_label"/>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/add_book_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -147,20 +148,30 @@
                     app:layout_constraintTop_toTopOf="@id/collection_label"
                     app:srcCompat="@drawable/ic_plus_icon"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/user_books_list"
-                    recyclerHandler="@{viewModel}"
-                    recyclerItems="@{viewModel.userBooksList}"
-                    recyclerLayout="@{viewModel.booksViewsConfigurations}"
+                    listHandler="@{viewModel}"
+                    listItems="@{viewModel.userBooksList}"
+                    listLayout="@{viewModel.booksViewsConfigurations}"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="232dp"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:padding="8dp"
-                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/collection_label"
                     tools:listitem="@layout/list_item_book"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    visibleIf="@{viewModel.libraryIsEmpty}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="64dp"
+                    android:text="You have no books in your library"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <!--
                                 <android.support.v7.widget.AppCompatButton
@@ -176,7 +187,7 @@
                                     visibleIf="@{viewModel.userBooksList.size() == 0}"
                                     android:text="Add the first book"/>-->
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

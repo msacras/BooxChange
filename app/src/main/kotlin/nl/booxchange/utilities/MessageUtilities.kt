@@ -11,6 +11,8 @@ import nl.booxchange.R
 import nl.booxchange.extension.getColorCompat
 import nl.booxchange.model.events.BookOpenedEvent
 import nl.booxchange.model.entities.MessageModel
+import nl.booxchange.screens.book.BookDetailsActivity
+import org.jetbrains.anko.startActivity
 
 object MessageUtilities {
 /*
@@ -20,7 +22,7 @@ object MessageUtilities {
             else -> ""//talkersList.find { it.id == message.id }?.getFormattedName() ?: "Anonymous"
         }
         val contentInfo = when (message.type) {
-            MessageType.IMAGE -> "$talkerName sent an image"
+            MessageType.IMAGE -> "$talkerName sent an isImage"
             MessageType.TEXT -> "$talkerName: ${message.content}"
             MessageType.REQUEST -> formatRequest(message.content, talkersList)
         }
@@ -33,15 +35,15 @@ object MessageUtilities {
         return when (message.type) {
             "REQUEST" -> {
                 if (isOwnMessage) {
-                    formatRequest(message.content)
-                } else {
                     SpannableString("You've sent a book request!").apply {
                         setSpan(StyleSpan(Typeface.BOLD), 0, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                     }
+                } else {
+                    formatRequest(message.content)
                 }
             }
             "TEXT" -> SpannableString(message.content)
-            "IMAGE" -> SpannableString(if (isOwnMessage) "You've sent an image" else "You've received an image").apply {
+            "IMAGE" -> SpannableString(if (isOwnMessage) "You've sent an isImage" else "You've received an isImage").apply {
                 setSpan(StyleSpan(Typeface.BOLD), 0, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
             else -> null
@@ -69,13 +71,14 @@ object MessageUtilities {
                     val startPosition = formattedString.indexOf(source)
                     val endPosition = startPosition + text.length
                     formattedString = formattedString.replace(source, text)
-                    spansList.add(SpanConfig(object: ClickableSpan() {
-                        override fun onClick(widget: View?) {
-                            post(BookOpenedEvent(bookId = value))
-                        }
-                    }, startPosition..endPosition))
+                    spansList.add(SpanConfig(StyleSpan(Typeface.BOLD), startPosition..endPosition))
                     spansList.add(SpanConfig(UnderlineSpan(), startPosition..endPosition))
                     spansList.add(SpanConfig(ForegroundColorSpan(BooxchangeApp.context.getColorCompat(R.color.themeGreenDark)), startPosition..endPosition))
+                    spansList.add(SpanConfig(object: ClickableSpan() {
+                        override fun onClick(view: View) {
+                            view.context.startActivity<BookDetailsActivity>(BookDetailsActivity.KEY_BOOK_ID to value)
+                        }
+                    }, startPosition..endPosition))
                 }
             }
         }

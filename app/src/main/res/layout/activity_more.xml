@@ -1,52 +1,54 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="nl.booxchange.screens.more.MoreBooksActivity">
 
     <data>
+
         <variable
             name="viewModel"
-            type="nl.booxchange.screens.more.MoreBooksViewModel" />
+            type="nl.booxchange.screens.more.MoreBooksViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@color/white">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             android:elevation="1dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/back"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:tint="@color/darkGreen"
-                app:srcCompat="@drawable/arrow_left" />
+                app:srcCompat="@drawable/arrow_left"/>
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textStyle="bold"
                 android:textColor="@color/darkGreen"
-                android:textSize="22dp" />
+                android:textSize="22dp"
+                android:textStyle="bold"/>
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/search_background"
             android:drawableLeft="@drawable/ic_search_icon"
             android:drawablePadding="10dp"
@@ -57,31 +59,32 @@
             android:paddingLeft="12dp"
             android:textColorHint="@color/dustyGray"
             android:textSize="14dp"
-            app:layout_constraintTop_toBottomOf="@id/tool_bar" />
+            android:text="@={viewModel.searchQuery}"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar"/>
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginTop="8dp"
+            android:alpha="0.35"
+            android:layout_marginTop="16dp"
             android:background="@color/midGray"
             app:layout_constraintTop_toBottomOf="@id/search"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/books_list"
             recyclerHandler="@{viewModel}"
-            android:overScrollMode="never"
             recyclerItems="@{viewModel.booksList}"
             recyclerLayout="@{viewModel.booksViewsConfigurations}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/white"
-            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view"
-            app:spanCount="1"
-            tools:listitem="@layout/more_list_item_book" />
+            tools:listitem="@layout/more_list_item_book"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -7,14 +7,14 @@
 
         <variable
             name="itemHandler"
-            type="nl.booxchange.screens.chat.ChatFragmentViewModel"/>
+            type="nl.booxchange.screens.chat.ChatActivityViewModel"/>
 
         <variable
             name="itemModel"
             type="nl.booxchange.model.entities.MessageModel"/>
     </data>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"

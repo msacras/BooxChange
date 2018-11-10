@@ -1,7 +1,7 @@
 package nl.booxchange.utilities.databinding
 
-import android.databinding.BindingAdapter
-import android.support.design.widget.TextInputLayout
+import androidx.databinding.BindingAdapter
+import com.google.android.material.textfield.TextInputLayout
 import nl.booxchange.extension.takeNotBlank
 
 @BindingAdapter("error")

@@ -1,19 +1,20 @@
 package nl.booxchange.screens.messages
 
-import android.arch.lifecycle.MutableLiveData
-import android.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
+import androidx.databinding.ObservableInt
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.vcristian.combus.post
 import nl.booxchange.R
 import nl.booxchange.model.entities.ChatModel
-import nl.booxchange.model.events.ChatOpenedEvent
 import nl.booxchange.model.events.ChatsStateChangeEvent
-import nl.booxchange.utilities.database.FirebaseListQueryLiveData
+import nl.booxchange.screens.chat.ChatActivity
 import nl.booxchange.utilities.BaseViewModel
+import nl.booxchange.utilities.database.FirestoreListQueryLiveData
 import nl.booxchange.utilities.recycler.ViewHolderConfig
 import nl.booxchange.utilities.recycler.ViewHolderConfig.ViewType
+import org.jetbrains.anko.startActivity
 
 
 class MessagesFragmentViewModel: BaseViewModel() {
@@ -30,22 +31,23 @@ class MessagesFragmentViewModel: BaseViewModel() {
     )
 
     init {
-        FirebaseListQueryLiveData(FirebaseDatabase.getInstance().getReference("chats").orderByChild(FirebaseAuth.getInstance().currentUser?.uid!!).startAt(.0)).observeForever { list ->
-            val unreads = list?.values?.sumBy { (it[FirebaseAuth.getInstance().currentUser?.uid] as? Long)?.toInt() ?: 0 } ?: 0
+        val selfUID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-            list?.toList()?.map(ChatModel.Companion::fromFirebaseEntry).orEmpty().groupBy(ChatModel::isRequest).run {
-                val requests = get(true).orEmpty()
-                val actives = get(false).orEmpty()
+        FirestoreListQueryLiveData(FirebaseFirestore.getInstance().collection("chats").whereArrayContains("usersIDs", selfUID)).observeForever { list ->
+            val chatsByType = list.map(ChatModel.Companion::fromFirebaseEntry).groupBy(ChatModel::isRequest)
 
-                requestCount.set(requests.size)
-                requestsList.postValue(requests)
+            val requests = chatsByType.get(true).orEmpty()
+            val actives = chatsByType.get(false).orEmpty()
+            val unread = actives.sumBy(ChatModel::getUnreadCount)
 
-                chatsCount.set(actives.size)
-                unreadCount.set(unreads)
-                activesList.postValue(actives)
+            requestCount.set(requests.size)
+            requestsList.postValue(requests)
 
-                post(ChatsStateChangeEvent(requestCount.get() + chatsCount.get()))
-            }
+            chatsCount.set(actives.size)
+            unreadCount.set(unread)
+            activesList.postValue(actives)
+
+            post(ChatsStateChangeEvent(requestCount.get() + chatsCount.get()))
         }
     }
 
@@ -54,6 +56,6 @@ class MessagesFragmentViewModel: BaseViewModel() {
     val requestCount = ObservableInt(0)
 
     fun onChatItemClick(view: View, chatModel: ChatModel) {
-        post(ChatOpenedEvent(chatModel))
+        view.context.startActivity<ChatActivity>(ChatActivity.KEY_CHAT_ID to chatModel.id)
     }
 }

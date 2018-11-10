@@ -1,13 +1,13 @@
 package nl.booxchange.utilities
 
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import android.graphics.PointF
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.AppCompatImageView
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.*
-import com.android.databinding.library.baseAdapters.BR
+import nl.booxchange.BR
 import kotlinx.android.synthetic.main.item_view_photo.view.*
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.R
@@ -67,9 +67,11 @@ class PhotosPagerAdapter(private val handler: Any?): PagerAdapter() {
         binding.setVariable(BR.itemModel, item)
         binding.setVariable(BR.itemHandler, handler)
 
+/*
         if (item.type in listOf(ImageModel.EditablePhotoType.LOCAL, ImageModel.EditablePhotoType.REMOTE)) {
-//            PhotoScalingUtility.setupScaleGestureForView(binding.root.image_view, binding.root)
+            PhotoScalingUtility.setupScaleGestureForView(binding.root.image_view, binding.root)
         }
+*/
 
         return binding.root
     }

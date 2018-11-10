@@ -1,6 +1,6 @@
 package nl.booxchange.model
 
-import android.databinding.ObservableField
+import androidx.databinding.ObservableField
 import android.view.View
 import nl.booxchange.model.entities.BookModel
 

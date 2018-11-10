@@ -1,6 +1,6 @@
 package nl.booxchange.model
 
-import android.databinding.ObservableBoolean
+import androidx.databinding.ObservableBoolean
 import android.view.View
 import nl.booxchange.model.entities.ImageModel
 

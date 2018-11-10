@@ -3,37 +3,31 @@ package nl.booxchange.screens.book
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.databinding.ObservableArrayList
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatRadioButton
 import android.view.View
 import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatRadioButton
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.storage.FirebaseStorage
-import com.vcristian.combus.expect
-import com.vcristian.combus.post
 import nl.booxchange.extension.takeNotBlank
-import nl.booxchange.model.*
+import nl.booxchange.model.CheckableBookItemHandler
+import nl.booxchange.model.PhotoItemHandler
 import nl.booxchange.model.entities.BookModel
 import nl.booxchange.model.entities.BookModel.OfferType
 import nl.booxchange.model.entities.ImageModel
-import nl.booxchange.model.events.BookOpenedEvent
-import nl.booxchange.model.events.StartActivity
 import nl.booxchange.utilities.BaseViewModel
 import nl.booxchange.utilities.Constants
 import nl.booxchange.utilities.Tools
+import nl.booxchange.utilities.database.LiveList
 import org.jetbrains.anko.find
-import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
 import org.joda.time.DateTime
 
@@ -44,70 +38,58 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     val userOwnedBooks = ObservableArrayList<BookModel>()
 
     val bookModel = ObservableField<BookModel>()
-    var sourceBookModel = BookModel()
+    private var sourceBookModel = BookModel()
         set(value) {
             field = value
             bookModel.set(value.copy())
         }
 
     val images = ObservableArrayList<ImageModel>()
-    var sourceImages = emptyList<ImageModel>()
+    private var sourceImages = emptyList<ImageModel>()
         set(value) {
             field = value
+            images.clear()
             images.addAll(value)
         }
 
-    fun initializeWithConfig(initializationConfig: BookOpenedEvent) {
-        isEditModeEnabled.set(initializationConfig.bookId.isBlank())
-        initializationConfig.bookModel?.let(::bindBookModel) ?: initializationConfig.bookId.takeNotBlank?.let(::fetchBook) ?: bindBookModel(BookModel())
+    val tradeBooks = LiveList<TradeBookModel>()
+    private var sourceTradeBooks = emptyList<String>()
+        set(value) {
+            field = value
+            tradeBooks.postValue(value.map(::TradeBookModel))
+        }
+
+    fun initializeWithConfig(bookId: String?) {
+        isEditModeEnabled.set(bookId == null)
+        bookId?.let(::fetchBook) ?: bindBookModel(BookModel())
     }
 
     private fun fetchBook(bookId: String) {
         onLoadingStarted()
-        FirebaseDatabase.getInstance().getReference("books").child(bookId).addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(databaseError: DatabaseError) {
-                databaseError.toException().printStackTrace()
+        FirebaseFirestore.getInstance().collection("books").document(bookId).get()
+            .addOnSuccessListener {
+                bindBookModel(BookModel.fromFirestoreEntry(it))
             }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.getValue(BookModel::class.java)?.let(::bindBookModel) ?: onLoadingFailed()
+            .addOnFailureListener {
+                it.printStackTrace()
+                onLoadingFailed()
+            }
+            .addOnCompleteListener {
                 onLoadingFinished()
             }
-        })
     }
 
     private fun bindBookModel(bookModel: BookModel) {
         sourceBookModel = bookModel
 
-        images.clear()
-        FirebaseDatabase.getInstance().getReference("images/books").child(bookModel.id).addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onCancelled(databaseError: DatabaseError) {
-                databaseError.toException().printStackTrace()
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                sourceImages = dataSnapshot.children.map { ImageModel(it.key, ImageModel.EditablePhotoType.REMOTE, Uri.parse(it.value as? String)) }
-            }
-        })
-
+        sourceTradeBooks = bookModel.tradeBooks
+        sourceImages = bookModel.images.map { ImageModel(ImageModel.EditablePhotoType.REMOTE, Uri.parse(it)) }
         isBookUserOwned.set(bookModel.userId == FirebaseAuth.getInstance().currentUser?.uid)
 
-        this.checkedBook.set(null)
+        checkedBook.set(null)
 
         if (!isBookUserOwned.get()) {
-            val viewsReference = FirebaseDatabase.getInstance().getReference("books").child(bookModel.id).child("views")
-
-            viewsReference.addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onCancelled(databaseError: DatabaseError) {
-                    databaseError.toException().printStackTrace()
-                }
-
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        viewsReference.setValue(dataSnapshot.getValue(Int::class.java)?.plus(1))
-                    }
-                }
-            })
+            FirebaseFirestore.getInstance().collection("books").document(bookModel.id).update(mapOf("views" to bookModel.views + 1))
         }
     }
 
@@ -115,10 +97,20 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
         isEditModeEnabled.set(!isEditModeEnabled.get())
         if (isEditModeEnabled.get()) {
             images.add(ImageModel.addingItem)
+            tradeBooks += listOf(TradeBookModel(""))
         } else {
             bindBookModel(sourceBookModel)
             images.remove(ImageModel.addingItem)
+            tradeBooks.value.find { it?.title?.get() == "" }?.let(tradeBooks::minusAssign)
         }
+    }
+
+    fun addBlankTradeBookField() {
+        tradeBooks += listOf(TradeBookModel(""))
+    }
+
+    fun removeExtraBlankFields(exceptCurrentItem: TradeBookModel) {
+        tradeBooks.value.filter { it?.title?.get().isNullOrEmpty() && it != exceptCurrentItem }.filterNotNull().forEach(tradeBooks::minusAssign)
     }
 
     fun setConditionLevel(radioGroup: RadioGroup, buttonId: Int) {
@@ -141,8 +133,10 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     }
 
     override fun View.onAddPhotoFromCameraClick() {
+        Tools.generateCameraImageId()
+
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val temporaryImageUri = Tools.getCacheUri("camera_output.jpeg")
+        val temporaryImageUri = Tools.getCacheUri(Tools.lastCameraImageId)
 
         context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
             context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -175,47 +169,73 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     }
 
     fun saveBook(view: View) {
-        val progressDialog = view.context.indeterminateProgressDialog("Saving")
-        val mainImage = images.firstOrNull()
+        val onImagesUploadFinished = {
+            val bookData = bookModel.get()!!.toFirestoreEntry() as MutableMap
+            bookData["images"] = images.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.mapIndexed { index, imagePath -> index.toString() to imagePath.path.path }.toMap().values
+            bookData["tradeBooks"] = tradeBooks.value.mapNotNull { it?.title?.get()?.takeNotBlank }
 
-        FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id).set(bookModel.get()!!.toFirebaseEntry())
-            .addOnSuccessListener {
-                sourceBookModel = bookModel.get()!!
-                progressDialog.dismiss()
+            val databaseCall = if (bookModel.get()!!.id.isBlank()) {
+                FirebaseFirestore.getInstance().collection("books")::add
+            } else {
+                FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id)::update
             }
-            .addOnFailureListener {
 
-            }
-/*
-        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).setValue(bookModel.get()!!.toFirebaseEntry()).addOnCompleteListener {
-            sourceBookModel = bookModel.get()!!
-            progressDialog.dismiss()
-        }
-*/
-
-        sourceImages.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.forEach { photoModel ->
-            if (images.find { it.id == photoModel.id } == null) {
-//                FirebaseDatabase.getInstance().getReference(photoModel.path.path!!).removeValue()
-                FirebaseFirestore.getInstance().document(photoModel.path.path!!).delete()
-                FirebaseStorage.getInstance().getReference(photoModel.path.path!!).delete()
-            }
-        }
-
-        images.filter { it?.type == ImageModel.EditablePhotoType.LOCAL }.forEach { photoModel ->
-            FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path).addOnSuccessListener {
-                FirebaseFirestore.getInstance().collection("images/books/${bookModel.get()!!.id}").document().set(it.metadata?.path!!)
-//                FirebaseDatabase.getInstance().getReference("images/books/${bookModel.get()!!.id}").push().setValue(it.metadata?.path)
-                if (photoModel == mainImage) {
-                    FirebaseFirestore.getInstance().document("books/${bookModel.get()!!.id}/image").set(it.metadata?.path!!)
-//                    FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).child("image").setValue(it.metadata?.path)
+            databaseCall(bookData)
+                .addOnSuccessListener {
+                    bookModel.get()!!.id = (it as? DocumentReference)?.id ?: bookModel.get()!!.id
+                    fetchBook(bookModel.get()!!.id)
                 }
+                .addOnFailureListener {
+                    onLoadingFailed()
+                }
+                .addOnCompleteListener {
+                    onLoadingFinished()
+                }
+        }
+
+        onLoadingStarted()
+
+        sourceImages.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.forEach { sourcePhotoModel ->
+            if (images.find { it.path.path == sourcePhotoModel.path.path } == null) {
+                FirebaseStorage.getInstance().getReferenceFromUrl(sourcePhotoModel.path.path!!).delete()
             }
+        }
+
+        val imagesToUpload = images.filter { it?.type == ImageModel.EditablePhotoType.LOCAL }
+        var imageUploadSemaphore = 0
+
+        if (imageUploadSemaphore == imagesToUpload.size) {
+            onImagesUploadFinished()
+        }
+
+        imagesToUpload.forEachIndexed { index, photoModel ->
+            FirebaseStorage.getInstance().getReference("images/books/${bookModel.get()!!.id}/${DateTime.now().millis}").putFile(photoModel.path)
+                .addOnSuccessListener {
+                    it.metadata?.reference?.downloadUrl
+                        ?.addOnSuccessListener { downloadUri ->
+                            imagesToUpload[index].apply {
+                                type = ImageModel.EditablePhotoType.REMOTE
+                                path = Uri.parse(downloadUri.path)
+                            }
+
+                            if (++imageUploadSemaphore == imagesToUpload.size) {
+                                onImagesUploadFinished()
+                            }
+                        }
+                        ?.addOnFailureListener {
+
+                        }
+                }
+                .addOnFailureListener {
+                    //TODO: handle upload failure
+                }
         }
     }
 
-    fun deleteBook() {
-        FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id).delete()
-//        FirebaseDatabase.getInstance().getReference("books").child(bookModel.get()!!.id).removeValue()
+    fun deleteBook(view: View) {
+        FirebaseFirestore.getInstance().collection("books").document(bookModel.get()!!.id).delete().addOnSuccessListener {
+            (view.context as? BookDetailsActivity)?.toast("Book deleted")
+        }
     }
 
     fun sendRequest(view: View) {
@@ -232,7 +252,7 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
             "tradeBookTitle" to checkedBook.get()?.title?.get()
         )
 
-        FirebaseFunctions.getInstance("europe-west1").getHttpsCallable("requestBookTrade").call(requestData).addOnCompleteListener {
+        FirebaseFunctions.getInstance("europe-west1").getHttpsCallable("sendBookTradeRequest").call(requestData).addOnCompleteListener {
             view.context.toast(if (it.isSuccessful) "Request sent!" else "Failed to send your request")
         }
     }
@@ -240,13 +260,13 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val imageUri = when (requestCode) {
-                Constants.REQUEST_CAMERA -> Tools.getCacheUri("camera_output.jpeg")
+                Constants.REQUEST_CAMERA -> Tools.getCacheUri(Tools.lastCameraImageId)
                 Constants.REQUEST_GALLERY -> intent!!.data
                 else -> return
             }
 
             if (images.find { it?.path == imageUri } == null) {
-                images.add(images.indexOf(ImageModel.addingItem).coerceAtLeast(0), ImageModel(null, ImageModel.EditablePhotoType.LOCAL, imageUri))
+                images.add(images.indexOf(ImageModel.addingItem).coerceAtLeast(0), ImageModel(ImageModel.EditablePhotoType.LOCAL, imageUri))
             }
         }
     }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="itemModel"
+            type="nl.booxchange.screens.book.TradeBookModel"/>
+    </data>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@={itemModel.title}"
+        android:hint="Enter a book title"
+        android:textColorHint="@color/darkGray"
+        android:textCursorDrawable="@color/darkGreen"/>
+</layout>
