@@ -22,12 +22,14 @@ buildscript {
         jcenter()
         maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:3.2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$services_version"
         classpath "com.google.firebase:firebase-plugins:1.1.5"
+        classpath 'io.fabric.tools:gradle:1.26.1'
     }
 }
 

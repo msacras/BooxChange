@@ -83,9 +83,11 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
+<!--
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false"/>
+-->
 
         <!--
                 <meta-data

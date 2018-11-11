@@ -171,7 +171,7 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
     fun saveBook(view: View) {
         val onImagesUploadFinished = {
             val bookData = bookModel.get()!!.toFirestoreEntry() as MutableMap
-            bookData["images"] = images.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.mapIndexed { index, imagePath -> index.toString() to imagePath.path.path }.toMap().values
+            bookData["images"] = images.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.mapIndexed { index, imagePath -> index.toString() to imagePath.path.toString() }.toMap().values.toList()
             bookData["tradeBooks"] = tradeBooks.value.mapNotNull { it?.title?.get()?.takeNotBlank }
 
             val databaseCall = if (bookModel.get()!!.id.isBlank()) {
@@ -197,7 +197,7 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
 
         sourceImages.filter { it.type == ImageModel.EditablePhotoType.REMOTE }.forEach { sourcePhotoModel ->
             if (images.find { it.path.path == sourcePhotoModel.path.path } == null) {
-                FirebaseStorage.getInstance().getReferenceFromUrl(sourcePhotoModel.path.path!!).delete()
+                FirebaseStorage.getInstance().getReferenceFromUrl(sourcePhotoModel.path.toString()).delete()
             }
         }
 
@@ -215,7 +215,7 @@ class BookDetailsViewModel: BaseViewModel(), CheckableBookItemHandler, PhotoItem
                         ?.addOnSuccessListener { downloadUri ->
                             imagesToUpload[index].apply {
                                 type = ImageModel.EditablePhotoType.REMOTE
-                                path = Uri.parse(downloadUri.path)
+                                path = downloadUri
                             }
 
                             if (++imageUploadSemaphore == imagesToUpload.size) {
