@@ -1,5 +1,6 @@
 package nl.booxchange.screens.settings
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
@@ -40,6 +42,7 @@ import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.dialog_image.*
 import kotlinx.android.synthetic.main.dialog_name.*
 import kotlinx.android.synthetic.main.dialog_phone.*
+import nl.booxchange.BooxchangeApp.Companion.context
 import nl.booxchange.BuildConfig
 import nl.booxchange.R
 import nl.booxchange.R.id.*
@@ -328,10 +331,15 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
     }
 
     private fun onAddPhotoFromCameraClick() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context as AppCompatActivity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.PERMISSION_STORAGE)
+            return
+        }
+
         Tools.generateCameraImageId()
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val temporaryImageUri = Tools.getCacheUri(Tools.lastCameraImageId)
+        val temporaryImageUri = Tools.lastCameraImageUri
 
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
             grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -357,7 +365,7 @@ class SettingsActivity : AppCompatActivity(), OnCompleteListener<AuthResult> {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.REQUEST_GALLERY || requestCode == Constants.REQUEST_CAMERA) {
             val imageUri = when (requestCode) {
-                Constants.REQUEST_CAMERA -> Tools.getCacheUri(Tools.lastCameraImageId)
+                Constants.REQUEST_CAMERA -> Tools.lastCameraImageUri
                 Constants.REQUEST_GALLERY -> data?.data
                 else -> return
             }

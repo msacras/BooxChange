@@ -1,5 +1,6 @@
 package nl.booxchange.screens.chat
 
+import android.Manifest
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import android.content.Context
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.app.ActivityCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.EventListener
@@ -238,10 +240,15 @@ class ChatActivityViewModel: BaseViewModel() {
     }
 
     fun View.onAddPhotoFromCameraClick() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context as AppCompatActivity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.PERMISSION_STORAGE)
+            return
+        }
+
         Tools.generateCameraImageId()
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val temporaryImageUri = Tools.getCacheUri(Tools.lastCameraImageId)
+        val temporaryImageUri = Tools.lastCameraImageUri
 
         context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach { cameraAppPackage ->
             context.grantUriPermission(cameraAppPackage.activityInfo.packageName, temporaryImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -257,7 +264,7 @@ class ChatActivityViewModel: BaseViewModel() {
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val imageUri = when (requestCode) {
-                Constants.REQUEST_CAMERA -> Tools.getCacheUri(Tools.lastCameraImageId)
+                Constants.REQUEST_CAMERA -> Tools.lastCameraImageUri
                 Constants.REQUEST_GALLERY -> data!!.data
                 else -> return
             }

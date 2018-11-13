@@ -1,5 +1,6 @@
 package nl.booxchange.utilities
 
+import android.net.Uri
 import androidx.core.content.FileProvider
 import nl.booxchange.BooxchangeApp
 import nl.booxchange.extension.ARGB
@@ -9,11 +10,11 @@ import java.io.File
 
 object Tools {
     fun getCacheUri(filename: String) =
-        FileProvider.getUriForFile(BooxchangeApp.context, BooxchangeApp.context.packageName + ".file_provider", File.createTempFile(filename, "", File(BooxchangeApp.context.cacheDir.path)))
+        FileProvider.getUriForFile(BooxchangeApp.context, BooxchangeApp.context.packageName + ".file_provider", File.createTempFile(filename, ".jpg", BooxchangeApp.context.cacheDir))
 
-    lateinit var lastCameraImageId: String
+    lateinit var lastCameraImageUri: Uri
     fun generateCameraImageId() {
-        lastCameraImageId = DateTime.now().toString()
+        lastCameraImageUri = getCacheUri(DateTime.now().toString("yyyy-MM-dd'T'HH:mm:ss_"))
     }
 
     fun interpolateColor(colorA: Int, colorB: Int, percentage: Float) =

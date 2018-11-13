@@ -22,6 +22,9 @@ object Constants {
     const val KEY_RESPONSE_ID = "KEY_RESPONSE_ID"
     const val KEY_CHAT_ID = "KEY_CHAT_ID"
 
+    const val PERMISSION_STORAGE = 0x21
+
+
     const val KEY_SUBSCRIPTION_SYSTEM_ENABLED = "KEY_SUBSCRIPTION_SYSTEM_ENABLED"
 
     val IDDC = mapOf(
